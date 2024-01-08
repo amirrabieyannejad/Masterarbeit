@@ -1,0 +1,165 @@
+\section{Related Work}\label{related-work}
+In this section, we present the techniques and tools in different domains that were mentioned in section \ref{intro} and are required for our workflow. A comparative analysis in my independent scientific work \cite{nejad2023} has shown that these techniques and tools are the best and suitable candidates in each domain for our approach.
+
+Firstly, the subsection \ref{us} discusses the role of USs and backlogs in agile development. In addition, the most common pattern of USs is presented. 
+
+In the subsection \ref{quality-framework}, the focus is on the introduction of the \emph{quality user story} (QUS) framework and its tool \emph{AQUSA} to address the question of the existence of criteria for the management and identification of conflicts and dependencies between user stories. In addition, we focus our attention on the criteria that are central to the creation of well-structured and standardised user stories. After this exploration, we draw a conclusion.
+
+In the \ref{dmodel} subsection, \emph{conditional random fields} (CRF) are used for the extraction of domain models from agile product backlogs, which play a central role in effectively supporting the identification of dependencies and conflicts between user stories. Furthermore, we conduct a conclusion.
+
+Next, we dive into the topic of \emph{nlp} and introduce \emph{natural language processing} (NLP) and computerised lexicon resources called \emph{VerbNet} as well as a conclusion.
+
+Finally, in subsection \ref{gts}, some basic definitions of \emph{graph} and \emph{graph transformation rules} are laid down for better understanding. We then look at the graph transformation tool \emph{Henshin} and its \emph{critical pair analysis} (CPA) tool, which plays a central role in our methodology. In addition, we carry out a conclusion.
+
+\subsection{Role of User Stories and Backlogs in Agile Development}\label{us}
+The agile software development paradigm broke the wall that classically existed between the development team and end-users. Thanks to the involvement of a \emph{product owner} (PO) who acts as a proxy to end-users for the team, the product backlog \cite{sedano2019product} became a first-class citizen during the product development. Furthermore, thanks to a set of user stories expressing features to be implemented in the product in order to deliver value to end-users, the development teams were empowered to think in terms of added value when planning their subsequent developments. The product is then developed iteration by iteration, incrementally. Each iteration selects a subset of the stories, maintaining a link between the developers and the end-users\cite{mosser2022modelling}. 
+
+\emph{Ordinarily, User Stories typically exhibit interdependencies, wherein the order of their implementation becomes a critical consideration. This circumstance raises the question of how one may discern and identify the relationships that exist between the User Stories.}
+
+Sedano et al. posited that a \enquote{product backlog is an informal model of the work to be done} \cite{sedano2019product}. A backlog implements a shared mental model over practitioners working on a given product, acting as a boundary artifact between stakeholders. This model is voluntarily kept informal to support rapid prototyping and brainstorming sessions. Classically, backlogs are stored in project management systems, such as \footnote{\href{https://www.atlassian.com/en/software/jira}{Jira Software}} Jira. These tools store user stories as tickets, where stakeholders write text as natural language. Meta-data (e.g., architecture components, severity, quality attribute) can also be attached to the stories. However, there is no formal language to express stories or model backlogs from a state of practice point of view.
+
+A \emph{user story} is a brief, semi-structured sentence and informal description of some aspect of a software system that illustrates requirements from the user’s perspective \cite{raharjana2021user}. Large, vague stories are called epics. While user stories vary widely between organizations, most observed stories included a motivation and acceptance criteria. The brief motivation statement followed the pattern:  As a  \textless\emph{user}\textgreater\ I want to \textless\emph{action}\textgreater\ so that \textless\emph{value}\textgreater. This is sometimes called the Connextra template. The acceptance criteria followed the pattern: Given \textless\emph{context}\textgreater, when \textless\emph{condition}\textgreater \  then \textless\emph{action}\textgreater. This is sometimes called Gherkin syntax \cite{wynne2017cucumber}. It consists of three aspects, namely aspects of who, what and why. The aspect of \enquote{who} refers to the system user or actor, \enquote{what} refers to the actor’s desire, and \enquote{why} refers to the reason (optional in the user story) \cite{raharjana2021user}.
+
+The user story components consist of the following elements \cite{wautelet2017user} : \emph{Role}: abstract behavior of actors in the system context; the aspect of who representation. \emph{Goal}: a condition or a circumstance desired by stakeholders or actors. Task: specific things that must be done to achieve goals. \emph{Capability}: the ability of actors to achieve goals based on certain conditions and events.
+
+\subsection{QUS framework and AQUSA as Tool}\label{quality-framework}
+Lucassen et al. \cite{lucassen2016improving} represent a Quality User Story (QUS) framework, which consist of 13 quality criteria that US writers should strive to conform to. Subjected criteria determine the intrinsic quality of USs in terms of syntax, pragmatics, and semantics (Figure~\ref{fig:qus_framework}; Table~\ref{tb:qus}). Base on QUS, Lucassen et al. present the Automatic Quality User Story Artisan (AQUSA) software tool for assessing and enhancing US quality. Relying on NLP techniques, AQUSA detects quality defects and suggests possible remedies.
+
+A user story should follow some pre-defined, agreed upon template chosen from the many existing ones \cite{wautelet2014unifying}. The skeleton of the template is called \emph{format} in the conceptual model, in between which the \emph{role}, \emph{means}, and optional \emph{end(s)} are interspersed to form a user story. 
+
+Because USs are a controlled language, the QUS framework’s criteria are organize in Lindland’s categories \cite{lindland1994understanding}:
+
+\begin{itemize}
+\item\emph{ Syntactic quality}, concerning the textual structure of a US without considering its meaning;
+\item \emph{Semantic quality}, concerning the relations and meaning of (parts of) the US text;
+\item \emph{Pragmatic quality}, considers the audience’s subjective interpretation of the user story text aside from syntax and semantics.
+\end{itemize}
+
+First, Lucassen et al. introduced quality criteria that can be evaluated against an individual US by presenting an explanation of the criterion as well as an example US that violates the specific criterion.
+
+
+\begin{figure}
+\center
+\includegraphics[width=10.03cm, height=7.76cm]{2.0_Quality_US_framework_that_define_13_criteria_for_US_quality_overview}
+\caption{Agile Requirements Verification Framework \cite{lucassen2016improving}}\label{fig:qus_framework}
+\end{figure}
+
+\begin{figure}
+\begingroup
+\footnotesize
+
+\begin{tabularx}{\textwidth}{l  X  c}
+ \hline
+ Criteria & Description & Individual/Set \\
+\hline
+\hline
+\\
+\textbf{Syntactic} \\
+\\ 
+Well-formed & A user story includes at least a role and a means & Individual \\
+Atomic & A user story expresses a requirement for exactly one feature & Individual \\
+Minimal & A user story contains nothing more than role, means, and ends & Individual \\
+\\ 
+ \textbf{Semantic} \\
+ \\ 
+Conceptually sound&The means expresses a feature and the ends expresses a rationale & Individual\\
+Problem-oriented& A user story only specifies the problem, not the solution to it& Individual\\
+Unambiguous&A user story avoids terms or abstractions that lead to multiple interpretations &Individual \\
+Conflict-free&A user story should not be inconsistent with any other user story &Set \\
+\\ 
+\textbf{Pragmatic}\\
+\\ 
+Full sentence&A user story is a well-formed full sentence &Individual \\
+Estimable&A story does not denote a coarse-grained requirement that is difficult to plan and prioritize &Individual \\
+Unique&Every user story is unique, duplicates are avoided &Set \\
+Uniform&All user stories in a specification employ the same template &Set \\
+Independent&The user story is self-contained and has no inherent dependencies on other stories &Set \\
+Complete&Implementing a set of user stories creates a feature-complete application, no steps are missing &Set \\
+ \\
+ \hline
+
+\end{tabularx}
+\captionof{table}{Quality User Story framework that defines 13 criteria for user story quality: details \cite{lucassen2016improving}}\label{tb:qus}
+\endgroup
+\end{figure}
+\subsection*{\normalsize{Independent}}
+USs should not overlap in concept and should be schedule and implementable in any order. 
+
+Complete independence may not always be achievable, the recommendation is to make any dependencies explicit and visible. Additionally, resolving certain dependencies may not be possible, and it is suggested practically approaches such as adding notes to story cards or using hyperlinks in issue trackers to make these dependencies evident. Two illustrative cases of dependencies are presented:
+\begin{itemize}
+\item 	\emph{Causality}: In some cases, one user story ($l_1$) must be completed before another ($l_2$) can begin. This is formalized as the predicate \enquote{$hasDep(l_1, l_2)$}, indicating that $ l_1$ causally depends on $l_2$ when specific conditions are met.
+\item 	\emph{Superclasses}: USs may involve an object (\emph{e.g.}, \enquote{Content} in US \enquote{As a User, I am able to edit the content that I added to a person’s profile page}) that refers to multiple other objects in various stories, implying that the object in $l_1$ serves as a parent or superclass for the other objects.
+\end{itemize}
+\subsection*{\normalsize{Well-formed}}
+Before it can be considered a US, the core text of the requirement needs to include a role and the expected functionality: the \emph{means}. Considering the US \enquote{I want to see an error when I cannot see recommendations after I upload an article}. It is likely that the US writer has forgotten to include the role. The story can be fixed by adding the role: \enquote{As a Member, I want to see an error when I cannot see recommendations after I upload an article.}.
+\subsection*{\normalsize{Atomic}}
+A user story should concern only one feature. Although common in practice, merging multiple user stories into a larger, generic one diminishes the accuracy of effort estimation\cite{liskin2014we}. For instance, the US \enquote{As a User, I am able to click a particular location from the map and thereby perform a search of landmarks associated with that latitude longitude combination} consist of two separate requirements: the act of clicking on a location and the display of associated landmarks. This US should be split into two:
+\begin{itemize}
+\item $US_A$: \enquote{As a User, I’m able to click a particular location from the map};
+\item $US_B$: \enquote{as a User, I’m able to see landmarks associated with the latitude and longitude combination of a particular location}.
+\end{itemize}
+\subsection*{\normalsize{Minimal}}
+User stories should contain a role, a means, and (optimally) some ends. Any additional information such as comments, descriptions of the expected behaviour, or testing hints should be left to additional notes. Consider the US \enquote{As a care professional, I want to see the registered hours of this week (split into products and activities). See: Mockup from Alice NOTE—first create the overview screen—then add validations}: Aside from a role and means, it includes a reference to an undefined mockup and a note on how to approach the implementation. The requirements engineer should move both to separate user story attributes like the description or comments, and retain only the basic text of the story: \enquote{As a care professional, I want to see the registered hours of this week.}
+\subsection*{\normalsize{Conceptually sound}}
+The means and end parts of a user story play a specific role. The means should capture a concrete feature, while the end expresses the rationale for that feature. Consider the US \enquote{As a User, I want to open the interactive map, so that I can see the location of landmarks}: The end is actually a dependency on another (hidden) functionality, which is required in order for the means to be realized, implying the existence of a landmark database which is not mentioned in any of the other stories. A significant additional feature that is erroneously represented as an end, but should be a means in a separate user story, for example:
+\begin{itemize}
+\item $US_A$: \enquote{As a User, I want to open the interactive map};
+\item $US_B$: \enquote{As a User, I want to see the location of landmarks on the interactive map.}.
+\end{itemize}
+\subsection*{\normalsize{Problem-oriented}}
+In line with the problem specification principle for RE proposed by Zave and Jackson \cite{zave1997four}, a user story should specify only the problem. If absolutely necessary, implementation hints can be included as comments or descriptions. Aside from breaking the minimal quality criteria, this US \enquote{As a care professional I want to save a reimbursement—add save button on top right (never grayed out)} includes implementation details (a solution) within the user story text. The story could be rewritten as follows: \enquote{As a care professional, I want to save a reimbursement.}.
+\subsection*{\normalsize{Unambiguous}}
+Ambiguity is intrinsic to natural language requirements, but the requirements engineer writing user stories has to avoid it to the extent this is possible. Not only should a user story be internally unambiguous, but it should also be clear in relationship to all other user stories. The Taxonomy of Ambiguity Types \cite{berry2004ambiguity} is a comprehensive overview of the kinds of ambiguity that can be encountered in a systematic requirements specification.
+
+In this US \enquote{As a User, I am able to edit the content that I added to a person's profile page}, \enquote{content} is a superclass referring to audio, video, and textual media uploaded to the profile page as specified in three other, separate user stories in the real-world user story set. The requirements engineer should explicitly mention which media are editable; for example, the story can be modified as follows: \enquote{As a User, I am able to edit video, photo and audio content that I added to a person’s profile page.}.
+\subsection*{\normalsize{Full sentence}}
+A user story should read like a full sentence, without typos or grammatical errors. For instance, the US \enquote{Server configuration} is not expressed as a full sentence (in addition to not complying with syntactic quality). By reformulating the feature as a full sentence user story, it will automatically specify what exactly needs to be configured. For example, US \enquote{Server configuration} can be modified to \enquote{As an Administrator, I want to configure the server’s sudo-ers.}
+\subsection*{\normalsize{Estimatable}}
+As user stories grow in size and complexity, it becomes more difficult to accurately estimate the required effort. Therefore, each user story should not become so large that estimating and planning it with reasonable certainty becomes impossible \footnote{\href{http://xp123.com/articles/invest-in-good-stories-and-smart-tasks/. Accessed 2015-02-18}{INVEST in good stories, and SMART tasks}}. For example, the US \enquote{As a care professional I want to see my route list for next/future days, so that I can prepare myself (for example I can see at what time I should start traveling)} requests a route list so that care professionals can prepare themselves. 
+
+While this might be just an unordered list of places to go to during a workday, it is just as likely that the feature includes ordering the routes algorithmically to minimize distance travelled and/or showing the route on a map. These many functionalities inhibit accurate estimation and call for splitting the user story into multiple user stories; for example:
+\begin{itemize}
+\item $US_A$: \enquote{As a Care Professional, I want to see my route list for next/future days, so that I can prepare myself};
+\item $US_B$: \enquote{As a Manager, I want to upload a route list for care professionals.}.
+\end{itemize}
+
+The subsequent quality criteria pertain to a collection of USs. These quality criteria are instrumental in the assessment of the overall project specification's quality, focusing on the entirety of the project specification as opposed to the individual scrutiny of individual stories:
+\subsection*{\normalsize{Unique and Conflict-Free}}
+The concept of unique user stories, emphasizing the avoidance of semantic similarity or duplication within a project. For example considering $EP_a$: \enquote{as a Visitor, I am able to see a list of news items, so that I stay up to date} and $US_a$: \enquote{As a Visitor, I am able to see a list of news items, so that I stay up to date}. This situation can be improved by providing more specific stories, like:
+\begin{itemize}
+\item $US_{\text{a1}}$ \enquote{As a Visitor, I am able to see breaking news;}
+\item $US_{\text{a2}}$ \enquote{As a Visitor, I am able to see sports news.}
+\end{itemize}
+Additionally, the importance of avoiding conflicts between user stories should be considered to ensure their quality. \textbf{\emph{A requirements conflict occurs when two or more requirements cause an inconsistency}} \cite{paja2013managing} \cite{robinson1989integrating}. For instance, considering story $US_b$: \enquote{As a User, I am able to edit any landmark} contradicts the requirement that a user can edit any landmark ($US_c$: \enquote{As a User, I am able to delete only the landmarks that I added}), if we assume that editing is a general term that includes deletion too. $US_b$ refers to any landmark, while  $US_c$ only those that user has added. A possible way to fix this is to change $US_b$ to: \enquote{As a User, I am able to edit the landmarks that I added.} \cite{lucassen2016improving}
+
+%For instance, considering the stories $US_b$:\enquote{As a User, I am able to edit any landmark} and $US_c$: \enquote{As a User, I am able to delete only the landmarks that I added} and assuming that editing is a general term that includes deletion, these two user stories are contradicting. The conflict is \enquote{any landmark} versus \enquote{the landmark that I added}.  A possible way to fix this is to delete one of the user stories or explicitly excluding the deletion from $US_b$ (\emph{i.e.} \enquote{As a User, I am able to add and modify any landmark})
+To detect these types of relationships, each US part needs to be compared with the parts of the other USs, using a combination of similarity measures that are either syntactic (\emph{e.g.}, Levenshtein’s distance) or semantic (\emph{e.g.}, employing an ontology to determine synonyms). When similarity exceeds a certain threshold, a human analyst is required to examine the user stories for potential conflict and/or duplication.
+\begin{definition}
+A user story $\mu$ is a 4-tuplel $\mu=(r,m,E,f)$ where $r$ is the role, $m$ is the means, $E=(e_1, e_2, . . .)$ is a set of ends, and $f$ is the format. A means m is a 5-tuple $m (s,av,do,io,adj)$ where $s$ is a subject, $av$ is an action verb, $do$ is a direct object, $io$ is an indirect object, and $adj$ is an adjective (io and adj may be null, see Figure \ref{fig:conceptual_model}). The set of user stories in a project is denoted by $U=(\mu_1, \mu_2, . . .)$.
+\end{definition}
+\begin{figure}
+\center
+\includegraphics[width=10.03cm, height=7.76cm]{2.0_Conceptual_model_of_US}
+\caption{Conceptual model of user stories \cite{lucassen2016improving}}\label{fig:conceptual_model}
+\end{figure}
+\begin{definition}
+\emph{Different means, same end }Two or more user stories that have the same end, but achieve this using different means. This relationship potentially impacts two quality criteria, as it may indicate: (1) a feature variation that should be explicitly noted in the user story to maintain an unambiguous set of user stories, or (2) a conflict in how to achieve this end, meaning one of the user stories should be dropped to ensure conflict-free user stories. Formally, for user stories $\mu_1$ and $\mu_2$:\\ 
+$diffMeansSameEnd(\mu_1,\mu_2)\leftrightarrow m_1 \neq m_2 \wedge E_1 \cap E_2 \neq \emptyset$
+\end{definition}
+\begin{definition}
+\emph{Same means, different end} Two or more user stories that use the same means to reach different ends. This relationship could affect the qualities of user stories to be unique or independent of each other. If the ends are not conflicting, they could be combined into a single larger user story; otherwise, they are multiple viewpoints that should be resolved. Formally,\\ 
+$sameMeansDiffEnd(\mu_1, \mu_2) \leftrightarrow m_1 = m_2 \wedge (E_1 \setminus E_2 \neq \emptyset \vee E_2 \setminus E_1 \neq \emptyset )$
+\end{definition}
+\begin{definition}
+\emph{Full duplicate} $A$ user story $\mu_1$ is an exact duplicate of another user story  $\mu_2$ when the stories are identical. This impacts the unique quality criterion. Formally,\\ 
+$isFullDuplicate(\mu_1,\mu_2) \leftrightarrow \mu_1 =_{\text{syn}} \mu_2$
+\end{definition}
+\begin{definition}
+\emph{Semantic duplicate} $A$ user story $\mu_1$ that duplicates the request of $\mu_2$, while using a different text; this has an impact on the unique quality criterion. Formally,\\ 
+$isSemDuplicate(\mu_1,\mu_2) \leftrightarrow \mu_1 = \mu_2 \wedge \mu_1 \neq _{\text{syn}} \mu_2$
+\end{definition}
+\subsection*{\normalsize{Uniform}}
+Uniformity pertains to the consistency of a USs format, with the majority of user stories within the same set. To evaluate uniformity, the requirements engineer identifies the most frequently occurring format, usually established in collaboration with the team. For example, the US \enquote{As an Administrator, I receive an email notification when a new user is registered} is presented as a non-uniform user story and can be rewritten for improved uniformity as: \enquote{As an Administrator, I want to receive an email notification when a new user is registered.}
+\subsection*{\normalsize{Complete}}
+The implementation of a set of USs should result in a feature-complete application. While it's not necessary for USs to cover 100\% of the application's functionality up-front, it's crucial not to overlook essential USs, as doing so may create a significant feature gap that hinders progress. For instance, consider the US \enquote{As a User, I am able to edit the content that I added to a person’s profile page}, which requires the existence of another story describing content creation. This scenario can be extended to USs with action verbs that reference non-existent direct objects, such as reading, updating, or deleting an item, which necessitates its creation first. To address these dependencies related to the means' direct object, Lucassen et al. introduce a conceptual relationship. 
+\input{Section/AQUSA} 

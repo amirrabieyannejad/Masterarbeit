@@ -1,0 +1,201 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman, english]{babel}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{pifont}
+\usepackage{makecell}
+\usepackage{csquotes}
+\usepackage{pdflscape}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{centernot}
+\usepackage[english, lined,ruled, linesnumbered]{algorithm2e}
+\usepackage[export]{adjustbox}
+\usepackage{caption}
+
+
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
+\usetikzlibrary{arrows}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+    citecolor=blue,
+    pdftitle={Overleaf Example},
+    }
+%\usepackage{listings}
+%\usepackage{xcolor}
+%\definecolor{delim}{RGB}{20,105,176}
+%\definecolor{numb}{RGB}{106, 109, 32}
+%\definecolor{string}{rgb}{0.64,0.08,0.08}
+%\definecolor{comment}{RGB}{123,188,123}
+%\definecolor{greencomment}{RGB}{0,128,0} % Define the green color for comments
+
+%\lstdefinelanguage{json}{
+   % numbers=left,
+    %numberstyle=\small,
+    %frame=single,
+    %rulecolor=\color{black},
+    %showspaces=false,
+    %showtabs=false,
+    %breaklines=true,
+    %postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{gray}\hookrightarrow\space}},
+    %breakatwhitespace=true,
+    %basicstyle=\small,
+    %upquote=true,
+    %morestring=[b]",
+    %stringstyle=\color{string},
+    %literate=
+    % *{0}{{{\color{numb}0}}}{1}
+    %  {1}{{{\color{numb}1}}}{1}
+    %  {2}{{{\color{numb}2}}}{1}
+    %  {3}{{{\color{numb}3}}}{1}
+    %  {4}{{{\color{numb}4}}}{1}
+    %  {5}{{{\color{numb}5}}}{1}
+    %  {6}{{{\color{numb}6}}}{1}
+    %  {7}{{{\color{numb}7}}}{1}
+    %  {8}{{{\color{numb}8}}}{1}
+    %  {9}{{{\color{numb}9}}}{1}
+    %  {\{}{{{\color{delim}{\{}}}}{1}
+    %  {\}}{{{\color{delim}{\}}}}}{1}
+    %  {[}{{{\color{delim}{[}}}}{1}
+    %  {]}{{{\color{delim}{]}}}}{1},
+    %  morecomment=[l]{\#}, % Define the '#' character as the start of a comment
+    %  morecomment=[s]{\#}{\ }, % Define the end of the comment
+    %  commentstyle=\color{greencomment}, % Set the color for the '#' and the following word
+%}
+\usetikzlibrary{%
+	positioning,
+	fit,
+	calc,
+	arrows,
+	arrows.meta,
+	shapes.misc
+}
+\usepackage{graphicx}
+\graphicspath{{./images/}}
+
+
+\newcounter{Figcount}
+\newcounter{tempFigure}
+\newcounter{Tablecount}
+%\newenvironment{TableCaption}{%
+%    \renewcommand{\figurename}{Table}
+%    \setcounter{tempFigure}{\thefigure}
+%    \setcounter{Tablecount}{\thetable}
+%    \setcounter{figure}{\theFigcount}
+%    }{%
+%    \setcounter{figure}{\thetempFigure}
+%    \stepcounter{Figcount}
+%    }
+%    
+\newenvironment{TableCaption}{%
+    \renewcommand{\tablename}{Table}
+    \setcounter{tempFigure}{\value{figure}}
+    \setcounter{figure}{\value{Figcount}}
+    \setcounter{table}{\value{Tablecount}}
+}{%
+    \setcounter{figure}{\value{tempFigure}}
+    \captionof
+    \stepcounter{Figcount}
+}
+
+
+\numberwithin{equation}{section}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{satz}[definition]{Satz}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{fact}[definition]{Fact}
+\newtheorem{construction}[definition]{Construction}
+\newtheorem{corollary}[definition]{Corollary}
+%\title{Analysis of Conflicts and Dependencies between User Stories}
+
+%\title{Philipps-Universität Marburg\\[0.0em] Fachbereich Mathematik und Informatik\\[0.0em] AG Softwaretechnik \\[0.0em] \textbf{Analysis of Conflicts and Dependencies between User Stories}\\[0.0em]}
+%\title{Philipps-Universität Marburg\\  }
+%\large{Masterarbeit} \\ zur Erlangung des akademischen Grades\\ Master of Science \\ \\ \\ vorgelegt von \\ \textbf{Amir Rabieyan Nejad} Matrikel-Nr: 3350269 \\}
+
+%\author{Amir Rabieyan Nejad}
+
+%\date{\today}
+
+\begin{document}
+%\begin{titlepage}
+%    \begin{center}
+%    \selectlanguage{ngerman}
+%        \vspace*{1cm}
+%        \Large
+%        Philipps-Universität Marburg\\
+%        Fachbereich Mathematik und Informatik\\
+%        AG Softwaretechnik \\
+%        \vspace*{1cm}
+%        %\includegraphics[width=0.8\textwidth]{logo4}
+%        %\vfill{}    
+%        \Large
+%        \textbf{Analysis of Conflicts and Dependencies between User Stories}
+%            
+%      
+%        \vspace{1.5cm}
+%            
+%        \textbf{Masterarbeit}\\
+%        zur Erlangung des akademischen Grades \\
+%        Master of Science
+%        
+%        \vspace{1.5cm}
+%        vorgelegt von\\
+%        \textbf{Amir Rabieyan Nejad}\\
+%        Matrikel-Nr: 3350269
+%            
+%    
+%            
+%        \vspace{1.5cm}
+%            
+%        
+%            
+%        
+%        
+%        \today\\
+%        
+%        \selectlanguage{english}
+%    \end{center}
+%\end{titlepage}
+%\maketitle
+%\pagestyle{empty}
+%\newpage\null\newpage
+%\begin{abstract}
+%\input{Section/Abstract}
+%\end{abstract}
+%\input{Section/Selbststaendigkeitserklaerung}
+%\newpage\null\newpage
+%\input{Section/Abstract}
+%\input{Section/Zusammenfassung}
+%\newpage
+%\pagestyle{plain}
+%\tableofcontents
+%\newpage\null\newpage
+
+
+
+%\input{Section/1_Intro}
+\input{Section/Related_Work}
+
+
+
+%\newpage
+%\bibliographystyle{abbrv}
+%\bibliography{Literatur.bib}
+
+   
+\end{document}

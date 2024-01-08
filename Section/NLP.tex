@@ -1,0 +1,111 @@
+\subsection{NLP and VerbNet as a Computational Lexical Resource}\label{nlp}
+Natural language processing (NLP) is a computational method for the automated analysis and representation of human language \cite{cambria2014jumping}. NLP techniques offer potential advantages to improve the quality of USs and can be used to parse, extract, or analyze user story's data. It has been widely used to help in the software engineering domain (\emph{e.g.}, managing software requirements \cite{Arias2018}, extraction of actors and actions in requirement document \cite{al2018use}.
+
+NLP techniques are usually used for text preprocessing (\emph{e.g.}, tokenization, \emph{Part-of-Speech} (POS) tagging, and dependency parsing). Several NLP approaches can be used (\emph{e.g.}, syntactic representation of text and computational models based on semantic features). Syntactic methods focus on word-level approaches, while the semantic focus on multiword expressions \cite{cambria2014jumping}.
+
+A computational lexicon resource is a systematically organized repository of words or terms, complete with linguistic and semantic data. These lexicons play a pivotal role in facilitating NLP systems focused on semantic analysis by offering comprehensive insights into language elements, encompassing word forms, part-of-speech (POS) categories, phonetic details, syntactic properties, semantic attributes, and frequency statistics. Lexical classes, defined in terms of shared meaning components and similar (morpho-) syntactic behaviour of words, have attracted considerable interest in NLP \cite{cambria2014jumping}. These classes are useful for their ability to capture generalizations about a range of (cross-) linguistic properties. NLP systems can benefit from lexical classes in a number of ways. As the classes can capture higher level abstractions (\emph{e.g.} syntactic or semantic features) they can be used as a principled means to abstract away from individual words when required. Their predictive power can help compensate for lack of sufficient data fully exemplifying the behaviour of relevant words \cite{kipper2006extending}.
+
+Upon the completion of the transformation of USs utilizing a Conditional Random Fields (CRF) approach, wherein entities, actions (both primary and secondary), persona, and their relational attributes (specifically, triggers, targets and contains) are meticulously annotated and structured as a graph-based representation, a preliminary imperative emerges. This imperative entails the determination of a representative semantic interpretation for the ascertained actions. This determination, in turn, serves as a prerequisite for the generation of corresponding transformation rules, namely, \enquote{create}, \enquote{delete}, \enquote{preserve} and \enquote{forbidden} rules.
+
+The attainment of this representative semantic interpretation hinges upon the application of a suite of foundational lexical resource techniques of a conceptual nature. These techniques assume a pivotal role in furnishing the essential cognitive infrastructure, facilitating a comprehensive grasp of the semantic roles, syntactic characteristics, and the systematic categorization to \enquote{creation}, \enquote{deletion}, \enquote{preservation} and \enquote{forbiddance} of linguistic elements embedded within the construct of the US.
+\subsection*{VerbNet} \label{verbnet}
+VerbNet (VN) is a hierarchical domain-independent, broad-coverage verb lexicon with mappings to several widely-used verb resources, including WordNet \cite{miller1995wordnet}, Xtag \cite{prolo2002generating}, and FrameNet \cite{baker1998berkeley}. It includes syntactic and semantic information for classes of English verbs derived from Levin’s classification, which is considerably more detailed than that included in the original classification. 
+
+Each verb class in VN is completely described by a set of members, thematic roles for the predicate-argument structure of these members, selectional restrictions on the arguments, and frames consisting of a syntactic description and semantic predicates with a temporal function, in a manner similar to the event decomposition of Moens and Steedman \cite{moens2005temporal}. The original Levin classes have been refined, and new subclasses added to achieve syntactic and semantic coherence among members.
+\subsection*{Syntactic Frames}
+Semantic restrictions, such as constraints related to animacy, humanity, or organizational affiliation, are employed to limit the types of thematic roles allowed within these classes. Furthermore, each syntactic frame may have constraints regarding which prepositions can be used. 
+
+Additionally, there may be additional constraints placed on thematic roles to indicate the likely syntactic nature of the constituent associated with that role.
+Levin classes are primarily characterized by NP (noun phrase) and PP (prepositional phrase) complements. 
+
+Some classes also involve sentential complementation, albeit limited to distinguishing between finite and non-finite clauses. This distinction is exemplified in VN, particularly in the frames for the class Tell-37.2, as shown in Examples (1) and (2), to illustrate how the differentiation between finite and non-finite complement clauses is implemented.
+\begin{enumerate}
+\item Sentential Complement (ﬁnite): \\ \ \ \enquote{Susan told Helen that the room was too hot.} \\ \emph{Agent V Recipient Topic [+sentential – infinitival]}
+\item Sentential Complement (nonﬁnite): \\ \ \  \enquote{Susan told Helen to avoid the crowd.}\\ \emph{Agent V Recipient Topic [+inﬁnitival – wh\_inf]}
+\end{enumerate}
+\subsection*{Semantic Predicates}
+Each VN frame also contains explicit semantic information, expressed as a conjunction of Boolean semantic predicates such as \enquote{motion}, \enquote{contact}, or \enquote{cause}. Each of these predicates is associated with an event variable E that allows predicates to specify when in the event the predicates are true $start(E)$ for preparatory stage, $during(E)$ for the culmination stage, and $end(e)$ for the consequent stage). 
+
+Relations between verbs (or classes) such as antonymy and entailment present in WordNet and relations between verbs (and verb classes) such as the ones found in FrameNet can be predicted by semantic predicates. Aspect in VN is captured by the event variable argument present in the predicates.
+\subsection*{The VerbNet Hierarchy}
+VerbNet represents a hierarchical structure of verb behaviour, with groups of verb classes sharing similar semantics and syntax. Verb classes are numbered based on common semantics and syntax, and classes with the same top-level number (e.g., 9-109) have corresponding semantic relationships. 
+
+For instance, classes related to actions like \enquote{putting}, such as \enquote{put-9.1}, \enquote{put\_spatial-9.2}, \enquote{funnel-9.3}, all belong to class number 9 and relate to moving an entity to a location. Classes sharing a top class can be further divided into subclasses, as seen with \enquote{wipe} verbs categorized into \enquote{wipe\_manner} $(10.4.1)$ and \enquote{wipe\_inst} $(10.4.2)$ specifying the manner and instrument of \enquote{wipe} verbs in the \enquote{Verbs of Removing} group of classes (class number 10).
+
+The classification encompasses class numbers 1-57, derived from Levin's classification \cite{levin1993english}, and class numbers 58-109, developed later by Korhonen and Briscoe \cite{korhonen2004extended}. The later classes are more specific, often having a one-to-one relationship between verb type and verb class. This hierarchical structure helps categorize and organize verbs based on their semantic and syntactic properties.
+\subsection*{Verb Class Hierarchy Contents}
+Each individual verb class within VerbNet is hierarchical. These classes can include one or more \enquote{subclasses} or \enquote{child} classes, as well as \enquote{sister} classes. All verb classes have a top-level classification, but some provide further specification of the behaviours of their verb members by having one or more subclasses. 
+
+Subclasses are identified by a dash followed by a number after the class information. For example, the top class might be \enquote{spray-9.7}, and a subclass would be denoted as \enquote{spray 9.7-1}. This hierarchy allows for a more detailed and structured organization of verb behaviour within VerbNet. 
+\begin{itemize}
+\item \textbf{Top Class:} The highest class in the hierarchy; all features in the top class are shared by every verb in the class. The top class of the hierarchy consists of syntactic constructions and semantic role labels that are shared by all verbs in this class.
+\item \textbf{Parent Class:} Dominates a subclass; all features are shared with subordinate classes.
+\item \textbf{Subclasses:} VerbNet subclasses inherit features from the top class but specify further syntactic and semantic commonalities among their verb members. These can include additional syntactic constructions, further selectional restrictions on semantic role labels, or new semantic role labels.
+\item \textbf{Child Class:} Is dominated by a parent class; inherits features from this parent class, but also adds information in the form of additional syntactic frames, thematic roles, or restrictions. 
+\item \textbf{Sister Class:} A subclass directly dominated by a parent class. This parent class also, directly dominates another subclass, so the two subclasses are sisters to one another. Sister classes do not share features.
+\end{itemize}
+Figure \ref{fig:hierachy_class} illustrate an example of class hierarchy from spray-9.7 class.
+\begin{figure}
+\center
+\includegraphics[width=11.03cm, height=2.76cm]{Class_hierarchy_for_spray-9_punk_7_class}
+\caption{Class hierarchy for spray-9.7 class \cite{heck2014quality}}\label{fig:hierachy_class}
+\end{figure}
+Verb Classes are numbered according to shared semantics and syntax, and classes which share a top-level number (9-109) have corresponding semantic relationships. 
+
+For instance, verb classes related to putting, such as put-9.1, put\_spatial-9.2, funnel-9.3, etc. are all assigned to the class number 9 and related to moving an entity to a location. 
+
+Classes that share a top class can also be divided into subclasses, such as wipe verbs in wipe\_manner (10.4.1) and wipe\_inst (10.4.2) which specify the manner and instrument of wipe verbs in the \enquote{Verbs of Removing} group of classes (class number 10). 
+
+An example of top-class numbers and their corresponding types is given in Table \ref{tb:vtype_example}. Class numbers 1-57 are drawn directly from Levin's (1993) classification. Class numbers 58-109 were developed later in the work of Korhonen \& Briscoe (2004). Notably, the verb types of the later classes are less general, as indicated by the fact that most of these classes have a one-to-one relationship between verb type and verb class.
+
+\begin{figure}
+\begingroup
+\footnotesize
+\centering
+\begin{tabularx}{12cm}{l  l  l}
+\hline
+Class Number	&Verb Type	&Verb Class \\
+\hline 
+\hline
+10&	Verbs of Removing		&banish-10.2 \\
+&&cheat-10.6.1\\
+&&clear-10.3\\
+&&debone-10.8\\
+&&fire-10.10\\
+&&mine-10.9\\
+&&pit-10.7\\
+&&remove-10.1\\
+&&resign-10.11\\
+&&steal-10.5\\
+&&wipe\_manner-10.4.1\\
+\hline
+26	&Verbs of Creation and Transformation	&adjust-26.9 \\
+&&build-26.1 \\
+&&convert-26.6.2\\
+&&create-26.4\\
+&&grow-26.2.1\\
+&&knead-26.5\\
+&&performance-26.7\\
+&&rehearse-26.8\\
+&&turn-26.6.1\\
+\hline
+13&	Verbs of Change of Possession	&berry-13.7 \\
+&&contribute-13.2\\
+&&equip-13.4.2\\
+&&exchange-13.6.1\\
+&&fulfilling-13.4.1\\
+&&future\_having-13.3\\
+&&get-13.5.1\\
+&&give-13.1\\
+&&hire-13.5.3\\
+&&obtain-13.5.2\\
+\hline
+\end{tabularx}
+
+\captionof{table}{An example of top-class numbers and their corresponding verb-type\cite{verbnet_guidelines}}\label{tb:vtype_example}
+
+\endgroup
+\end{figure}
+\subsection*{Conclusion}\label{nlp_bottom_line}
+Methodical categorization of verbs into hierarchical classes in VerbNet provides a structured and all-encompassing framework for understanding verb behaviour. This alignment with our project goals is of utmost importance as it underpins our task of formulating transformation rules based on semantic interpretations of the actions (verbs) recognised by CRF and described in USs. VerbNet's organizational structure seamlessly matches the requirements of our project and ensures the necessary precision and granularity that are essential for our semantic analysis and rule generation.
+\input{Section/GTS}

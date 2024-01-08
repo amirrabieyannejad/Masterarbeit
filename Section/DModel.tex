@@ -1,0 +1,104 @@
+\subsection{Extracting Domain Models from Textual Requirements}\label{dmodel}
+Automated support for extracting domain models from requirements artifacts such as USs play a central role in effectively supporting the detection of dependencies and conflicts between user stories. Domain models are a simple way to understand the relationship between artifacts and the whole system. 
+\subsection*{A Modelling Backlog as Composable Graphs} \label{composable_graph}
+Mosser et al. propose a model engineering method (and the associated tooling) to exploit a graph-based meta-modelling and compositional approach. The objective is to shorten the feedback loop between developers and POs while supporting agile development’s iterative and incremental nature. 
+
+The tool can extract what is called a conceptual model of a backlog in an ontology-like way. The conceptual models are then used to measure USs quality by detecting ambiguities or defects in a given story \cite{mosser2022modelling}.
+From a modelling point of view, Mosser et al. represents the concepts involved in the deﬁnition of a backlog in a metamodel, as depicted in figure \ref{fig:conceptual_metamodel}. Without surprise, the key concept is the notion of story, which brings a benefit to a \emph{Persona} thanks to an Action performed on an \emph{Entity}. A Story is associated to a readiness \emph{Status}, and might optionally contribute to one or more \emph{QualityProperty} (\emph{e.g.}, security, performance).
+\begin{figure}
+\center
+\includegraphics[width=8.03cm, height=8.76cm]{Backlog_conceptual_metamodel}
+\caption{Backlog conceptual metamodel \cite{mosser2022modelling}}\label{fig:conceptual_metamodel}
+\end{figure}
+
+Consider, for example, the following story, extracted from the reference dataset \cite{Dalpiaz2018}: \enquote{As a user, I want to click on the address so that it takes me to a new tab with Google Maps.}. \emph{This story brings to the user (Persona) the benefit of reaching a new Google Maps tab (Benefit) by clicking (Action) on the displayed address (Entity).}
+
+As Entities and Personas implement the \emph{jargon} to be used while specifying features in the backlog, they are deﬁned at the \emph{Backlog level}. On the contrary, Actions belong to the associated stories and are not shared with other stories. Finally, a \emph{Product} is deﬁned as the \emph{Backlog} used to specify its features.
+
+Mosser et al. propose in the context of backlog management a system which represented in figure \ref{fig:early_feedback} is proposed for utilization. Building upon the efficiency of NLP approaches. Mosser et al. suggest employing an NLP-based extractor to create a backlog model. This model will subsequently assist teams in the planning phase by aiding in the selection of stories for implementation during the upcoming iteration \cite{mosser2022modelling}.
+\begin{figure}
+\center
+\includegraphics[width=6.03cm, height=8.76cm]{Providing_early_feedback_at_the_backlog_level}
+\caption{Providing early feedback at the backlog level \cite{mosser2022modelling}}\label{fig:early_feedback}
+\end{figure}
+\subsection*{Composable Backlogs}
+In order to support team customization (\emph{e.g.}, a given team might want to enrich the backlog metamodel with additional information existing in their product management system) Mossser et al. chose open-world(ontological) representation by modelling backlog as graphs \cite{mosser2022modelling}. The graph is equipped with constraints (\emph{e.g.}, a story always refers to a persona and an entity) to ensure that the minimal structure captured in the previously deﬁned metamodel is guaranteed.
+\begin{definition}[\textbf{Story}]
+A Story$s \in S$ is defined as a tuple $\left(P,A,E,K\right)$, where $P=\{p_1, ..., p_i\}$ is the set of involved personas, $A= \{a_1, ..., a_i\}$ the set of performed actions, and $E = \{e_1, ..., e_k\}$ the set of targeted entities. Additional knowledge (e.g., benefit, architectural properties, status) can be declared as key-value pairs in $K = \{(k_1,v_1), ..., (k_l,v_l)\}$. The associated semantics is that the declared actions bind personas to entities. Considering that story independence is a pillar of agile methods (as, by definition, stories are independent inside a backlog), there is no equivalence class deﬁned over \\
+$S: \forall (s,s')\in S^2, s\neq s' \Rightarrow s \not \equiv s'$.
+\end{definition}
+\begin{definition}[\textbf{Backlog}]
+A backlog $b \in B$ is represented as an attributed typed graph $b = (V, E, A)$, with $V$ a set of typed vertices, $E$ a set of undirected edges linking existing vertices, and $A$ a set of key-value attributes. Vertices are typed according to the model element they represent $v \in V, type(v) \in \{ Persona, Entity, Story \} )$ . Edges are typed according to the kind of model elements they are binding. Like backlogs, vertices and edges can contain attributes, represented as \emph{(key, value)} pairs. The empty backlog is denoted as $\emptyset = (\emptyset ,\emptyset ,\emptyset )$.
+\end{definition}
+\begin{example}\label{ex_2}
+Backlog excerpt: Content Management System for Cornell University — CulRepo \emph{\cite{Dalpiaz2018}}.
+\begin{itemize}
+\item $s_1$: As a faculty member, I want to access a collection within the repository.
+\end{itemize}
+Associated model:
+\begin{itemize}
+\item $s_1 = (\{ faculty member \} ,\{ access\} ,\{ repository, collection\} ,\emptyset)\in S$
+\end{itemize}
+A backlog containing a single story $s_1$: (\enquote{As a faculty member, I want to access a collection within the repository}). \\ \\ 
+$b_1=\left(V_1 , E_1,\emptyset \right ) \in B$ \\ 
+$V_1=\left \{ Persona(faculty \ member, \emptyset \right )$ ,
+
+\ \ \ \ $Stroy \left (s_1, \{ \left (action, access \right ) \} \right )$
+
+\ \ \ \ $Entity \left (repository, \emptyset \right ) $,
+
+\ \ \ \ $Entity(collection, \emptyset ) \} $ \\ 
+$E_1 = \{ has\_for\_persona(s_1,faculty \ member)$,
+
+\ \ \ \ $has\_for\_entity \left (s_1,repository \right )$
+
+\ \ \ \ $has\_for\_entity(s_1, collection)\}$
+\end{example}
+\subsection*{Conditional Random Fields (CRF)}
+CRFs \cite{Lafferty2001} are a particular class of \emph{Markov Random Fields}, a statistical modelling approach supporting the definition of discriminative models. They are classically used in pattern recognition tasks (labelling or parsing) when context is important identify such patterns \cite{arulmohan2023extracting}.
+
+To apply CRF Mosser et al. transform a given story into a sequence of tuples. Each tuple contains minimally three elements: \emph{(i)} the original word from the story, \emph{(ii)} its syntactical role in the story, and \emph{(iii)} its semantical role in the story. The syntactical role in the sentence is classically known as \emph{Part-of-Speech} (POS), describing the grammatical role of the word in the sentence. The semantical role plays a dual role here. For training the model, the tags will be extracted from the annotated dataset and used as target. When used as a predictor after training, these are the data Mosser et al. will ask the model for infer.
+
+The main limitations of CRF are that \emph{(i)} it works at the word level (model elements can spread across several words), and \emph{(ii)} it is not designed to identify relations between entities \cite{arulmohan2023extracting}.
+    To address the first limitation, Mosser et al. use a glueing heuristic. Words that are consecutively associated with the same label are considered as being the same model element, \emph{e.g.}, the subsequence [\enquote{UI}, \enquote{designer}] from the previous example is considered as one single model element of type \emph{Persona}.
+    
+Mooser et al. applied this heuristic to everything but verbs, as classically, two verbs following each other represent different actions. They used again heuristic approach to address the second limitation. Mooser et al. bound every \emph{Persona} to every primary \emph{Action} (as\emph{ trigger} relations), and every primary \emph{Actions} to every primary \emph{Entity} (as \emph{target} relations) \cite{arulmohan2023extracting}.
+\begin{example} Consider the following example:\\ \\
+$S=[^\prime As^\prime,^\prime a^\prime,^\prime UI^\prime,^\prime designer^\prime,^\prime,^\prime,\ .\ .\ .]$ \\
+$POS(S)=[ADP,DET,NOUN,NOUN,PUNCT,.\ .\ .]$ \\
+$Label \left (S \right ) = \left [ \emptyset ,\emptyset ,PERSONA,PERSONA,\emptyset ,.\ .\ .\right ]$ \\\\
+$S$ represents a given US (Table \ref{tb:feature_sets}). $POS \left (S \right )$ represent the Part-of-speech analysis of $S$. The story starts with an adposition (ADP), followed by determiner (DET), followed by a noun, followed by another noun, .... Then, $Lables\left (S \right )$ represents what we interest in: the first two words are not interesting, but the $3^{rd}\  and \ 4^{td}$ words represent a Persona.\\ 
+\emph{A complete version of the example is provided in Table \ref{tb:feature_sets}.}
+\end{example}
+\begin{figure}
+\center
+\includegraphics[width=\textwidth, height=2.76cm]{Example_of_annotated_user}
+\caption{Example of annotated user using Doccano Annotation UI \cite{arulmohan2023extracting}}\label{fig:annot_usr}
+\end{figure}
+\begin{figure}
+\begingroup
+\footnotesize
+\begin{tabularx}{\textwidth}{c@{\hspace{4pt}} | c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}}
+Word &As &a&\textcolor[rgb]{1.0, 0.0, 0.5}{UI}&\textcolor[rgb]{1.0, 0.0, 0.5}{designer}&, &I &want &to&\textcolor[rgb]{0.21, 0.46, 0.53}{begin}&\textcolor[rgb]{0.8, 0.33, 0.0}{user} &\textcolor[rgb]{0.8, 0.33, 0.0}{testing}&,\\
+POS&	ADP&	DET	&\textcolor[rgb]{1.0, 0.0, 0.5}{NOUN}	&\textcolor[rgb]{1.0, 0.0, 0.5}{NOUN}	&PUNCT	&PRON	&VERB	&PART	&\textcolor[rgb]{0.21, 0.46, 0.53}{VERB}	&\textcolor[rgb]{0.8, 0.33, 0.0}{NOUN}	&\textcolor[rgb]{0.8, 0.33, 0.0}{NOUN}	&PUNCT \\
+Label	&-	&-	&\textcolor[rgb]{1.0, 0.0, 0.5}{PER}	&\textcolor[rgb]{1.0, 0.0, 0.5}{PER}	&-	&-	&-	&-	&\textcolor[rgb]{0.21, 0.46, 0.53}{P-ACT}	&\textcolor[rgb]{0.8, 0.33, 0.0}{P-ENT}	&\textcolor[rgb]{0.8, 0.33, 0.0}{P-ENT}	&- \\
+ \end{tabularx}
+  \begin{tabularx}{\textwidth}{c}
+  \\
+  \end{tabularx}
+ \begin{tabularx}{\textwidth}{c@{\hspace{4pt}} | c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}}
+Word&	so	&that	&I	&can	&\textcolor[rgb]{0.09, 0.45, 0.27}{validate}	&\textcolor[rgb]{0.5, 0.0, 0.5}{stakeholder}	&\textcolor[rgb]{0.5, 0.0, 0.5}{UI}	&\textcolor[rgb]{0.5, 0.0, 0.5}{improvement}	&\textcolor[rgb]{0.5, 0.0, 0.5}{requests}	&. \\
+POS	&SCONJ	&SCONJ	&PRON	&AUX	&\textcolor[rgb]{0.09, 0.45, 0.27}{VERB}	&\textcolor[rgb]{0.5, 0.0, 0.5}{NOUN}	&\textcolor[rgb]{0.5, 0.0, 0.5}{NOUN}	&\textcolor[rgb]{0.5, 0.0, 0.5}{NOUN}	&\textcolor[rgb]{0.5, 0.0, 0.5}{NOUN}	&PUNCT\\
+Label	&-	&-	&-	&-	&\textcolor[rgb]{0.09, 0.45, 0.27}{S-ACT}	&\textcolor[rgb]{0.5, 0.0, 0.5}{S-ENT}	&\textcolor[rgb]{0.5, 0.0, 0.5}{S-ENT}	&\textcolor[rgb]{0.5, 0.0, 0.5}{S-ENT}	&\textcolor[rgb]{0.5, 0.0, 0.5}{S-ENT}	&-\\
+ \end{tabularx} \\ \\ 
+\scriptsize \emph{POS tags are the Universal POS tags \\ 
+Labels: PER (Persona), P-ACT (Primary Action), P-ENT (Primary Entity), S-ACT (Secondary Action), S-ENT (Secondary Entity)}
+
+\captionof{table}{Minimal Feature Set, associating part-of-speech (POS) and semantic labels to each word in a given story \cite{arulmohan2023extracting}}\label{tb:feature_sets}
+
+\endgroup
+\end{figure}
+\subsection*{Conclusion}\label{crf_conclusion}
+Conditional Random Fields (CRF) approach is graph-based and promises a high degree of precision and recall, which is particularly important in the context of domain concept extraction. CRF can cover both syntactic and semantic aspects, especially when complemented by a suitable conceptual metamodel, making them suitable for definition as a type graph in Henshin. The annotations generated by CRF can then be used for transformation into a rule-based graph transformation system, which improves support for DevOps practices.
+ 
+\input{Section/NLP}

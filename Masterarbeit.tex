@@ -1,0 +1,159 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman, english]{babel}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{pifont}
+\usepackage{makecell}
+\usepackage{csquotes}
+\usepackage{pdflscape}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{centernot}
+\usepackage[english, lined,ruled, linesnumbered]{algorithm2e}
+
+
+
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
+\usetikzlibrary{arrows}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+    citecolor=blue,
+    pdftitle={Overleaf Example},
+    }
+    
+
+%\usepackage{texstyles/tikz-cellular}
+%\usepackage{texstyles/tikz-vcond}
+%\usepackage{texstyles/tikz-extension}
+\usetikzlibrary{%
+	positioning,
+	fit,
+	calc,
+	arrows,
+	arrows.meta,
+	shapes.misc
+}
+
+
+\usepackage{graphicx}
+\graphicspath{{./images/}}
+
+
+\newcounter{Figcount}
+\newcounter{tempFigure}
+\newenvironment{TableCaption}{%
+    \renewcommand{\figurename}{Table}
+    \setcounter{tempFigure}{\thefigure}
+    \setcounter{figure}{\theFigcount}
+    }{%
+    \setcounter{figure}{\thetempFigure}
+    \stepcounter{Figcount}
+    }
+
+
+\numberwithin{equation}{section}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{satz}[definition]{Satz}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{fact}[definition]{Fact}
+\newtheorem{construction}[definition]{Construction}
+\newtheorem{corollary}[definition]{Corollary}
+\title{Rule-based Graph Repair using Minimally Restricted Consistency-Improving Transformations}
+
+\author{Alexander Lauer}
+
+\date{\today}
+
+\input{settings/operators}
+
+
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{center}
+    \selectlanguage{ngerman}
+        \vspace*{1cm}
+        \Large
+        Philipps-Universität Marburg\\
+        Fachbereich Mathematik und Informatik\\
+        AG Softwaretechnik \\
+        \vspace*{1cm}
+        %\includegraphics[width=0.8\textwidth]{logo4}
+        %\vfill{}    
+        \Large
+        \textbf{Rule-based Graph Repair using Minimally Restricted Consistency-Improving Transformations}
+            
+            
+        \vspace{1.5cm}
+            
+        \textbf{Masterarbeit}\\
+        zur Erlangung des akademischen Grades \\
+        Master of Science
+        
+        \vspace{1.5cm}
+        vorgelegt von\\
+        \textbf{Alexander Lauer}\\
+        Matrikel-Nr: 2658100
+            
+    
+            
+        \vspace{1.5cm}
+            
+        
+            
+        
+        
+        \today\\
+        
+        \selectlanguage{english}
+    \end{center}
+\end{titlepage}
+
+%\maketitle
+\pagestyle{empty}
+\newpage\null\newpage
+
+\include{Kapitel/selbststaendigkeit}
+\newpage\null\newpage
+\pagestyle{plain}
+\include{Kapitel/abstract}
+\newpage
+
+\tableofcontents
+\newpage\null\newpage
+
+
+\input{Kapitel/Introduction/Intro}
+
+\input{Kapitel/Introduction/preliminaries}
+\input{Kapitel/partial_consistency_improving}
+\input{Kapitel/appl_condition}
+\input{Kapitel/graph_repair}
+\input{Kapitel/Introduction/related_work}
+\input{Kapitel/conclusion}
+
+
+
+\newpage
+
+\bibliographystyle{abbrv}
+\bibliography{Literatur.bib}
+
+\end{document}

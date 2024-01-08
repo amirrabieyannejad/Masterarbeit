@@ -1,0 +1,138 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+%\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{pifont}
+\usepackage{makecell}
+\usepackage{csquotes}
+\usepackage{pdflscape}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage[graphicx]{realboxes}
+\usepackage[ngerman]{babel}
+
+
+
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
+\usetikzlibrary{arrows}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+    citecolor=blue,
+    pdftitle={Overleaf Example},
+    }
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{delim}{RGB}{20,105,176}
+\definecolor{numb}{RGB}{106, 109, 32}
+\definecolor{string}{rgb}{0.64,0.08,0.08}
+\definecolor{comment}{RGB}{123,188,123}
+\definecolor{greencomment}{RGB}{0,128,0} % Define the green color for comments
+
+\lstdefinelanguage{json}{
+    numbers=left,
+    numberstyle=\small,
+    frame=single,
+    rulecolor=\color{black},
+    showspaces=false,
+    showtabs=false,
+    breaklines=true,
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{gray}\hookrightarrow\space}},
+    breakatwhitespace=true,
+    basicstyle=\small,
+    upquote=true,
+    morestring=[b]",
+    stringstyle=\color{string},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+      morecomment=[l]{\#}, % Define the '#' character as the start of a comment
+      morecomment=[s]{\#}{\ }, % Define the end of the comment
+      commentstyle=\color{greencomment}, % Set the color for the '#' and the following word
+}
+
+\usepackage{graphicx}
+\graphicspath{{./images/}}
+
+
+\newcounter{Figcount}
+\newcounter{tempFigure}
+
+\newenvironment{TableCaption}{%
+    \renewcommand{\figurename}{Table}
+    \setcounter{tempFigure}{\thefigure}
+    \setcounter{figure}{\theFigcount}
+    }{%
+    \setcounter{figure}{\thetempFigure}
+    \stepcounter{Figcount}
+    }
+
+
+\numberwithin{equation}{section}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{satz}[definition]{Satz}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{fact}[definition]{Fact}
+
+\title{Philipps-Universität Marburg\\[0.0em] Fachbereich Mathematik und Informatik\\[0.0em] AG Softwaretechnik \\[0.0em] \textbf{Analysis of Conflicts and Dependencies between User Stories}\\[0.0em]}
+%\title{Philipps-Universität Marburg\\  }
+%\large{Masterarbeit} \\ zur Erlangung des akademischen Grades\\ Master of Science \\ \\ \\ vorgelegt von \\ \textbf{Amir Rabieyan Nejad} Matrikel-Nr: 3350269 \\}
+
+\author{Amir Rabieyan Nejad}
+
+\date{\today}
+\thispagestyle{empty}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\newpage\phantom{blabla}
+\thispagestyle{empty}
+%\begin{abstract}
+%\input{Section/Abstract}
+%\end{abstract}
+%\input{Section/Selbststaendigkeitserklaerung}
+\newpage
+%\input{Section/Abstract}
+%\input{Section/Zusammenfassung}
+\newpage
+\tableofcontents
+\newpage
+
+
+
+\input{Section/Intro}
+
+\newpage
+
+%\bibliographystyle{abbrv}
+%\bibliography{Literatur.bib}
+
+   
+\end{document}
