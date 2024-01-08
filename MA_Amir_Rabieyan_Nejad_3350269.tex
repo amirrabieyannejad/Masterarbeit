@@ -90,16 +90,7 @@
 \newcounter{Figcount}
 \newcounter{tempFigure}
 \newcounter{Tablecount}
-%\newenvironment{TableCaption}{%
-%    \renewcommand{\figurename}{Table}
-%    \setcounter{tempFigure}{\thefigure}
-%    \setcounter{Tablecount}{\thetable}
-%    \setcounter{figure}{\theFigcount}
-%    }{%
-%    \setcounter{figure}{\thetempFigure}
-%    \stepcounter{Figcount}
-%    }
-%    
+
 \newenvironment{TableCaption}{%
     \renewcommand{\tablename}{Table}
     \setcounter{tempFigure}{\value{figure}}
@@ -121,81 +112,73 @@
 \newtheorem{fact}[definition]{Fact}
 \newtheorem{construction}[definition]{Construction}
 \newtheorem{corollary}[definition]{Corollary}
-%\title{Analysis of Conflicts and Dependencies between User Stories}
+\title{Analysis of Conflicts and Dependencies between User Stories}
 
-%\title{Philipps-Universität Marburg\\[0.0em] Fachbereich Mathematik und Informatik\\[0.0em] AG Softwaretechnik \\[0.0em] \textbf{Analysis of Conflicts and Dependencies between User Stories}\\[0.0em]}
-%\title{Philipps-Universität Marburg\\  }
-%\large{Masterarbeit} \\ zur Erlangung des akademischen Grades\\ Master of Science \\ \\ \\ vorgelegt von \\ \textbf{Amir Rabieyan Nejad} Matrikel-Nr: 3350269 \\}
+\author{Amir Rabieyan Nejad}
 
-%\author{Amir Rabieyan Nejad}
-
-%\date{\today}
+\date{\today}
 
 \begin{document}
-%\begin{titlepage}
-%    \begin{center}
-%    \selectlanguage{ngerman}
-%        \vspace*{1cm}
-%        \Large
-%        Philipps-Universität Marburg\\
-%        Fachbereich Mathematik und Informatik\\
-%        AG Softwaretechnik \\
-%        \vspace*{1cm}
-%        %\includegraphics[width=0.8\textwidth]{logo4}
-%        %\vfill{}    
-%        \Large
-%        \textbf{Analysis of Conflicts and Dependencies between User Stories}
-%            
-%      
-%        \vspace{1.5cm}
-%            
-%        \textbf{Masterarbeit}\\
-%        zur Erlangung des akademischen Grades \\
-%        Master of Science
-%        
-%        \vspace{1.5cm}
-%        vorgelegt von\\
-%        \textbf{Amir Rabieyan Nejad}\\
-%        Matrikel-Nr: 3350269
-%            
-%    
-%            
-%        \vspace{1.5cm}
-%            
-%        
-%            
-%        
-%        
-%        \today\\
-%        
-%        \selectlanguage{english}
-%    \end{center}
-%\end{titlepage}
-%\maketitle
-%\pagestyle{empty}
-%\newpage\null\newpage
-%\begin{abstract}
-%\input{Section/Abstract}
-%\end{abstract}
-%\input{Section/Selbststaendigkeitserklaerung}
-%\newpage\null\newpage
-%\input{Section/Abstract}
-%\input{Section/Zusammenfassung}
-%\newpage
-%\pagestyle{plain}
-%\tableofcontents
-%\newpage\null\newpage
+\begin{titlepage}
+    \begin{center}
+    \selectlanguage{ngerman}
+        \vspace*{1cm}
+        \Large
+        Philipps-Universität Marburg\\
+        Fachbereich Mathematik und Informatik\\
+        AG Softwaretechnik \\
+        \vspace*{1cm}
+        %\includegraphics[width=0.8\textwidth]{logo4}
+        %\vfill{}    
+        \Large
+        \textbf{Analysis of Conflicts and Dependencies between User Stories}
+            
+      
+        \vspace{1.5cm}
+            
+        \textbf{Masterarbeit}\\
+        zur Erlangung des akademischen Grades \\
+        Master of Science
+        
+        \vspace{1.5cm}
+        vorgelegt von\\
+        \textbf{Amir Rabieyan Nejad}\\
+        Matrikel-Nr: 3350269
+            
+    
+            
+        \vspace{1.5cm}
+            
+        
+            
+        
+        
+        \today\\
+        
+        \selectlanguage{english}
+    \end{center}
+\end{titlepage}
+\pagestyle{empty}
+\newpage\null\newpage
+\input{Section/Selbststaendigkeitserklaerung}
+\newpage\null\newpage
+\input{Section/Abstract}
+\input{Section/Zusammenfassung}
+\newpage
+\pagestyle{plain}
+\tableofcontents
+\newpage\null\newpage
 
 
 
-%\input{Section/1_Intro}
+\input{Section/Intro}
 \input{Section/Related_Work}
 
 
 
-%\newpage
-%\bibliographystyle{abbrv}
-%\bibliography{Literatur.bib}
+\newpage
+\bibliographystyle{abbrv}
+\bibliography{Literatur.bib}
 
    
 \end{document}
