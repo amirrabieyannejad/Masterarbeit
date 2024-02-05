@@ -65,15 +65,12 @@ In between automated support for extracting domain models from requirements arti
 To systematically identify conflicts and dependencies between USs, the \emph{critical pair analysis}(CPA) extension of Henshin is used to determine whether USs influence each other through model-driven transformation rules. CPA for graph rewriting \cite{hartmanis2006monographs} has been adapted to rule-based model transformation, \emph{e.g.} to find conflicting functional requirements for software systems \cite{hausmann2002detection}, or to analyses potential causal dependencies between model refactorings \cite{mens2007analysing}, which helps to make informed decisions about the most appropriate refactoring to apply next.
 
 %Considering the complexity of managing conflicts and dependencies, this thesis attempts to introduce a well-structured workflow. This workflow utilises techniques from different areas, from improving USs using \emph{quality frameworks} and their \emph{criteria}, to \emph{extracting domain models from textual requirements}, to \emph{natural language processing} (NLP) and \emph{computational lexical resources}, as well as \emph{graphs} and \emph{graph transformation}, to automatically detect and manage conflicts and dependencies in natural language USs.
-
 %Additionally, this research investigates methods for analyzing the quality of USs using \emph{quality user story} (QUS) framework and \emph{AQUSA} as tool, extracting domain models using  \emph{conditional random fields} (CRF), applying \emph{graph transformation rules}, and ultimately detecting conflicts and dependencies between USs using \emph{eclipse modeling framework-based} (EMF) \emph{Henshin} and \emph{critical pair analysis} (CPA) extension\cite{gomez2010systematic}. The overarching goal is to shape a framework that expedites the automatic detection of conflicts and dependencies in USs expressed in natural language.
 %Additionally, this research investigates methods for analysing the quality of USs using the \emph{quality user story} (QUS) and \emph{AQUSA} as a tool, the extraction of domain models with \emph{conditional random fields} (CRF), the application of \emph{graphs} and \emph{graph transformation rules} and finally the detection of conflicts and dependencies between USs with \emph{Henshin}\footnote{\href{https://projects.eclipse.org/projects/modeling.emft.henshin}{https://projects.eclipse.org/projects/modeling.emft.henshin}} from \emph{eclipse modelling framework} (EMF) and \emph{critical pair analysis}\footnote{\href{https://wiki.eclipse.org/Henshin/Critical\_Pair\_Analysis}{https://wiki.eclipse.org/Henshin/Critical\_Pair\_Analysis}} (CPA) extension\cite{gomez2010systematic}. The overall goal is to develop a framework that accelerates the automatic detection of conflicts and dependencies in USs expressed in natural language.
-
 %This thesis attempts to introduce a well-structured workflow. Therefore, we investigate methods for analysing the quality of USs using the \emph{quality user story} (QUS) and \emph{AQUSA} as a tool, the extraction of domain models with \emph{conditional random fields} (CRF), syntactically and symmetrically categorisation of user stories' verbs using \emph{VerbNet} as a computational lexical resource, the application of \emph{graphs} and \emph{graph transformation rules} and finally the detection of conflicts and dependencies between USs with \emph{Henshin}\footnote{\href{https://projects.eclipse.org/projects/modeling.emft.henshin}{https://projects.eclipse.org/projects/modeling.emft.henshin}} from \emph{eclipse modelling framework} (EMF) and \emph{critical pair analysis}\footnote{\href{https://wiki.eclipse.org/Henshin/Critical\_Pair\_Analysis}{https://wiki.eclipse.org/Henshin/Critical\_Pair\_Analysis}} (CPA) extension\cite{gomez2010systematic}. The overall goal is to develop a framework that accelerates the automatic detection of conflicts and dependencies in USs expressed in natural language.
 This thesis attempts to introduce a well-structured workflow. The overall goal is to develop a framework that accelerates the automatic detection of conflicts and dependencies in USs expressed in natural language using graph transformation.
 
 For this reason, we use the model presented by Mooser et al. 2022 and present an extended model, which is visualised in Figure \ref{fig:workflow_diagram} and illustrates the subsequent phases:
-
 \begin{itemize}
 %\item Mooser et al. used as dataset the only publicly available dataset of backlogs.
 %\item Initially, Mooser et al. conduct an assessment of user stories within the product backlog, utilizing the QUS framework focusing on syntactic and some pragmatic criteria. This evaluation is automated through the use of the \emph{AQUSA} tool.
@@ -84,18 +81,14 @@ For this reason, we use the model presented by Mooser et al. 2022 and present an
 \item With the outcomes of the CPA analysis, the requirements engineer can visualize conflicts and dependencies between user stories in a text-based format. This presentation is designed to be lightweight and facilitates comprehension for both the development team and the client.
 \end{itemize}
 This thesis is structured as follows: Related work is listed in section \ref{related-work}. In Section 3, we present a product backlog containing a set of annotated user stories to evaluate them with the QUS framework and AQUSA. In Section 4, we implement a method to extract all verbs from the product backlog to categorise them into four categories, namely \enquote{create}, \enquote{delete}, \enquote{forbid} and \enquote{preserve}. In Section 5, we implement a method to convert annotated user stories into transformation rules and take action on each verb category. In Section 6, we implement a method to automatically analyse conflicts and dependencies between user stories using Henshin's CPA programming interface and conclude with Section 7.
-
-
-
-\begin{landscape}
-\begin{figure}
-\newgeometry{left=-5cm}
+%\begin{landscape}
+\begin{figure}[h]
+%\newgeometry{left=-5cm}
 %\newgeometry{left=1cm, right=1cm, top=2cm, bottom=2cm}
-\includegraphics[width=22.8cm, height=16.5cm,left]{1_Big_Picture_v2}
+%\includegraphics[width=22.8cm, height=16.5cm,left]{1_Big_Picture_v2}
+\includegraphics{1_Big_Picture_v2}
 \caption{Extending backlog model represented by Mosser et al., 2022\cite{mosser2022modelling}}\label{fig:workflow_diagram}
-\restoregeometry
-\end{figure}
-\thispagestyle{empty}
-\end{landscape}
-
-
+%\restoregeometry
+\end{figure}[h]
+%\thispagestyle{empty}
+%\end{landscape}

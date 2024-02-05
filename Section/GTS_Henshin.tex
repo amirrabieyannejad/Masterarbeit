@@ -22,9 +22,9 @@ cannot be implemented until $US_j$ is implemented).
 Therefore, the natural dependencies between USs should be accepted as inevitable. In fact, only a fifth of the requirements can be considered with no dependencies \cite{carlshamre2001industrial}. The existence of dependencies between USs makes it necessary to have some implemented before others \cite{carlshamre2001industrial},\cite{Greer2004},\cite{logue2008handling}. If the order of USs implementation does not consider these dependencies, it may have a large number of preventable refactorings, increasing the total cost of the project needlessly. Identifying beforehand the dependencies increases the ability to effectively deal with changes. 
 
 Hence, light systematic mechanisms are needed to help identify dependencies between USs \cite{gomez2010systematic}.
-\begin{figure}
+\begin{figure}[h]
 \center
-\includegraphics[width=12.03cm, height=6.7cm]{inherited_depencendy}
+\includegraphics{inherited_depencendy}
 \caption{  Inherited dependencies by user stories\cite{gomez2010systematic} }\label{fig:inherited_dependencies}
 \end{figure}
 The critical pair analysis (CPA) for graph rewriting \cite{hartmanis2006monographs} has been adapted to rule-based model transformation, \emph{e.g.} to find conflicting functional requirements for software systems \cite{hausmann2002detection}, or to analyses potential causal dependencies between model refactorings \cite{mens2007analysing}, which helps to make informed decisions about the most appropriate refactoring to apply next. The CPA reports two different forms of potential causal dependencies, called conflicts and dependencies \cite{born2015analyzing}.
@@ -38,7 +38,7 @@ The application of a rule $r_1$ is in conflict with the application of a rule $r
 \subsection*{Different between Model Checking and Conflict and Dependency Analysis}
 In this subsection, we shall delineate two distinct analytical methodologies, specifically model checking and Conflict and Dependency Analysis. Their respective purposes are delineated in Table \ref{tb:sec_6_comparative_analysis}, which serves to elucidate their appropriateness for modelling USs.
 
-\begin{figure}
+\begin{figure}[h]
 \begingroup
 \footnotesize
 \centering
@@ -62,8 +62,9 @@ Result	&Verification of user story properties (e.g., acceptance criteria)	&Ident
 \begin{example}
 Now, we exemplify conflicts and dependencies within Henshin using two US namely $US_1$:\enquote{As an administrator, I can add a new person to the database} and $US_2$: \enquote{As a visitor, I can view a person's profile}). Figure \ref{fig:henshin_model} delineates the  class model LDAP (Lightweight Directory Access Protocol). In Figure \ref{fig:henshin_rule}, the defined rules in Henshin, specifically the rule view\_profile linked to $US_2$, and add\_person\_profile corresponding to $US_1$, are depicted. The representation uses black to signify object preservation and green for new objects. In addition, Figure \ref{henshin_cpa_result} (CDA result) shows the dependencies between $US_2$ and $US_1$ as \emph{\enquote{Create dependency}}, which highlights that \emph{Profile} node must first be created by $US_1$ in order to be used in $US_2$. Last but not least, a special instance graph is not required in Henshin.
 \begin{figure}
-\center
-\includegraphics[width=13.13cm, height=13.6cm]{henshin_class_model}
+
+\hspace{-2cm}
+\includegraphics{henshin_class_model}
 \caption{Henshin Class Model LDAP}\label{fig:henshin_model}
 \end{figure}
 \begin{figure}
@@ -73,7 +74,7 @@ Now, we exemplify conflicts and dependencies within Henshin using two US namely 
 \end{figure}
 \begin{figure}
 \center
-\includegraphics[width=8.13cm, height=5.6cm]{henshin_cpa_result}
+\includegraphics{henshin_cpa_result}
 %\includegraphics[width=8.13cm, height=3.6cm]{henshin_result}
 \caption{Henshin CDA result visualises dependencies between user stories}\label{henshin_cpa_result}
 \end{figure}
@@ -93,19 +94,19 @@ If $US_1c$ is translated into a rule and then CDA (Conflict and Dependency Analy
 Figure \ref{fig:conflict_cda} shows the conflicts and dependencies between two rules. For Instance, there is a \enquote{Create-Delete} conflict between $US_1b$ and $US_2$. If the specific landmark are deleted, $US_1b$ cannot modify that landmark anymore.
 %The CDA is also able to recognise inconsistencies between user stories. The inconsistency for example between $US_1c$ and $US_2$ can be recognised because the corresponding rules also have a \enquote{Delete-Delete} conflict. This occurs when the same landmark is deleted. %However, we are investigating the extent to which inconsistencies can be recognised at all. That would be another open question.
 
-\begin{figure}
+\begin{figure}[h]
 \center
-\includegraphics[width=15.2cm, height=9.0cm]{henshin_conflict_model}
+\includegraphics{henshin_conflict_model}
 \caption{Henshin Class Model Map}\label{fig:conflict_model}
 \end{figure}
-\begin{figure}
+\begin{figure}[h]
 \center
-\includegraphics[width=15.cm, height=17.0cm]{henshin_conflict_rule}
+\includegraphics{henshin_conflict_rule}
 \caption{Illustrated rules in Henshin: add\textunderscore{any}\textunderscore{landmark} rule related to $US_1a$, modify\textunderscore{any}\textunderscore{landmark} rule related to $US_1b$, delete\textunderscore{any}\textunderscore{landmark} rule related to $US_1c$  and delete\textunderscore{my}\textunderscore{landmark} rule related to $US_2$ }\label{fig:conflict_rule}
 \end{figure}
-\begin{figure}
+\begin{figure}[h]
 \center
-\includegraphics[width=8.2cm, height=4.6cm]{henshin_conflict_cda_result}
+\includegraphics{henshin_conflict_cda_result}
 \caption{Henshin CPA result visualises conflicts and dependencies between user stories}\label{fig:conflict_cda}
 \end{figure}
 \end{example}

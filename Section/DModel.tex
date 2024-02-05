@@ -1,3 +1,13 @@
+\section{Preliminaries}\label{preliminaries}
+%In this section, we present the techniques and tools in different domains which are required for our workflow. A comparative analysis \cite{nejad2023} has shown that these techniques and tools are the best and most suitable candidates for our approach in each area. In this section we discuss why these techniques are better than others. 
+
+%of \emph{composable backlogs}, \emph{conditional random fields}, \emph{natural language processing}, \emph{VerbNet as a computational lexicon resource}, \emph{graph}, \emph{graph transformation rules}
+In the \ref{dmodel} Section, we introduce \emph{conditional random fields} (CRF) for the extraction of domain models from agile product backlogs, which play a central role in effectively supporting the identification of dependencies and conflicts between user stories. Furthermore, we conduct a conclusion.
+
+Next, we dive into the Section \emph{nlp} and introduce \emph{natural language processing} (NLP) and \emph{VerbNet} as a computational lexicon resource as well as a conclusion.
+
+Finally, in Section \ref{gts}, some basic definitions of \emph{graphs} and \emph{graph transformation rules} are laid down for better understanding. We then look at the graph transformation tool \emph{Henshin} and its extension \emph{critical pair analysis} (CPA), which plays a central role in our methodology. We also draw a conclusion and explain why we have chosen these techniques and what their central idea is.
+
 \subsection{Extracting Domain Models from Textual Requirements}\label{dmodel}
 Automated support for extracting domain models from requirements artifacts such as USs play a central role in effectively supporting the detection of dependencies and conflicts between user stories. Domain models are a simple way to understand the relationship between artifacts and the whole system. In this subsection, we present a graph-based extraction modelling approach called CRF and conclude our review.
 \subsection*{A Modelling Backlog as Composable Graphs} \label{composable_graph}
@@ -5,9 +15,9 @@ Mosser et al. propose a model engineering method (and the associated tooling) to
 
 The tool can extract what is called a conceptual model of a backlog in an ontology-like way. The conceptual models are then used to measure USs quality by detecting ambiguities or defects in a given story \cite{mosser2022modelling}.
 From a modelling point of view, Mosser et al. represents the concepts involved in the deﬁnition of a backlog in a metamodel, as depicted in figure \ref{fig:conceptual_metamodel}. Without surprise, the key concept is the notion of story, which brings a benefit to a \emph{Persona} thanks to an Action performed on an \emph{Entity}. A Story is associated to a readiness \emph{Status}, and might optionally contribute to one or more \emph{QualityProperty} (\emph{e.g.}, security, performance).
-\begin{figure}
+\begin{figure}[h]
 \center
-\includegraphics[width=8.03cm, height=8.76cm]{Backlog_conceptual_metamodel}
+\includegraphics{Backlog_conceptual_metamodel}
 \caption{Backlog conceptual metamodel \cite{mosser2022modelling}}\label{fig:conceptual_metamodel}
 \end{figure}
 
@@ -16,9 +26,9 @@ Consider, for example, the following story, extracted from the reference dataset
 As Entities and Personas implement the \emph{jargon} to be used while specifying features in the backlog, they are deﬁned at the \emph{Backlog level}. On the contrary, Actions belong to the associated stories and are not shared with other stories. Finally, a \emph{Product} is deﬁned as the \emph{Backlog} used to specify its features.
 
 Mosser et al. propose in the context of backlog management a system which represented in figure \ref{fig:early_feedback} is proposed for utilization. Building upon the efficiency of NLP approaches. Mosser et al. suggest employing an NLP-based extractor to create a backlog model. This model will subsequently assist teams in the planning phase by aiding in the selection of stories for implementation during the upcoming iteration \cite{mosser2022modelling}.
-\begin{figure}
+\begin{figure}[h]
 \center
-\includegraphics[width=6.03cm, height=8.76cm]{Providing_early_feedback_at_the_backlog_level}
+\includegraphics{Providing_early_feedback_at_the_backlog_level}
 \caption{Providing early feedback at the backlog level \cite{mosser2022modelling}}\label{fig:early_feedback}
 \end{figure}
 \subsection*{Composable Backlogs}
@@ -70,12 +80,12 @@ $Label \left (S \right ) = \left [ \emptyset ,\emptyset ,PERSONA,PERSONA,\emptys
 $S$ represents a given US (Table \ref{tb:feature_sets}). $POS \left (S \right )$ represent the Part-of-speech analysis of $S$. The story starts with an adposition (ADP), followed by determiner (DET), followed by a noun, followed by another noun, .... Then, $Lables\left (S \right )$ represents what we interest in: the first two words are not interesting, but the $3^{rd}\  and \ 4^{td}$ words represent a Persona.\\ 
 \emph{A complete version of the example is provided in Table \ref{tb:feature_sets}.}
 \end{example}
-\begin{figure}
+\begin{figure}[h]
 \center
 \includegraphics[width=\textwidth, height=2.76cm]{Example_of_annotated_user}
 \caption{Example of annotated user using Doccano Annotation UI \cite{arulmohan2023extracting}}\label{fig:annot_usr}
 \end{figure}
-\begin{figure}
+\begin{figure}[h]
 \begingroup
 \footnotesize
 \begin{tabularx}{\textwidth}{c@{\hspace{4pt}} | c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}  c@{\hspace{4pt}}}
