@@ -63,13 +63,13 @@ Result	&Verification of user story properties (e.g., acceptance criteria)	&Ident
 Now, we exemplify conflicts and dependencies within Henshin using two US namely $US_1$:\enquote{As an administrator, I can add a new person to the database} and $US_2$: \enquote{As a visitor, I can view a person's profile}). Figure \ref{fig:henshin_model} delineates the  class model LDAP (Lightweight Directory Access Protocol). In Figure \ref{fig:henshin_rule}, the defined rules in Henshin, specifically the rule view\_profile linked to $US_2$, and add\_person\_profile corresponding to $US_1$, are depicted. The representation uses black to signify object preservation and green for new objects. In addition, Figure \ref{henshin_cpa_result} (CDA result) shows the dependencies between $US_2$ and $US_1$ as \emph{\enquote{Create dependency}}, which highlights that \emph{Profile} node must first be created by $US_1$ in order to be used in $US_2$. Last but not least, a special instance graph is not required in Henshin.
 \begin{figure}
 
-\hspace{-2cm}
-\includegraphics{henshin_class_model}
+\centering
+\includegraphics[scale=0.5]{henshin_class_model}
 \caption{Henshin Class Model LDAP}\label{fig:henshin_model}
 \end{figure}
 \begin{figure}
-\includegraphics[width=13.13cm, height=7.6cm]{henshin_rule_add_person}
-\includegraphics[width=13.13cm, height=7.6cm]{henshin_rule_view_profile}
+\includegraphics[scale=0.5]{henshin_rule_add_person}
+\includegraphics[scale=0.5]{henshin_rule_view_profile}
 \caption{Illustrated rules in Henshin: view\textunderscore{profile} rule related to $US_2$ and add\textunderscore{person} related to $US_1$}\label{fig:henshin_rule}
 \end{figure}
 \begin{figure}
@@ -96,12 +96,12 @@ Figure \ref{fig:conflict_cda} shows the conflicts and dependencies between two r
 
 \begin{figure}[h]
 \center
-\includegraphics{henshin_conflict_model}
+\includegraphics[scale=0.7]{henshin_conflict_model}
 \caption{Henshin Class Model Map}\label{fig:conflict_model}
 \end{figure}
 \begin{figure}[h]
 \center
-\includegraphics{henshin_conflict_rule}
+\includegraphics[scale=0.7]{henshin_conflict_rule}
 \caption{Illustrated rules in Henshin: add\textunderscore{any}\textunderscore{landmark} rule related to $US_1a$, modify\textunderscore{any}\textunderscore{landmark} rule related to $US_1b$, delete\textunderscore{any}\textunderscore{landmark} rule related to $US_1c$  and delete\textunderscore{my}\textunderscore{landmark} rule related to $US_2$ }\label{fig:conflict_rule}
 \end{figure}
 \begin{figure}[h]
