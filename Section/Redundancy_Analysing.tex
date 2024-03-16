@@ -1,0 +1,32 @@
+\section{Analysing Redundancy}\label{redundancy}
+% some explenation here about what will be explain here an why
+%(Analyse von Redundanz als title und dann im Text Schreiben, dass es ein syntaktische Analyse ist
+In this Section, we present an approach for syntactically analysing redundancy using the CRF tool and Henshin.
+
+In Section \ref{redundancy_requirement} we illustrate the requirements and functional needs that are used as input to the design phase to satisfy and bring value and benefit to the stakeholder. In the Section \ref{desing} we explain the design decisions of the workflow shown in \ref{fig:workflow_diagram} and we explain how the architecture is structured and what the components and their classes look like. In Section \ref{redundancy_implementation} comes the implementation to show what we have implemented and in Section \ref{redundancy_tests} we show how we have tested it. Finally, we will apply this approach to 19 backlogs entered with the CRF tool\footnote{https://github.com/ace-design/nlp-stories} we enter all backlogs as input and the results are evaluated in section\ref{redundancy_evaluation}.
+\subsection{Requirements}\label{redundancy_requirement}
+In order to accomplish the analysis of redundancy in USs we try to address following requirements:
+\begin{itemize}
+\item As a member of a project group, I want to syntactically analyse USs that belong to a specific backlog, so that redundancies between USs can be recognise and manage accordingly.
+\item As a member of a project group, I would like to have a collection of US-pairs as a report that syntactically have the same clause in parts of user stories, so that I can change them if necessary.
+\item As a member of a project group, I want to filter the report and only see the redundancy clauses that contain \enquote{Action}(as a verb) and \enquote{Entity}(as a noun) which is called \enquote{Targets} that are duplicated in US-pair, so that I can reduce the number of potential redundancy pairs in the report.
+\item As a member of a project group, I want to mark founded redundancy clauses with hash marks(\#) and list those that contain \enquote{Persona}(as a noun) and \enquote{Action}(as a verb) which is called \enquote{Triggers}, so that I can better see whether the persona in is also recognised as a redundancy.
+\item As a member of a project group, I want to mark justified redundancy clauses with hash marks (\#) and list those that contain \enquote{Entity}(as a noun) and \enquote{Entity}(as a noun), which is called \enquote{Contains}, so that I can better see whether the contained entity is also recognised as a redundancy.
+\item As a member of a project group, I would like to have a redundancy report that shows substantiated clauses in US-pairs and adds a hash symbol (\#) at the beginning and end of the substantiated clauses as tag in each user story, so that I can see which words are duplicated in a part of the sentences.
+\item As a member of a project group, I want to see how many clauses are in each US-pair, so that I can aggregate each redundant US-pair based on it.
+\item As a member of a project group, I want a table at the top of the redundancy report that lists the US-pairs and the number of clauses contained in each pair, so that I can quickly see all the US-pairs founded and the number of clauses. 
+\item As a member of a project group, I want to know whether the redundancy clauses belong to the main or benefit part of the US, so that I can make a decision accordingly.
+
+\end{itemize}
+% here should explain what was the reiquirement and why
+
+\subsection{Design}\label{desing}
+% what are the design decisions of this workflow that I had at the beginning, then describe what happens step by step, what translation I made, what is the main design decision you made for this translation, what question and that is part of the design
+%In Desing should be how the architecture is based on which components and what is my own component, what does it use, what does the component look like, what class is there, is the class design, so everything comes from the Desing chapter
+In this section 
+
+
+
+
+ 
+%\input{Section/Redundancy_Implementation}

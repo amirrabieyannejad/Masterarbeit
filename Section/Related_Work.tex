@@ -1,5 +1,5 @@
 \section{Related Work}\label{related-work}
-This section discusses relevant work such the role of USs and backlogs in agile development in Section \ref{us}. In addition, the most frequently used pattern of USs is presented. In Section \ref{quality-framework} the focus is on the \emph{quality user story} (QUS) framework and their their tool \enquote{AQUSA} to answer the question of the existence of criteria and automatic way for managing and identifying conflicts and dependencies between user stories. Following this investigation, we draw a conclusion as to whether the existing criteria are able to optimise USs in terms of their conflicts and dependencies.
+This section discusses relevant work such the role of USs and backlogs in agile development (Section \ref{us}) and the most frequently used pattern of USs is presented. In Section \ref{quality-framework}, the focus is on the \emph{quality user story} (QUS) framework and its tool \enquote{AQUSA} to answer the question of the existence of criteria and an automatic way to manage and identify conflicts and dependencies between user stories. Following this investigation, we draw a conclusion as to whether the existing criteria are able to optimise the USs in terms of their conflicts and dependencies.
 
 \subsection{Role of User Stories and Backlogs in Agile Development}\label{us}
 The agile software development paradigm broke the wall that classically existed between the development team and end-users. Thanks to the involvement of a \emph{product owner} (PO) who acts as a proxy to end-users for the team, the product backlog \cite{sedano2019product} became a first-class citizen during the product development. 
@@ -8,7 +8,7 @@ Furthermore, thanks to a set of user stories expressing features to be implement
 
 Sedano et al. posited that a \enquote{product backlog is an informal model of the work to be done} \cite{sedano2019product}. A backlog implements a shared mental model among the practitioners working on a given product, acting as a boundary artefact between stakeholders. This model is voluntarily kept informal to support rapid prototyping and brainstorming sessions. Classically, backlogs are stored in project management systems, such as Jira\footnote{\href{https://www.atlassian.com/en/software/jira}{https://www.atlassian.com/en/software/jira}} . These tools store user stories as tickets, where stakeholders write text as natural language. Meta-data (\emph{e.g.}, architecture components, severity, quality attribute) can also be attached to the stories. However, there is no formal language to express stories or model backlogs from a state of practice point of view.
 
-A \emph{user story} (US) is a brief, semi-structured sentence and informal description of some aspect of a software system that illustrates requirements from the user’s perspective \cite{raharjana2021user}. Large, vague stories are called epics. While user stories vary widely between organizations, most observed stories included a motivation and acceptance criteria. The brief motivation statement followed the pattern:  As a  \textless\emph{user}\textgreater\ I want to \textless\emph{action}\textgreater\ so that \textless\emph{value}\textgreater. This is sometimes called the \emph{Connextra} template. The acceptance criteria followed the pattern: Given \textless\emph{context}\textgreater, when \textless\emph{condition}\textgreater \  then \textless\emph{action}\textgreater. This is sometimes called \emph{Gherkin syntax }\cite{wynne2017cucumber}. It consists of three aspects, namely aspects of \emph{who}, \emph{what} and \emph{why}. The aspect of \enquote{who} refers to the system user or actor, \enquote{what} refers to the actor’s desire, and \enquote{why} refers to the reason (optional in the user story) \cite{raharjana2021user}.
+A \emph{user story} (US) is a brief, semi-structured sentence and informal description of some aspect of a software system that illustrates requirements from the user’s perspective \cite{raharjana2021user}. Large, vague stories are called epics. While user stories vary widely between organizations, most observed stories included a motivation and acceptance criteria. The brief motivation statement followed the pattern:  As a  \textless\emph{user}\textgreater\ I want to \textless\emph{action}\textgreater\ so that \textless\emph{value}\textgreater. This is sometimes called the \emph{Connextra} template. The acceptance criteria followed the pattern: Given \textless\emph{context}\textgreater, when \textless\emph{condition}\textgreater \  then \textless\emph{action}\textgreater. This is referred to as \emph{Gherkin syntax}\cite{wynne2017cucumber}. It consists of three aspects, namely aspects of \emph{who}, \emph{what} and \emph{why}. The aspect of \enquote{who} refers to the system user or actor, \enquote{what} refers to the actor’s desire, and \enquote{why} refers to the reason (optional in the user story) \cite{raharjana2021user}.
 
 The US components consist of the following elements\cite{wautelet2017user}: 
 \begin{itemize}
@@ -18,10 +18,12 @@ The US components consist of the following elements\cite{wautelet2017user}:
 \item\emph{Capability}: the ability of actors to achieve goals based on certain conditions and events.
 \end{itemize}
 
-User stories usually have dependencies, which means that the order in which they are implemented plays a decisive role. This raises the question of how to recognise and identify the relationships between user stories.
+User stories usually have dependencies, i.e. the order in which they are implemented plays a decisive role. This raises the question of how to recognise and identify the relationships between the user stories.
 
 \subsection{QUS Framework and AQUSA as a Tool}\label{quality-framework}
-Lucassen et al. \cite{lucassen2016improving} present a quality user story (QUS) framework consisting of 13 quality criteria that US authors should strive for. The criteria analysed determine the intrinsic quality of USs in terms of \emph{syntax}, \emph{pragmatics} and \emph{semantics}. Figure~\ref{fig:qus_framework} illustrates the structure of the agile requirements verification framework. Table~\ref{tb:qus} also shows the QUS framework, which defines 13 criteria for the quality of user stories and divides them into two categories, namely \emph{Individual}, which applies to single US, and \emph{Set}, which applies to a bundle of USs. Based on QUS, Lucassen et al. present the automatic quality user story artisan (AQUSA) software tool for assessing and enhancing US quality automatically. Relying on NLP techniques, AQUSA detects quality defects and suggests possible remedies.
+Lucassen et al. \cite{lucassen2016improving} present a quality user story (QUS) framework consisting of 13 quality criteria that US authors should strive for. The criteria analysed determine the intrinsic quality of USs in terms of \emph{syntax}, \emph{pragmatics} and \emph{semantics}. Figure~\ref{fig:qus_framework} illustrates the structure of the agile requirements verification framework. Table~\ref{tb:qus} also shows the QUS framework, which defines 13 criteria for the quality of user stories.
+
+Based on QUS, Lucassen et al. present the automatic quality user story artisan (AQUSA) software tool for assessing and enhancing US quality automatically. Relying on NLP techniques, AQUSA detects quality defects and suggests possible remedies.
 
 A US should follow a pre-defined, agreed template, chosen from the many templates available. In the conceptual model the skeleton of the template is called \emph{format}, which the \emph{role}, \emph{means}, and optional \emph{end(s)} are interspersed to form a US \cite{wautelet2014unifying}. 
 
@@ -33,7 +35,7 @@ Because USs are a controlled language, the QUS framework’s criteria are organi
 \item\emph{Pragmatic quality}, takes into account not only syntax and semantics, but also the subjective interpretation of the US text by the audience.
 \end{itemize}
 
-First, Lucassen et al. introduced quality criteria that can be evaluated against an individual US by presenting an explanation of the criterion as well as an example US that violates the specific criterion.
+By Lucassen et al. introduced quality criteria divided into two categories, namely \emph{Individual}, which applies to single US, and \emph{Set}, which applies to a bundle of USs. Individual criteria can be evaluated against an individual US:
 
 
 \begin{figure}[h]
@@ -80,14 +82,6 @@ Complete&Implementing a set of user stories creates a feature-complete applicati
 \captionof{table}{Quality User Story framework that defines 13 criteria for user story quality \cite{lucassen2016improving}}\label{tb:qus}
 \endgroup
 \end{figure}
-\subsection*{\normalsize{Independent}}
-USs should be able to be planned and implemented in any order and should not overlap conceptually. 
-
-It is recommended that all dependencies are made explicit and visible, as complete independence is not always achievable. In addition, some interdependencies may not be possible to resolve, and you may want to consider making these interdependencies visible in a practical way, for example by adding notes to story cards or by linking to them in the issue tracker. Two examples of dependency are given:
-\begin{itemize}
-\item\emph{causality}: Sometimes a US ($l_1$) needs to be completed before another ($l_2$) may start. which states that $l_1$ is causally dependent on $l_2$ if certain conditions are satisfied.
-\item\emph{superclasses}: USs can contain an object (\emph{e.g.}, \enquote{content} in US \enquote{As a user, I can edit the content I've added to a person's profile page}) that references several other objects in different histories. This means that the object in $l_1$ serves as a parent or superclass for the other objects.
-\end{itemize}
 \subsection*{\normalsize{well-formed}}
 To be considered US, the core text of the request must contain a role and the expected functionality: the \emph{means}. Looking at the US \enquote{I want to see an error message if I can't see recommendations after uploading an article}. It is likely that the US author has forgotten to specify the role. The error can be fixed by adding the role: \enquote{As a member, I would like to see an error message if I cannot see recommendations after uploading an article}.
 \subsection*{\normalsize{Atomic}}
@@ -158,6 +152,14 @@ A US $\mu$ is a 4-tuple $\mu=(r,m,E,f)$, where $r$ is the role, $m$ is the mean,
 %\end{definition}
 \subsection*{\normalsize{uniform}}
 Uniformity refers to the consistency of a US format where the majority of USs are within the same set. To assess uniformity, the Requirements Engineer determines the most common format, which is usually determined in collaboration with the team. For example, the US \enquote{As administrator, I receive an email notification when a new user is registered} is presented as a non-uniform US and can be rewritten as follows to improve uniformity: \enquote{As an administrator, I would like to receive an email notification when a new user is registered}.
+\subsection*{\normalsize{Independent}}
+USs should be able to be planned and implemented in any order and should not overlap conceptually. 
+
+It is recommended that all dependencies are made explicit and visible, as complete independence is not always achievable. In addition, some interdependencies may not be possible to resolve, and you may want to consider making these interdependencies visible in a practical way, for example by adding notes to story cards or by linking to them in the issue tracker. Two examples of dependency are given:
+\begin{itemize}
+\item\emph{causality}: Sometimes a US ($l_1$) needs to be completed before another ($l_2$) may start. which states that $l_1$ is causally dependent on $l_2$ if certain conditions are satisfied.
+\item\emph{superclasses}: USs can contain an object (\emph{e.g.}, \enquote{content} in US \enquote{As a user, I can edit the content I've added to a person's profile page}) that references several other objects in different histories. This means that the object in $l_1$ serves as a parent or superclass for the other objects.
+\end{itemize}
 \subsection*{\normalsize{Complete}}
 The implementation of a series of USs should result in a complete application. Whilst it is not necessary for the USs to cover 100\% of the application's functionality from the outset, it is important not to overlook any essential USs as this can create a significant functionality gap that hinders progress. Take for example the US \enquote{As a user, I can edit the content I have added to a person's profile page}, which requires the presence of another story describing the creation of content. This scenario can be extended to USs with action verbs that refer to non-existent direct objects, such as reading, updating or deleting an item, which requires its prior creation. To address these dependencies with respect to the direct object of the agent, Lucassen et al. introduce a conceptual relation.
 \input{Section/AQUSA} 
