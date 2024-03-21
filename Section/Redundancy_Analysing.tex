@@ -61,7 +61,7 @@ To generating rules we create a package named \textit{package org.henshin.backlo
 \item \textit{org.eclipse.emf.henshin.model.compact.CNode}: Now that we have a transformation rule, we want to fill this rule with nodes. To create a node within a transformation rule, the CRule class is required. The default action when specifying a node is the \textless\emph{preserve}\textgreater action. We can also specify a different action when we create a node, for example \textless\emph{delete}\textgreater or \textless\emph{create}\textgreater.
 \item org.henshin.backlog.code.rule.RuleCreator: We implement RuleCreator class that creates a rule with annotated nodes, edges and attributes based on a JSON-file as input and a Henshin-file containing all rules as output, where each rule and its elements correspond to the individual US and their JSON-objects/arrays in the JSON-file. The most important design decision of this class is the way attributes and edges are annotated to apply CDA to Henshin-files. We decided to annotate the \enquote{name} attribute of all Primary/Secondary Actions/Entities and their associated edges including targets, triggers and contains in \textless delete \textgreater action. The main goal is to increase the probability of finding the US-pairs that have the same Action/Entity and target the same Entity, which can be a potentially redundant US-pair.
 \end{itemize}
-\subsubsection*{Methods of RuleCreator Class}
+\subsubsection*{Methods of the RuleCreator Class}
 In this subsection, the method of the RuleCreator class is described as follows:
 \begin{enumerate}
 	\item readJsonArrayFromFile: This method receives a JSON file as input and reads the JSON file, tokenises the JSON content and parses the JSON content into a JSON array and returns the parsed JSON-array.
@@ -75,7 +75,85 @@ In this subsection, the method of the RuleCreator class is described as follows:
 	\item processEntities: It receives as parameters the JSON-object with information about the entities, the CRule object representing the US to which the entities belong and the JSON-array with information about the targets associated with the entities. The method checks whether primary/secondary entities are present, then creates a CNode for each primary/secondary entity and checks whether the entity is present in the target array. If this is the case, its attribute \enquote{name} is annotated for deletion. This method is used within the processContainsEdges method to determine whether an entity involved in a contains relationship is also a target of another entity.
 	\item processContainsEdges: It receives the JSON-object to be processed, the JSON array with information about contains/target edges and the US identifier as parameters. It first checks whether both entities belong to contains edges. If both entities exist, an edge is created between them in CRule with the name \enquote{contains}. If one of the entities is a target of another entity (as specified in the targets array), the edge is annotated for deletion. If none of the entities is a target, the edge is annotated as \enquote{preserve}.
 \end{enumerate}
+\subsubsection*{Conflicting and Dependency Analysis}
+After the henshin file has been automatically generated through the RuleCreator class, we can now pass it to the conflict and dependency analysis (CDA) to find potential redundancy pairs.
 
+Since the CPA API \footnote{https://wiki.eclipse.org/Henshin/Conflict\_and\_Dependency\_Analysis} does not yet take into account conflicts and dependencies related to \textit{attribute}, we decided to use the user interface (UI) of the CPA extension of Henshin , which supports domain experts in the development of rules through the interactive use of CPA.
 
+To apply CDA to Henshin files, we just need to right-click on the Henshin file and select \textit{Henshin}\textgreater\textit{Conflict and Dependency Analysis} from the context menu as shown in Figure \ref{fig:henshin_context_menu}.
+\begin{figure}[h]
+	\center
+	\includegraphics[scale=0.5]{henshin_context_menu}
+	\caption{Applying CDA to the selected Henshin file}\label{fig:henshin_context_menu}
+\end{figure}
+A user interface then appears, prompting to select the rule sets to be analysed and the type of analysis. We then select as \textit{First} and \textit{Second} \textit{Rules} all US rules and as the type of analysis we select \textit{Conflicts} as illustrated in Figure \ref{fig:select_rules}
+\begin{figure}[h]
+	\center
+	\includegraphics[scale=0.5]{select_rules}
+	\caption{CDA user interface: Selection of rules and type of analysis}\label{fig:select_rules}
+\end{figure}
+ On the next page of the CDA user interface shown in Figure \ref{fig:select_granularity}, we specify the depth of analysis that we use with \textit{Fine} granularity when selecting \textit{Create a complete result table} and \textit{Create an abstract result table}. We choose Fine granularity as the depth of analysis due to the fact that it shows all conflict reasons for each conflicting rule pair. A conflict reason is a model fragment whose presence leads to a conflict. General conflict reasons result from different combinations of minimal conflict reasons\cite{cda_api}.
+ \begin{figure}[h]
+ 	\center
+ 	\includegraphics[scale=0.5]{select_granularity}
+ 	\caption{CDA user interface: Selection of report granularity}\label{fig:select_granularity}
+ \end{figure}
  
+ During the execution of the CDA analysis, the rule pair is analysed and a conflict analysis is performed. Once the calculation is complete, the results are listed in the CDA -\textgreater Result window, as shown in Figure \ref{fig:cda_report}. The top entry shows the granularity, which in our case is Fine. These entries contain the rule pairs that conflict with each other. Each rule pair contains a number of conflicts.
+  \begin{figure}[h]
+ 	\center
+ 	\includegraphics[scale=0.5]{cda_report}
+ 	\caption{CDA report with fine granularity}\label{fig:cda_report}
+ \end{figure}
+ 
+ Figure \ref{fig:cda_report_in_project_dir} shows how the data is saved in the project tree view. The results folder is created in the folder containing the Henshin that was used for the analyses. The new folder name is the date and time at which the analysis was performed. In contrast to the \textit{CDA/Results} view, this folder contains all reasons and atoms together in a rule pair folder.
+  \begin{figure}[h]
+ 	\center
+ 	\includegraphics[scale=0.5]{cda_report_in_project_dir}
+ 	\caption{Saving CDA results data in the project structure view}\label{fig:cda_report_in_project_dir}
+ \end{figure}
+ 
+ For each conflict reason, there is a \textit{minimal-model.ecore} that contains packages in which various conflicting elements such as attributes and references (edges) are mapped together and displayed in different packages. Figure \ref{fig:minimal_model_packages} shows the representation of the conflicting attributes and references. An attribute has the property of changing the value and is represented by an arrow -\textgreater. The attribute from the first rule is separated from the second rule by an underscore, just as with the nodes.
+  \begin{figure}[h]
+ 	\center
+ 	\includegraphics[scale=0.5]{minimal_model_packages}
+ 	\caption{Representation of conflicting attributes and edges in \textit{minimal-model.ecore} file}\label{fig:minimal_model_packages}
+ \end{figure}
+\subsubsection*{Extracting Textual Report}
+To make the CDA report lightweight for the concerned group or individual, we need to extract the key information such as redundancy US-pair, redundancy clauses, number of redundancy clauses in each part or sentence (main or benefit part) and create a report as a text file containing the following information:
+\begin{itemize}
+	\item A table of potential redundant pairs with the number of total redundancy clauses.
+	\item Founded potential redundant US-pairs
+	\item Redundancy words and clauses of founded US-pairs
+	\item Text of US-pairs whose redundancy words are marked with a hash symbol (\#).
+	\item Parts of the sentence in which words and clauses are found.
+\end{itemize}
+Listing \ref{list:textual_report_sample} illustrates the format of the textual report. In this case, the report only contains one US-pair.
+
+\begin{MyListing}
+\paragraph{}
+\hrule
+\centering
+\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/TextualReportSample.txt}
+\caption{Example of generated textual report for two US-pair}\label{list:textual_report_sample}
+\hrule
+\end{MyListing}
+In order to extracting a textual report associated with a specific backlog, we implement a class called \textit{ReportExtractor} within the package \textit{org.henshin.backlog.code.report}, which include the following classes form the package \textit{org.eclipse.emf.ecore}\footnote{https://download.eclipse.org/modeling/emf/emf/javadoc/2.7.0/org/eclipse/emf/ecore/}. These classes are important for reading the content of minimal-model.ecore:
+\begin{itemize}
+	\item org.eclipse.emf.ecore.resource.Resource: A resource of an appropriate type is created by a resource factory; a resource set indirectly creates a resource using such a factory. A resource is typically contained by a resource set, along with related resources.
+	\item org.eclipse.emf.ecore.resource.ResourceSet: A resource set manages a collection of related resources and notifies you of changes to this collection. It provides a tree of content. A collection of adapter factories supports the search for an adapter via a registered adapter factory. 
+	\item org.eclipse.emf.ecore.EObject: EObject is the root of all modelled objects, therefore all method names start with "e" to distinguish the EMF methods from the client methods. It provides support for the behaviour and functions that are common to all modelled objects.
+	\item org.eclipse.emf.ecore.EPackage: A representation of the model object \enquote{EPackage}.
+	\item org.eclipse.emf.ecore.EClassifier: A representation of the model object \enquote{EClassifier}.
+	\item org.eclipse.emf.ecore.EClass: A representation of the model object \enquote{EClass}.
+	\item org.eclipse.emf.ecore.EAttribute: A representation of the model object \enquote{EAttribute}.
+	\item org.eclipse.emf.ecore.EReference:  A representation of the model object \enquote{EReference}.
+\end{itemize}
+
+The following classes were created to represent the extracted model object accordingly. All these classes are extensions of the class \textit{ConflictingItems}, which contains all extracted model object from minimal-model.ecore such as EClass, EAttribute or EReference:
+\begin{itemize}
+	\item PrimaryAction/SecondaryAction: Which has only saved the EClass specified by \enquote{Primary/Secondary Action} and the E-Attribute model object with the methods getType to retrieve the saved EClass and getName to retrieve the saved E-Attribute.
+		\item PrimaryEntity/SecondaryEntity: Which has only saved the EClass specified by \enquote{Primary/Secondary Entity} and the E-Attribute model object with the methods getType to retrieve the saved EClass and getName to retrieve the saved E-Attribute.
+		\item Contains
+\end{itemize}
 %\input{Section/Redundancy_Implementation}

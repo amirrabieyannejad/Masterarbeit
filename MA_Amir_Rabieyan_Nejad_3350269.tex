@@ -21,6 +21,7 @@
 \usepackage[export]{adjustbox}
 \usepackage{caption}
 \usepackage{wrapfig}
+\usepackage{listings}
 
 
 
@@ -93,7 +94,13 @@
 \newcounter{Figcount}
 \newcounter{tempFigure}
 \newcounter{Tablecount}
-
+\newcounter{mylisting}
+\newenvironment{MyListing}{
+	\lstset{language=TeX} % Set the language, adjust as needed
+	\refstepcounter{mylisting} % Increment the counter
+	\captionsetup{type=lstlisting}
+	\raggedright
+}{\paragraph{}}
 \newenvironment{TableCaption}{%
     \renewcommand{\tablename}{Table}
     \setcounter{tempFigure}{\value{figure}}
