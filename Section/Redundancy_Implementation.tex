@@ -1,22 +1,102 @@
 \subsection{Implementation}\label{redundancy_implementation}
+In this section, we explain the objective and scope of the implementation, the system architecture, the functionality and the programming languages used.
 
-%	- You have to describe all that in your work, how do you define Main Partial/Full and Benefit Partial/Full, so how do you decide that. And generating this JSON_Report and filling this table is all interesting implementation information.
-% Then comes the implementation what we implemented in the implementation and how did we test it?
-% in the i\begin{center}
+The entire implementation is available in the GitHub repository \footnote{https://github.com/amirrabieyannejad/USs\_Annotation/tree/main}.
+\subsubsection*{Objective and Scope}
+The goal and scope of the work is divided into three phases. Firstly, converting the USs annotated by the CRF tool into graph transformation rules; secondly, using the CDA function of the Henshin to automatically report redundancy between USs; thirdly, extracting important information from the CDA report into a text report. For further analysis, we stored the information in a JSON file to be able to import the data into another platform such as MS Excel.
+Figure \ref{fig:implementation_phases} illustrates the implementation phases mentioned.
+\begin{figure}[h]
+	\center
+	\includegraphics[scale=0.5]{implementation_phases}
+	\caption{Three implementation phases }\label{fig:implementation_phases}
+\end{figure} 
+\subsubsection*{Methodology}
+Following approach and tools are necessary in order to develop our workflow:
+\begin{itemize}
+	\item Eclipse as IDE: Eclipse is an integrated development environment (IDE) used in computer programming. It contains a base work workspace and an extensible plug-in system for customizing the environment.
+	\item Eclipse Modeling Project\footnote{https://eclipse.dev/modeling/}: The Eclipse Modeling Project focuses on the evolution and promotion of model-based development technologies within the Eclipse community by providing a unified set of modelling frameworks, tooling, and standards implementations.
+	\item Eclipse Modeling Framework (EMF)\footnote{https://eclipse.dev/modeling/emf/}: The EMF project is a modeling framework and code generation facility for building tools and other applications based on a structured data model. From a model specification described in XMI, EMF provides tools and runtime support to produce a set of Java classes for the model, along with a set of adapter classes that enable viewing and command-based editing of the model, and a basic editor.
+	\item Henshin\footnote{https://wiki.eclipse.org/Henshin}: Henshin is an in-place model transformation language for the Eclipse Modeling Framework (EMF). It supports direct transformations of EMF model instances (endogenous transformations), as well as generating instances of a target language from given instances of a source language (exogenous transformations)
+	\item Henshin's CDA feature\footnote{https://wiki.eclipse.org/Henshin/Conflict\_and\_Dependency\_Analysis}: Henshin's conflict and dependency analysis feature enables the detection of potential conflicts and dependencies of a set of rules.
+	\item GitHub as version control: GitHub is a developer platform that allows developers to create, store, manage and share their code. It uses Git software, providing the distributed version control of Git plus access control, bug tracking, software feature requests, task management, continuous integration, and wikis for every project.
+\end{itemize} 
+\subsubsection*{Data Structures}
+%Provide detailed explanations of key implementation aspects, such as algorithms, data structures, design patterns, and any custom solutions developed. Discuss any challenges faced during implementation and how you addressed them.
+\subsubsection*{Error Handling}
+%Write about exception calsses that you implemented
 
-
-\end{center}mplementation then I go to specific implementation problems that I had with Henshin, maybe I didn't know how the rules were generated, how they did it, then you can show code snippets, and show a bit but not the whole code in the work
-% the implementation and also the tests I run with the existing USs and see what comes out right.
+\subsubsection*{Limitations}
+Following limitation which at the beginning should be clarify:
+\begin{itemize}
+	\item We have to use Eclipse version 2023-03 because Henshin files cannot be installed with the latest version of Eclipse.
+	\item We have to work with Java because all Henshin files APIs are not available in other programming languages like Python.
+	\item CDA API is not yet implemented for considering relationships and dependencies between attributes. This forces us to use the graphical CDA interface instead of the CDA API.
+	\item Lack of Henshin documentation regarding methods and classes, which makes it time consuming to understand the methods and make the right decision.
+\end{itemize}
 
 
 \subsection{Test}\label{redundancy_test}
+In this section, we aim to validate certain functionalities, check the system requirements and ensure reliability and robustness of implemented classes and methods. As a test strategy, we perform unit tests with \textit{JUnit} version 4\footnote{https://junit.org/junit4/} as version 4 is more suitable and compatible with Eclipse version 2023-03.
 
-% here should explain what was the reiquirement and why
+\subsubsection*{Test Environment Configuration}
+In the main project \textit{org.henshin.backlog}, we create a separate package called \textit{org.henshin.backlog.test}, which contains two Java classes \textit{ReportExtractorTest.java} and \textit{RuleCreator\_Test.java}, each of which corresponds to the corresponding Java source code.
+
+We defiIn the main project \textit{org.henshin.backlog}, we create a separate package called \textit{org.henshin.backlog.test}, which contains two Java classes \textit{ReportExtractorTest.java} and \textit{RuleCreator\_Test.java}, each of which corresponds to the corresponding Java source code.
+
+\subsubsection*{Scope of Testing}
+The scope of the test depends on the system requirements and the two most important implemented classes \textit{ReportExtractorTest.java}, \textit{RuleCreator\_Test.java} and their methods. The implemented error handling classes are also tested.
+
+\subsubsection*{Test Cases}
+This section describes the specific test cases that are performed during the tests. Each test case contains a description of the test scenario, the data provided and the expected result. Table \ref{tb:test_cases_rule_creator} illustrates the test cases for the class RuleCreator\_Test.java and table \ref{tb:test_cases_report_extractor} illustrates the test case for the class ReportExtractor.java.
 \begin{figure}[h]
-\center
-\includegraphics{Backlog_conceptual_metamodel}
-\caption{Backlog conceptual metamodel \cite{mosser2022modelling}}\label{fig:conceptual_metamodel}
+	\begingroup
+	\centering
+	\scriptsize
+	\renewcommand{\arraystretch}{1.5} 
+	\begin{tabularx}{\textwidth}{X  X  X  X}
+		\hline
+		Test Case	&Supplied Data &	Expected Outcome &Description \\
+		\hline\hline
+	
+		
+		testAssignCmodule&	assing a dummy ECore model	&Through an exception: \textit{EcoreFileNotFound.class}&Check whether the ECore model already exists and CModule is correctly assigned \\
+		
+		testProcessContainsEdges (UndefindedEntity)& Specify an entity that is not contained in the JSON file \enquote{Entity}, but appears in the JSON file as \enquote{Contains}	& Through an exception: \textit{EntityInJsonFileNotFound.class}& Check whether the entity appearing in \textit{contains} has already been identified/proceeded as an entity \\
+		
+		testprocessJsonFile (ActionNotExist)&Specify an action that is not contained in the JSON file \textit{Action}, but appears in the JSON file as \textit{Contains, Targets or Triggers}. &&Through an exception: \textit{ActionInJsonFileNotFound.class} \\
+		
+		\hline
+	\end{tabularx}
+	
+	\captionof{table}{Test cases for RuleCreator  class}\label{tb:test_cases_rule_creator}
+	
+	\endgroup
+\end{figure}
 
+\begin{figure}[h]
+	\begingroup
+	\footnotesize
+	\centering
+	\begin{tabularx}{\textwidth}{l  X  X  X}
+		\hline
+		Test Case	&Supplied Data &	Expected Outcome &Description \\
+		\hline\hline
+		testEmptyDirectroy	&Am empty directory	&Through an exception: \textit{CdaReportDirIsEmpty.class}&Check if CDA Report directory is empty \\ 
+		
+		testEmptyJSONFile& Addressing an empty JSON file as dataset	&	Through an exception: \textit{EmptyOrNotExistJsonFile.class} &Check if JSON dataset file is already existed and is not empty \\
+		Purpose	&Verify user story properties and system behavior	&Understand dependencies and interactions between user stories &d \\ 
+		Method&	Large state spaces exploration&	Rule-based model transformation &d \\
+		Automated vs. Manual&	Automated	&Automated&d \\
+		Scope&	Ensuring user stories meet specified requirements and system behavior	&Understanding how user stories relate to each other, managing dependencies&d \\
+		Use Cases&	Ensuring user story correctness and system behavior	&Agile development, impact analysis, and managing user story dependencies&d \\
+		Result	&Verification of user story properties (e.g., acceptance criteria)	&Identification of user story dependencies, potential conflicts, and their impact on the development process&d \\
+		\hline
+	\end{tabularx}
+	
+	\captionof{table}{Test cases for ReportExtractor  class}\label{tb:test_cases_report_extractor}
+	
+	\endgroup
+\end{figure}
 
  
-\input{Section/Redundancy_Evaluation}
+%\input{Section/Redundancy_Evaluation}
