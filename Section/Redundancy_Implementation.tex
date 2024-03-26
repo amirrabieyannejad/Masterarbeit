@@ -22,8 +22,12 @@ Following approach and tools are necessary in order to develop our workflow:
 \end{itemize} 
 \subsubsection*{Data Structures}
 %Provide detailed explanations of key implementation aspects, such as algorithms, data structures, design patterns, and any custom solutions developed. Discuss any challenges faced during implementation and how you addressed them.
+
 \subsubsection*{Error Handling}
-%Write about exception calsses that you implemented
+% explain about Exceptions, that you implemented
+
+\subsubsection*{User Story Structure}
+% explain about benefit and main segment, and define their scope
 
 \subsubsection*{Limitations}
 Following limitation which at the beginning should be clarify:
@@ -41,62 +45,114 @@ In this section, we aim to validate certain functionalities, check the system re
 \subsubsection*{Test Environment Configuration}
 In the main project \textit{org.henshin.backlog}, we create a separate package called \textit{org.henshin.backlog.test}, which contains two Java classes \textit{ReportExtractorTest.java} and \textit{RuleCreator\_Test.java}, each of which corresponds to the corresponding Java source code.
 
-We defiIn the main project \textit{org.henshin.backlog}, we create a separate package called \textit{org.henshin.backlog.test}, which contains two Java classes \textit{ReportExtractorTest.java} and \textit{RuleCreator\_Test.java}, each of which corresponds to the corresponding Java source code.
+Within the main project \textit{org.henshin.backlog}, we create a separate package called \textit{org.henshin.backlog.test}, which contains two Java classes \textit{ReportExtractorTest.java} and \textit{RuleCreator\_Test.java}, each of which corresponds to the corresponding Java source code.
 
 \subsubsection*{Scope of Testing}
 The scope of the test depends on the system requirements and the two most important implemented classes \textit{ReportExtractorTest.java}, \textit{RuleCreator\_Test.java} and their methods. The implemented error handling classes are also tested.
 
 \subsubsection*{Test Cases}
 This section describes the specific test cases that are performed during the tests. Each test case contains a description of the test scenario, the data provided and the expected result. Table \ref{tb:test_cases_rule_creator} illustrates the test cases for the class RuleCreator\_Test.java and table \ref{tb:test_cases_report_extractor} illustrates the test case for the class ReportExtractor.java.
+
+\newgeometry{margin=2.5cm}
+\begin{landscape}
+\thispagestyle{empty}
 \begin{figure}[h]
 	\begingroup
 	\centering
 	\scriptsize
-	\renewcommand{\arraystretch}{1.5} 
-	\begin{tabularx}{\textwidth}{X  X  X  X}
-		\hline
-		Test Case	&Supplied Data &	Expected Outcome &Description \\
-		\hline\hline
+	\renewcommand{\arraystretch}{1,5} 
 	
+	\begin{tabularx}{25cm}{X  X  X  X}
+		\hline
+		Test Case&Supplied Data&Expected Outcome&Description\\
+		\hline\hline
+		testAssignCmodule&Assing a dummy ECore model&Through an exception: \textit{EcoreFileNotFound.class}&Check whether the ECore model already exists and CModule is correctly assigned\\
 		
-		testAssignCmodule&	assing a dummy ECore model	&Through an exception: \textit{EcoreFileNotFound.class}&Check whether the ECore model already exists and CModule is correctly assigned \\
+		UndefindedEntity \newline(testProcessContainsEdges)&Specify an entity that is not contained as \enquote{Entity} in the JSON file, but appears as \enquote{Contains}&Through an exception:  \textit{EntityInJsonFileNotFound.class}&Check whether the entity that appears in the \textit{Contains} entry has already been identified as an entity\\
 		
-		testProcessContainsEdges (UndefindedEntity)& Specify an entity that is not contained in the JSON file \enquote{Entity}, but appears in the JSON file as \enquote{Contains}	& Through an exception: \textit{EntityInJsonFileNotFound.class}& Check whether the entity appearing in \textit{contains} has already been identified/proceeded as an entity \\
+		ActionNotExist (testProcessJsonFile)&Specify an action that is not contained as \textit{Action} in the JSON file, but appears as \textit{Contains, Targets or Triggers}&Through an exception:  \textit{ActionInJsonFileNotFound.class}&Check whether the action that appears in the \enquote{Targets}, \enquote{Contains} or \enquote{Triggers} entries has already been identified as an action\\
 		
-		testprocessJsonFile (ActionNotExist)&Specify an action that is not contained in the JSON file \textit{Action}, but appears in the JSON file as \textit{Contains, Targets or Triggers}. &&Through an exception: \textit{ActionInJsonFileNotFound.class} \\
+		ContainsNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Contains} entry&Through an exception: \textit{ContainsInJsonFileNotFound.class}&Check whether there is an entry \enquote{Contains} in the related US in JSON file\\
 		
+		EntityNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Entity} entry&Through an exception: \textit{EntityInJsonFileNotFound.class}&Check whether there is an entry \enquote{Entity} in the related US in JSON file\\
+		
+		PersonaNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Persona} entry&Through an exception: \textit{PersonaInJsonFileNotFound.class}&Check whether there is an entry \enquote{Persona} in the related US in JSON file\\
+		
+		TargetsNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Targets} entry&Through an exception: \textit{TargetsInJsonFileNotFound.class}&Check whether there is an entry \enquote{Targets} in the related US in JSON file\\
+		
+		TextNotExist (testProcessJsonFile) &JSON file with a US without \enquote{Text} entry&Through an exception: \textit{TextInJsonFileNotFound.class}&Check whether there is an entry \enquote{Text} in the related US in JSON file\\
+		
+		TriggersNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Triggers} entry &Through an exception: \textit{TriggersInJsonFileNotFound.class}&Check whether there is an entry \enquote{Triggers} in the related US in JSON file\\
+		
+		UsNrNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Us\_Nr} entry&Through an exception: \textit{UsNrInJsonFileNotFound.class}&Check whether there is an entry \enquote{US\_Nr} in the related US in JSON file\\
+		
+		PrimaryActionNotFound \newline(testProcessTargetsEdges)&Specify a primary action that is not contained as \enquote{Primary Action} in the JSON file, but appears as \enquote{Targets}&Through an exception: \textit{ActionInJsonFileNotFound.class}&Check whether the primary action that appears in the \textit{Targets} entry has already been identified as a primary action\\
+		
+		PrimaryEntityNotFound \newline(testProcessTargetsEdges)&Specify a primary entity that is not contained as \enquote{Primary Entity} in the JSON file, but appears as \enquote{Targets}&Through an exception: \textit{EntityInJsonFileNotFound.class}&Check whether the primary entity that appears in the \textit{Targets} entry has already been identified as a primary entity\\
+		
+		SecondaryActionNotFound \newline(testProcessTargetsEdges)&Specify a secondary action that is not contained as \enquote{Secondary Action} in the JSON file, but appears as \enquote{Targets}&Through an exception: \textit{ActionInJsonFileNotFound.class}&Check whether the secondary action that appears in the \textit{Targets} entry has already been identified as a secondary action\\
+		
+		SecondaryEntityNotFound \newline(testProcessTargetsEdges)&Specify a secondary entity that is not contained as \enquote{Secondary Entity} in the JSON file, but appears as \enquote{Targets}&Through an exception: \textit{EntityInJsonFileNotFound.class}&Check whether the secondary entity that appears in the \textit{Targets} entry has already been identified as a secondary entity\\
+		
+		UndefindedEntity (testProcessTargetsEdges) &Specify an entity that is not contained as \enquote{Entity} in the JSON file, but appears as \enquote{Targets}&Through an exception:  \textit{EntityInJsonFileNotFound.class}&Check whether the entity that appears in the \textit{Targets} entry has already been identified as an entity\\
+		
+		ReadJsonArrayFromFile&Assign a dummy JSON file&Through an exception:  \textit{EmptyOrNotExistJsonFile}&Check whether the JSON file already exists.\\
 		\hline
 	\end{tabularx}
-	
-	\captionof{table}{Test cases for RuleCreator  class}\label{tb:test_cases_rule_creator}
-	
-	\endgroup
-\end{figure}
 
-\begin{figure}[h]
-	\begingroup
-	\footnotesize
-	\centering
-	\begin{tabularx}{\textwidth}{l  X  X  X}
-		\hline
-		Test Case	&Supplied Data &	Expected Outcome &Description \\
-		\hline\hline
-		testEmptyDirectroy	&Am empty directory	&Through an exception: \textit{CdaReportDirIsEmpty.class}&Check if CDA Report directory is empty \\ 
-		
-		testEmptyJSONFile& Addressing an empty JSON file as dataset	&	Through an exception: \textit{EmptyOrNotExistJsonFile.class} &Check if JSON dataset file is already existed and is not empty \\
-		Purpose	&Verify user story properties and system behavior	&Understand dependencies and interactions between user stories &d \\ 
-		Method&	Large state spaces exploration&	Rule-based model transformation &d \\
-		Automated vs. Manual&	Automated	&Automated&d \\
-		Scope&	Ensuring user stories meet specified requirements and system behavior	&Understanding how user stories relate to each other, managing dependencies&d \\
-		Use Cases&	Ensuring user story correctness and system behavior	&Agile development, impact analysis, and managing user story dependencies&d \\
-		Result	&Verification of user story properties (e.g., acceptance criteria)	&Identification of user story dependencies, potential conflicts, and their impact on the development process&d \\
-		\hline
-	\end{tabularx}
-	
-	\captionof{table}{Test cases for ReportExtractor  class}\label{tb:test_cases_report_extractor}
-	
+
+	\captionof{table}{Test cases for RuleCreator  class}\label{tb:test_cases_rule_creator}
 	\endgroup
 \end{figure}
+\end{landscape}
+\restoregeometry
+\newgeometry{margin=2.5cm}
+\begin{landscape}
+	\thispagestyle{empty}
+	\begin{figure}[h]
+		\begingroup
+		\centering
+		\scriptsize
+		\renewcommand{\arraystretch}{1,5} 
+		
+		\begin{tabularx}{25cm}{X  X  X  X}
+			\hline
+			Test Case &Supplied Data&Expected Outcome&Description\\
+			\hline\hline
+			testEmptyDirectroy&Assing a dummy directory&Through an exception: \textit{CdaReportDirIsEmpty.class}&Check if CDA Report directory is empty\\
+			
+			testEmptyJSONFile&Assing an empty JSON dataset file&Through an exception: \textit{EmptyOrNotExistJsonFile.class}&Check if JSON dataset file is empty\\
+			
+			completeMajorElements\_edge \newline(testExtractReports)&Provision of a CDA report for US-pair with exactly one \enquote{Targets} edge&Inclusion of this US-pair in the text report with the nodes \enquote{Action}, \enquote{Entity} and \enquote{Targets} edge&Verifies \textit{extractReports} method when all major elements are present in the CDA report and the edge case is reached\\
+			
+			completeMajorElements\_upperEdge\newline(testExtractReports)&Provide a CDA report for a US-pair with at least one \enquote{Targets} edge and redundancy elements such as \enquote{Triggers}&Generated textual report contains information about Secondary Entities, Secondary Actions, Targets, and \enquote{Triggers}&Verifies \textit{extractReports} method when all major elements are present in the CDA report and the upper edge case is reached\\
+			
+			notCompleteMajorElements\newline(testExtractReports)&Provide a CDA report for a US-pair without \enquote{Targets} edge, but with action and entity&The US-pair should not reported&Verifies the behavior of the \textit{extractReports} methodwhen not all major elements are present in the input data\\
+			
+			getBenefitPartRedundanciesElements\newline(testExtractReports)&Provision of a CDA report for a US-pair that only contains redundancy clauses in the \enquote{Benefit} part&Check whether the count of redundancy clauses in the benefit part of the USs matches the value \enquote{Benefit Part Redundancy Clause} specified in the
+			JSON\_Report file&Verifies the behaviour of the \textit{extractReports} method when there are redundancy elements in the benefit part of USs\\
+			
+			getMainPartRedundanciesElements\newline(testExtractReports)&Provision of a CDA report for a US-pair that only contains redundancy clauses in the \enquote{Main} part&Check whether the count of redundancy clauses in the main part of the USs matches the value \enquote{Main Part Redundancy Clause} specified in the JSON\_Report file&Verifies the behaviour of the \textit{extractReports} method when there are redundancy elements only in the main part of USs\\
+			
+			getTotalRedundancyElements\newline(testExtractReports)&Provision of a CDA report for a US-pair that contains redundancy clauses in the \enquote{Main}and \enquote{Benefit} parts&Check whether the count of redundancy clauses in the main and benefit parts of the USs matches the value \enquote{Total Redundancy Clause} specified in the JSON\_Report file&Verifies the behaviour of the \textit{extractReports} method when there are redundancy elements in the main and benefit parts of USs\\
+			
+			highlightPersona\newline(testExtractReports)&Providing a CDA report for a US-pair with redundancy clause in \enquote{Triggers}edge (from Persona to Primary Action)&The persona should only be marked with hash symbol if there is a redundant clause in the main part&Checks the behaviour of the \textit{extractReports} method when highlighting redundant personas in USs\\
+				
+			BenefitInBothUss\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where both USs have \enquote{benefit} part&Create a text report containing both USs with their respective main and benefit parts to analyse the parts on the basis of respective parts&Verifies the behaviour of the \textit{highlightRedundancies} method when both USs have benefits\\
+			
+			noBenefitInBothUss\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where both USs don't have \enquote{benefit} part&Create a text report containing both USs with their respective main part to analyse the main part on the basis of respective parts&Verifies the behaviour of the \textit{highlightRedundancies} method when both USs have benefits\\
+			
+			ContainInBenefitPart\newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses of \enquote{Contains} within \enquote{Benefit} part&The entities included in Contains should be marked with hash symbol&Checks the behaviour of the \textit{highlightRedundancies} method when highlighting redundant entities included in the Contains\\
+			
+			ContainInMainPart\newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses of \enquote{Contains} within \enquote{Main} part&The entities included in Contains should be marked with hash symbol&Checks the behaviour of the \textit{highlightRedundancies} method when highlighting redundant entities included in the Contains\\
+			
+			\hline
+		\end{tabularx}		
+		\captionof{table}{Test cases for ReportExtractor  class}\label{tb:test_cases_report_extractor}
+		\endgroup
+	\end{figure}
+\end{landscape}
+\restoregeometry
 
  
 %\input{Section/Redundancy_Evaluation}
