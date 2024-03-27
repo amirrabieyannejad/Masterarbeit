@@ -1,15 +1,84 @@
 \subsection{Evaluation}\label{redundancy_evaluation}
+In this section we will present the results of applying our approach to analyse USs in 19 by CRF tool annotated backlog datasets. 
+
+The purpose of this section is to assess the effectiveness of our approach in analysing redundancy between USs. This section serves several key objective:
+\begin{itemize}
+	\item Validation of the approach: Demonstrating the validity and reliability of our proposed methodology for identifying and categorising redundancy in USs.
+	\item Evaluation of the results: Presenting the results of our analysis across multiple datasets, highlighting the prevalence of full and partial redundancy for both the main and benefit parts in USs.
+	\item Gaining insights: Gaining insights into the nature and extent of redundancy in USs and its potential impact on software development processes.
+	\item Comparison and analysis: comparing results from different data sets, identifying patterns or trends and analysing variations in redundancy levels.
+\end{itemize}
+\subsubsection*{Dataset of Backlogs}
+For a comprehensive assessment, we applied our approach to 19 backlog datasets presented by Mosser et al. \footnote{https://github.com/ace-design/nlp-stories/tree/3b025710225347355eed778974939f7cb3c6d4e4/nlp/nlp\_outputs}. Mosser et al. applied the CRF approach to these publicly available requirements datasets\ref{requirementsdatasets}.
+
+It is also worth noting that some backlog datasets (g02, g13, g17, g27) did not follow the expected sentence structure, which is why we did not include them in the evaluation results.
+Table \ref{tb:backlogs} shows the project number of each data set and the count of USs.
  %	- You have to describe all that in your work, how do you define Main Partial/Full and Benefit Partial/Full, so how do you decide that. And generating this JSON_Report and filling this table is all interesting implementation information.
  
  %When evaluating, I use tools on a large scale and I go through all the cases and look at what comes out of the use case as a meaningful result. As an evaluation, I will enter all the datasets we have as input and then what comes out will be 
-
-
-\begin{figure}[h]
-\center
-\includegraphics{Providing_early_feedback_at_the_backlog_level}
-\caption{Providing early feedback at the backlog level \cite{mosser2022modelling}}\label{fig:early_feedback}
-\end{figure}
-
-
- 
+\begingroup
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{1,5} 
+%\keepXColumns
+\begin{tabularx}{\linewidth}{l|XXXXXXXXXXXXXXXXXXX|X}
+	Item&	1&	2&	3&	4&	5&	6&	7&	8&	9&	10&	11&	12&	13&	14&	15&	16&	17&	18&	19&	\\
+	\hline
+	%Project Name&loudoun&recycling&openspending&frictionless&scrumalliance	&nsf&camperplus&datahub&mis&neurohub&alfred&badcamp&rdadmp&archivesspace	&unibath&duraspace&racdam&culrepo&zooniverse&\\
+	Project Nr.&	g03	&g04	&g05	&g08	&g10	&g11	&g12	&g14	&g16	&g18	&g19	&g21	&g22	&g23	&g24	&g25	&g26	&g27	&g28	&Total USs\\
+	\hline
+	Total USs&	57&	51	&53	&66	&97	&73	&54	&67	&66	&102	&137	&69	&83	&56	&53	&100	&100	&114	&60	&1458 \\
+	\caption{Project number and count of USs contained in each backlog dataset}\label{tb:backlogs}
+\end{tabularx}	
+	\endgroup
+\subsubsection*{Methodology}
+In this section, we recap the methodology employed to analyse redundancy between USs. We utilized a systematic approach that involved several key steps:
+ll\begin{itemize}
+	\item Data Collection: We collected a total 19 datasets containing USs from various software development projects.
+	\item Preprocessing: Using the generated JSON report file for each dataset, we create a VBA script called \textit{extractFromJSONFiles}\footnote{https://github.com/amirrabieyannejad/USs\_Annotation/tree/main/Skript/extractFromJSONFiles} to iterate through all the JSON report files and extract the information such as \enquote{US-pair}, \enquote{US-text}, \enquote{total redundancy clauses}, \enquote{main redundancy clauses}, \enquote{benefit redundancy clauses} and \enquote{project number} and collect them all in an Excel file to perform further analyses.
+	\item Identification of main and benefit parts: Each US was divided into its main part, which is the core functionality, and its benefit part, which describes the value to the persona.
+	\item redundancy analysis: A redundancy analysis was performed between the main and the benefit part of the US-pairs. The redundancy was categorised as either \enquote{Full} or \enquote{Partial} redundancy.
+	
+	A US-pair was categorised as \enquote{Full redundancy} if all clauses were identical in either the \enquote{Main part} or the \enquote{Benefit part}. This indicates Full Redundancy between USs in a particular part.
+	
+	\enquote{Partial Redundancy} was found when only some clauses were redundant in either the Main or Benefit parts, while others were unique. This indicates overlapping clauses, but not full redundancy.
+	
+	\begin{example}
+		For example, the following US-pair is identified as \enquote{Full Redundancy} in the main part:
+		
+		\textit{user\_story\_01:} \enquote{\#g14\# as a \#publisher\#, i want to \#publish\# a \#dataset\#, so that i can view just the dataset with a few people.}
+		
+		\textit{user\_story\_02:} \enquote{\#g14\# as a \#publisher\#, i want to \#publish\# a \#dataset\#, so that i can share the dataset publicly with everyone.}	
+		 As all clauses in the main part are identical between USs, therefore, we call it \enquote{Full Redundancy} in \enquote{Main} part.
+	\end{example}
+	\begin{example}
+		Following US-pair is identified as \enquote{Partial Redundancy} in main part, as only some clauses are redundant:
+		
+		\textit{user\_story\_09:} \#g04\# as a \#user\#, I want to be able to \#view\# a \#map display\# of the public recycling bins around my \#area\#.
+		
+		\textit{user\_story\_10:} \#g04\# as a \#user\#, I want to be able to \#view\# a \#map display\# of the special waste drop off sites around my \#area\#.
+		
+		As we can see, there are some redundancy clauses between the USs, but not all, \textit{e.g.} Noun\enquote{public recycling bins} vs. \enquote{special waste drop-off centres}, which leads us to evaluate this as \enquote{partial redundancy} in \enquote{Main} part.
+	\end{example}
+	\begin{example}
+		Following US-pair is identified as \enquote{Full Redundancy} in \enquote{Benefit} part:
+		
+		\textit{user\_story\_02:} \#g05\# as a data publishing user, I want to be able to edit the model of data I have already imported, so that I can \#fix\# \#bugs\# or \#make\# \#enhancements\# in the \#API\# built for my \#data\#.
+		
+		\textit{user\_story\_07:} \#g05\# as a data publishing user, I want to be able to edit the data source of data I have already imported, so that i can \#fix\# \#bugs\# or \#make\# \#enhancements\# in the \#API\# built for my \#data\#.
+		
+		As we can see, all clauses in the benefit part are identical between USs, therefore, we call it \enquote{Full Redundancy} in \enquote{Benefit} part.
+	\end{example}
+	\begin{example}
+	Following US-pair is identified as \enquote{Partial Redundancy} in benefit part, as only some clauses are redundant:
+	
+	\textit{user\_story\_17:} \#g03\# as a staff member, I want to manage approved proffers, so that I can \#ensure\# \#compliance\# with and satisfaction of the proffer in the future.
+	
+	\textit{user\_story\_30:} \#g03\# as a staff member, I want to manage affidavits, so that I can \#ensure\# \#compliance\# with the requirements prior to the hearing.
+	
+	As we can see, there are some redundancy clauses between the USs, but not all, \textit{e.g.} Clause\enquote{proffer}and\enquote{satisfaction} vs. \enquote{requirements}and\enquote{hearing}, which leads us to evaluate this as \enquote{Partial Redundancy} in \enquote{Benefit} part.
+	\end{example}
+	
+	%\item Preprocessing: \item preprocessing: We transform each data set into graph transformation rules, apply CDA and generate a textual report in which each redundancy clause between US-pairs is marked with a hash symbol. Additionally,  the number of founded redundancies in the main and benefit sections is also determined.
+\end{itemize}
 %\input{Section/Redundancy_Evaluation}

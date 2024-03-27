@@ -106,53 +106,68 @@ This section describes the specific test cases that are performed during the tes
 \end{figure}
 \end{landscape}
 \restoregeometry
-\newgeometry{margin=2.5cm}
-\begin{landscape}
+%\newgeometry{margin=2.5cm}
+%\begin{landscape}
 	\thispagestyle{empty}
-	\begin{figure}[h]
+%	\begin{figure}[h]
 		\begingroup
 		\centering
 		\scriptsize
 		\renewcommand{\arraystretch}{1,5} 
-		
-		\begin{tabularx}{25cm}{X  X  X  X}
+		\keepXColumns
+		\begin{tabularx}{\textwidth}{X  X  X  X}
+			
 			\hline
 			Test Case &Supplied Data&Expected Outcome&Description\\
 			\hline\hline
+			\endfirsthead
+			\hline
+			Test Case &Supplied Data&Expected Outcome&Description\\
+			\hline\hline
+			\endhead
 			testEmptyDirectroy&Assing a dummy directory&Through an exception: \textit{CdaReportDirIsEmpty.class}&Check if CDA Report directory is empty\\
 			
 			testEmptyJSONFile&Assing an empty JSON dataset file&Through an exception: \textit{EmptyOrNotExistJsonFile.class}&Check if JSON dataset file is empty\\
 			
-			completeMajorElements\_edge \newline(testExtractReports)&Provision of a CDA report for US-pair with exactly one \enquote{Targets} edge&Inclusion of this US-pair in the text report with the nodes \enquote{Action}, \enquote{Entity} and \enquote{Targets} edge&Verifies \textit{extractReports} method when all major elements are present in the CDA report and the edge case is reached\\
+			completeMajorElements \newline Edge\newline(testExtractReports)&Provision of a CDA report for US-pair with exactly one \enquote{Targets} edge&Inclusion of this US-pair in the text report with the nodes \enquote{Action}, \enquote{Entity} and \enquote{Targets} edge&Verifies \textit{extractReports} method when all major elements are present in the CDA report and the edge case is reached\\
 			
-			completeMajorElements\_upperEdge\newline(testExtractReports)&Provide a CDA report for a US-pair with at least one \enquote{Targets} edge and redundancy elements such as \enquote{Triggers}&Generated textual report contains information about Secondary Entities, Secondary Actions, Targets, and \enquote{Triggers}&Verifies \textit{extractReports} method when all major elements are present in the CDA report and the upper edge case is reached\\
+			completeMajorElements\newline Upper Edge\newline(testExtractReports)&Provide a CDA report for a US-pair with at least one \enquote{Targets} edge and redundancy elements such as \enquote{Triggers}&Generated textual report contains information about Secondary Entities, Secondary Actions, Targets, and \enquote{Triggers}&Verifies \textit{extractReports} method when all major elements are present in the CDA report and the upper edge case is reached\\
 			
-			notCompleteMajorElements\newline(testExtractReports)&Provide a CDA report for a US-pair without \enquote{Targets} edge, but with action and entity&The US-pair should not reported&Verifies the behavior of the \textit{extractReports} methodwhen not all major elements are present in the input data\\
+			notCompleteMajor\newline Elements\newline(testExtractReports)&Provide a CDA report for a US-pair without \enquote{Targets} edge, but with action and entity&The US-pair should not reported&Verifies the behavior of the \textit{extractReports} methodwhen not all major elements are present in the input data\\
 			
-			getBenefitPartRedundanciesElements\newline(testExtractReports)&Provision of a CDA report for a US-pair that only contains redundancy clauses in the \enquote{Benefit} part&Check whether the count of redundancy clauses in the benefit part of the USs matches the value \enquote{Benefit Part Redundancy Clause} specified in the
+			getBenefitPart\newline RedundanciesElements\newline(testExtractReports)&Provision of a CDA report for a US-pair that only contains redundancy clauses in the \enquote{Benefit} part&Check whether the count of redundancy clauses in the benefit part of the USs matches the value \enquote{Benefit Part Redundancy Clause} specified in the
 			JSON\_Report file&Verifies the behaviour of the \textit{extractReports} method when there are redundancy elements in the benefit part of USs\\
 			
-			getMainPartRedundanciesElements\newline(testExtractReports)&Provision of a CDA report for a US-pair that only contains redundancy clauses in the \enquote{Main} part&Check whether the count of redundancy clauses in the main part of the USs matches the value \enquote{Main Part Redundancy Clause} specified in the JSON\_Report file&Verifies the behaviour of the \textit{extractReports} method when there are redundancy elements only in the main part of USs\\
+			getMainPartRedundancies\newline Elements\newline(testExtractReports)&Provision of a CDA report for a US-pair that only contains redundancy clauses in the \enquote{Main} part&Check whether the count of redundancy clauses in the main part of the USs matches the value \enquote{Main Part Redundancy Clause} specified in the JSON\_Report file&Verifies the behaviour of the \textit{extractReports} method when there are redundancy elements only in the main part of USs\\
 			
-			getTotalRedundancyElements\newline(testExtractReports)&Provision of a CDA report for a US-pair that contains redundancy clauses in the \enquote{Main}and \enquote{Benefit} parts&Check whether the count of redundancy clauses in the main and benefit parts of the USs matches the value \enquote{Total Redundancy Clause} specified in the JSON\_Report file&Verifies the behaviour of the \textit{extractReports} method when there are redundancy elements in the main and benefit parts of USs\\
+			getTotalRedundancy\newline Elements\newline(testExtractReports)&Provision of a CDA report for a US-pair that contains redundancy clauses in the \enquote{Main}and \enquote{Benefit} parts&Check whether the count of redundancy clauses in the main and benefit parts of the USs matches the value \enquote{Total Redundancy Clause} specified in the JSON\_Report file&Verifies the behaviour of the \textit{extractReports} method when there are redundancy elements in the main and benefit parts of USs\\
 			
 			highlightPersona\newline(testExtractReports)&Providing a CDA report for a US-pair with redundancy clause in \enquote{Triggers}edge (from Persona to Primary Action)&The persona should only be marked with hash symbol if there is a redundant clause in the main part&Checks the behaviour of the \textit{extractReports} method when highlighting redundant personas in USs\\
 				
-			BenefitInBothUss\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where both USs have \enquote{benefit} part&Create a text report containing both USs with their respective main and benefit parts to analyse the parts on the basis of respective parts&Verifies the behaviour of the \textit{highlightRedundancies} method when both USs have benefits\\
+			BenefitInBothUss\newline(testhigHlightRedundancies)&Provision of a report for a US-pair where both USs have the \enquote{benefit} part&Search both the main and the benefit part of USs and mark redundancy clauses with a hash symbol if they occur&Verifies the behaviour of the \textit{highlightRedundancies} method when both USs have benefit\\
 			
-			noBenefitInBothUss\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where both USs don't have \enquote{benefit} part&Create a text report containing both USs with their respective main part to analyse the main part on the basis of respective parts&Verifies the behaviour of the \textit{highlightRedundancies} method when both USs have benefits\\
+			noBenefitInBothUss\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where both USs do not have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when both USs don't have benefit\\
+			
+			noBenefitInUs1\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where only the second US have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when only the second US have benefit\\
+			
+			noBenefitInUs2\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where only the first US have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when only the first US have benefit\\
 			
 			ContainInBenefitPart\newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses of \enquote{Contains} within \enquote{Benefit} part&The entities included in Contains should be marked with hash symbol&Checks the behaviour of the \textit{highlightRedundancies} method when highlighting redundant entities included in the Contains\\
 			
 			ContainInMainPart\newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses of \enquote{Contains} within \enquote{Main} part&The entities included in Contains should be marked with hash symbol&Checks the behaviour of the \textit{highlightRedundancies} method when highlighting redundant entities included in the Contains\\
 			
+			TargetsInMainPart \newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses with more than one \enquote{Targets} within the \enquote{Main} part&founded redundancy clauses should also be marked with a hash symbol, if the main part contains more than one redundancy clause as a target&Check the behaviour of the \textit{highlightRedundancies} method if there is more than one redundancy clause as a target in main part\\
+			
+			TargetsInBenefitPart \newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses with more than one \enquote{Targets} within the \enquote{Benefit} part&founded redundancy clauses should also be marked with a hash symbol, if the benefit part contains more than one redundancy clause as a target&Check the behaviour of the \textit{highlightRedundancies} method if there is more than one redundancy clause as a target in benefit part\\
 			\hline
+				\caption{Test cases for ReportExtractor  class}\label{tb:test_cases_report_extractor}
 		\end{tabularx}		
-		\captionof{table}{Test cases for ReportExtractor  class}\label{tb:test_cases_report_extractor}
+	%	\captionof{table}{Test cases for ReportExtractor  class}\label{tb:test_cases_report_extractor}
 		\endgroup
-	\end{figure}
-\end{landscape}
-\restoregeometry
+	%\end{figure}
+\thispagestyle{empty}
+%\end{landscape}
+%\restoregeometry
 
  
-%\input{Section/Redundancy_Evaluation}
+\input{Section/Redundancy_Evaluation}
