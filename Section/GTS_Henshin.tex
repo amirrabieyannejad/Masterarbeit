@@ -24,7 +24,7 @@ Therefore, the natural dependencies between USs should be accepted as inevitable
 Hence, light systematic mechanisms are needed to help identify dependencies between USs \cite{gomez2010systematic}.
 \begin{figure}[h]
 \center
-\includegraphics{inherited_depencendy}
+\includegraphics[scale=0.5]{inherited_depencendy}
 \caption{  Inherited dependencies by user stories\cite{gomez2010systematic} }\label{fig:inherited_dependencies}
 \end{figure}
 The critical pair analysis (CPA) for graph rewriting \cite{hartmanis2006monographs} has been adapted to rule-based model transformation, \emph{e.g.} to find conflicting functional requirements for software systems \cite{hausmann2002detection}, or to analyses potential causal dependencies between model refactorings \cite{mens2007analysing}, which helps to make informed decisions about the most appropriate refactoring to apply next. The CPA reports two different forms of potential causal dependencies, called conflicts and dependencies \cite{born2015analyzing}.
@@ -40,7 +40,7 @@ In this subsection, we shall delineate two distinct analytical methodologies, sp
 
 \begin{figure}[h]
 \begingroup
-\footnotesize
+\scriptsize
 \centering
 \begin{tabularx}{\textwidth}{l  X  X}
 \hline
@@ -54,9 +54,7 @@ Use Cases&	Ensuring user story correctness and system behavior	&Agile developmen
 Result	&Verification of user story properties (e.g., acceptance criteria)	&Identification of user story dependencies, potential conflicts, and their impact on the development process\\\\ 
 \hline
 \end{tabularx}
-
 \captionof{table}{Comparative analysis between model checking and conflict and dependency methods}\label{tb:sec_6_comparative_analysis}
-
 \endgroup
 \end{figure}
 \begin{example}
@@ -74,7 +72,7 @@ Now, we exemplify conflicts and dependencies within Henshin using two US namely 
 \end{figure}
 \begin{figure}
 \center
-\includegraphics{henshin_cpa_result}
+\includegraphics[scale=0.5]{henshin_cpa_result}
 %\includegraphics[width=8.13cm, height=3.6cm]{henshin_result}
 \caption{Henshin CDA result visualises dependencies between user stories}\label{henshin_cpa_result}
 \end{figure}
@@ -96,7 +94,7 @@ Figure \ref{fig:conflict_cda} shows the conflicts and dependencies between two r
 
 \begin{figure}[h]
 \center
-\includegraphics[scale=0.7]{henshin_conflict_model}
+\includegraphics[scale=0.5]{henshin_conflict_model}
 \caption{Henshin Class Model Map}\label{fig:conflict_model}
 \end{figure}
 \begin{figure}[h]
@@ -106,7 +104,7 @@ Figure \ref{fig:conflict_cda} shows the conflicts and dependencies between two r
 \end{figure}
 \begin{figure}[h]
 \center
-\includegraphics{henshin_conflict_cda_result}
+\includegraphics[scale=0.5]{henshin_conflict_cda_result}
 \caption{Henshin CPA result visualises conflicts and dependencies between user stories}\label{fig:conflict_cda}
 \end{figure}
 \end{example}

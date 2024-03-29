@@ -7,7 +7,7 @@ The goal and scope of the work is divided into three phases. Firstly, converting
 Figure \ref{fig:implementation_phases} illustrates the implementation phases mentioned.
 \begin{figure}[h]
 	\center
-	\includegraphics[scale=0.5]{implementation_phases}
+	\includegraphics[scale=0.3]{implementation_phases}
 	\caption{Three implementation phases }\label{fig:implementation_phases}
 \end{figure} 
 \subsubsection*{Methodology}
@@ -21,12 +21,58 @@ Following approach and tools are necessary in order to develop our workflow:
 	\item GitHub as version control: GitHub is a developer platform that allows developers to create, store, manage and share their code. It uses Git software, providing the distributed version control of Git plus access control, bug tracking, software feature requests, task management, continuous integration, and wikis for every project.
 \end{itemize} 
 \subsubsection*{Data Structures}
+As already mentioned, the datasets annotated with the CRF tool have the JSON format, the structure of which is very important in the Java classes RuleCreator and ReportExtractor. Therefore, understanding the JSON format provided is crucial for further action.
+
+Each JSON file for a dataset contains a JSON array in which each US entry is defined as a JOSN object. Listing\ref{list:json_format} illustrates the format used for the US entry.
+\begin{MyListing}
+	\paragraph{}
+	\hrule
+	\centering
+	\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/json_format.json}
+	\caption{The JSON format of each US entry in JSON file}\label{list:textual_report_sample}
+	\hrule
+\end{MyListing}
+To interact with the entries in JSON file, we need to distinguish between the entries that are defined as JSON-objects, such as: {Text, Action, Entity, Benefit, US\_Nr} and the entries that are defined as a JSON-array, such as: {Persona, Primary/Secondary Action, Primary/Secondary Entity, Triggers, Targets, Contains}.
+
+In order to parsing and manipulate JSON file, we use \enquote{org.json} library which provide us the classes as follow:
+\begin{itemize}
+	\item \enquote{JSONObject}: An unordered collection of key and value pairs.
+	\item \enquote{JSONArray}: Provide an ordered sequence of values.
+	 \item \enquote{JSONTokener}: A tool that breaks a piece of text into a series of tokens that can be used by JSONObject or JSONArray to parse JSON strings.
+\end{itemize}
 %Provide detailed explanations of key implementation aspects, such as algorithms, data structures, design patterns, and any custom solutions developed. Discuss any challenges faced during implementation and how you addressed them.
 
 \subsubsection*{Error Handling}
-% explain about Exceptions, that you implemented
+In annotated datasets, there have been some issues such as defective data that force us to handle them properly. Therefore, we implement/use the following \enquote{Exceptions} to accurately distinguish and handle them.
 
+The following classes, which extend \textit{Exception} calss, are used in the \textit{org.henshin.backlog.code.rule} package and refer to problems with the JSON, which contains the dataset of backlogs and Ecore files needed to address the creation of rules based on it:
+\begin{itemize}
+	\item ActionInJsonFileNotFound: Is triggered if the entry \textit{Action}, which contains \textit{Primary/Secondary Action}, is not present in the JSON file and its absence should be reported.
+	\item ContainsInJsonFileNotFound: Is triggered if the entry in \textit{Contains} is not present as \textit{Primary/Secondary Entity} in the JSON file and its absence should be reported.
+	\item EcoreFileNotFound: Is triggered if the required ECore meta-model file could not be found and should also be reported.
+	\item EdgeWithSameSourceAndTarget: Refers to the creation of edges in graph transformation rules and is triggered if the source and target of the edge have already been created, then the duplicate edge should be avoided.
+	\item EmptyOrNotExistJsonFile: Is triggered if the JSON file could not be found in the file system.
+	\item EntityInJsonFileNotFound: Is triggered if the entry \textit{Entity}, which contains \textit{Primary/Secondary Entity}, is not present in the JSON file and its absence should be reported.
+	\item PersonaInJsonFileNotFound: Is triggered if the entry \textit{Persona} does not exist in the JSON file for a specific US.
+	\item TargetsInJsonFileNotFound: Is triggered if the entry \textit{Targets} does not exist in the JSON file for a specific US.
+	\item TextInJsonFileNotFound: Is triggered if the entry \textit{Text} does not exist in the JSON file for a specific US. 
+	\item TriggersInJsonFileNotFound: Is triggered if the entry \textit{Triggers} does not exist in the JSON file for a specific US. 
+	\item UsNrInJsonFileNotFound: Is triggered if the entry \textit{Us\_Nr} does not exist in the JSON file for a specific US.
+\end{itemize}
+The following classes, which extend \textit{Exception} calss, are used in the \textit{org.henshin.backlog.code.report} package and refer to problems with the CDA directory that contains all US-pairs and their conflict reasons:
+\begin{itemize}
+	\item CdaReportDirIsEmpty: Is triggered if the CDA report directory is found but is empty.
+	\item CdaReportDirIsNotADirectory: Is triggered if the addressed path for the CDA report directory is actually a file or there is no directory in this path.
+	\item CdaReportDirNotFound: Is triggered if the CDA report directory is not found at all.
+\end{itemize}
 \subsubsection*{User Story Structure}
+The US contains two parts, namely:
+\begin{itemize}
+	\item the main part, which contains the persona, the functionality and the resource for applying the action.
+	\item} and the benefit part, which describes the advantage for the end user and begins with the phrase \enquote{, so that}.
+\end{itemize}
+During implementation, we also consider these parts separately, as the phrase that comes from the main part of US should not be mixed with the benefit part and vice versa.
+
 % explain about benefit and main segment, and define their scope
 
 \subsubsection*{Limitations}

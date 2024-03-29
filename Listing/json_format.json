@@ -1,0 +1,15 @@
+{
+"Text": "...",
+"Persona": [ "..." ],
+"Action": {
+	"Primary Action": [ "...", ... ],
+	"Secondary Action": ["..."], ... },
+"Entity": { 
+	"Primary Entity": [ "...", ... ], 
+	"Secondary Entity": [ "...", ...] },
+"Benefit": "...",
+"Triggers": [ [ "...", "..." ] ],
+"Targets": [ [ "...", "..." ], ... ],
+"Contains": [ [ "...", "..." ], ... ],
+"US_Nr": "..."
+}

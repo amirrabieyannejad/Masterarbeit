@@ -1,15 +1,15 @@
 \subsection{Evaluation}\label{redundancy_evaluation}
-In this section we will present the results of applying our approach to analyse USs in 19 by CRF tool annotated backlog datasets. 
+%In this section we will present the results of applying our approach to analyse USs in 19 by CRF tool annotated backlog datasets. 
 
 The purpose of this section is to assess the effectiveness of our approach in analysing redundancy between USs. This section serves several key objective:
 \begin{itemize}
-	\item Validation of the approach: Demonstrating the validity and reliability of our proposed methodology for identifying and categorising redundancy in USs.
-	\item Evaluation of the results: Presenting the results of our analysis across multiple datasets, highlighting the prevalence of full and partial redundancy for both the main and benefit parts in USs.
-	\item Gaining insights: Gaining insights into the nature and extent of redundancy in USs and its potential impact on software development processes.
-	\item Comparison and analysis: comparing results from different data sets, identifying patterns or trends and analysing variations in redundancy levels.
+	\item Demonstrating the validity and reliability of our proposed methodology for identifying and categorising redundancy in USs.
+	\item Presenting the results of our analysis across multiple datasets, highlighting the prevalence of \enquote{Full} and \enquote{Partial Redundancy} for both the main and benefit parts in USs.
+	\item Gaining insights into the nature and extent of redundancy in USs and its potential impact on software development processes.
+	\item Comparing results from different data sets, identifying patterns or trends and analysing variations in redundancy levels.
 \end{itemize}
 \subsubsection*{Dataset of Backlogs}
-For a comprehensive assessment, we applied our approach to 19 backlog datasets presented by Mosser et al. \footnote{https://github.com/ace-design/nlp-stories/tree/3b025710225347355eed778974939f7cb3c6d4e4/nlp/nlp\_outputs}. Mosser et al. applied the CRF approach to these publicly available requirements datasets\ref{requirementsdatasets}.
+For a comprehensive assessment, we applied our approach to 19 backlog datasets presented by Mosser et al. \footnote{https://github.com/ace-design/nlp-stories}. Mosser et al. applied the CRF approach to these publicly available requirements datasets\ref{requirementsdatasets}.
 
 It is also worth noting that some backlog datasets (g02, g13, g17, g27) did not follow the expected sentence structure, which is why we did not include them in the evaluation results.
 Table \ref{tb:backlogs} shows the project number of each data set and the count of USs.
@@ -19,7 +19,7 @@ Table \ref{tb:backlogs} shows the project number of each data set and the count 
 \begingroup
 \centering
 \scriptsize
-\renewcommand{\arraystretch}{1,5} 
+\renewcommand{\arraystretch}{1.5} 
 %\keepXColumns
 \begin{tabularx}{\linewidth}{l|XXXXXXXXXXXXXXXXXXX|X}
 	Item&	1&	2&	3&	4&	5&	6&	7&	8&	9&	10&	11&	12&	13&	14&	15&	16&	17&	18&	19&	\\
@@ -33,7 +33,7 @@ Table \ref{tb:backlogs} shows the project number of each data set and the count 
 	\endgroup
 \subsubsection*{Methodology}
 In this section, we recap the methodology employed to analyse redundancy between USs. We utilized a systematic approach that involved several key steps:
-ll\begin{itemize}
+\begin{itemize}
 	\item Data Collection: We collected a total 19 datasets containing USs from various software development projects.
 	\item Preprocessing: Using the generated JSON report file for each dataset, we create a VBA script called \textit{extractFromJSONFiles}\footnote{https://github.com/amirrabieyannejad/USs\_Annotation/tree/main/Skript/extractFromJSONFiles} to iterate through all the JSON report files and extract the information such as \enquote{US-pair}, \enquote{US-text}, \enquote{total redundancy clauses}, \enquote{main redundancy clauses}, \enquote{benefit redundancy clauses} and \enquote{project number} and collect them all in an Excel file to perform further analyses.
 	\item Identification of main and benefit parts: Each US was divided into its main part, which is the core functionality, and its benefit part, which describes the value to the persona.
@@ -77,8 +77,141 @@ ll\begin{itemize}
 	\textit{user\_story\_30:} \#g03\# as a staff member, I want to manage affidavits, so that I can \#ensure\# \#compliance\# with the requirements prior to the hearing.
 	
 	As we can see, there are some redundancy clauses between the USs, but not all, \textit{e.g.} Clause\enquote{proffer}and\enquote{satisfaction} vs. \enquote{requirements}and\enquote{hearing}, which leads us to evaluate this as \enquote{Partial Redundancy} in \enquote{Benefit} part.
-	\end{example}
+	\end{example} 
 	
 	%\item Preprocessing: \item preprocessing: We transform each data set into graph transformation rules, apply CDA and generate a textual report in which each redundancy clause between US-pairs is marked with a hash symbol. Additionally,  the number of founded redundancies in the main and benefit sections is also determined.
 \end{itemize}
+\subsubsection*{Assessment of Result: High-Level Overview}
+Based on the datasets provided, we find that 1,851 redundancy clauses were identified across all projects, with the highest count found in the backlog G19 dataset (925 clauses), indicating a significant presence of redundancy in the USs of this project. Table \ref{tb:redundancy_clauses} shows the total redundancy clauses found in each dataset.
+
+The main parts of the USs have less redundancy (17 clauses), which means that there are 17 cases where the main part of the US-pairs is exactly the same. This level of redundancy indicates common functionality of the US-pairs, which is a sign of overlapping features. 
+
+A much higher occurrence of partial redundancy in the main parts indicates that there are common elements between the US-pairs, but still enough differences to avoid a complete match. 
+
+Fewer instances of partial redundancy in the benefit parts (46 clauses) indicate that the USs diverge in their benefit clauses, they are more tailored to specific project outcomes. The higher count of full redundancies compared to partial redundancies in the Benefit parts is interesting as it indicates that the expected objectives of certain features are often repeated in the USs. This suggests that the project is aiming for a set of common goals regardless of the specific functionality.
+
+Table \ref{tb:redundancy} shows the amount of full and partial redundancy in the main and benefit parts.
+
+\begingroup
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\linewidth}{cXXXXXXX}
+	\hline
+	Project Nr. & Total Redundancy Clause & Main Part Redundancy Clause & Benefit Part Redundancy Clause & Main Part Redundancy Clause (Partial) & Main Part Redundancy Clause (Full) & Benefit Part Redundancy Clause (Partial) & Benefit Part Redundancy Clause (Full) \\
+	\hline
+	\hline
+	\endfirsthead
+	\hline
+	Project Nr. & Total Redundancy Clause & Main Part Redundancy Clause & Benefit Part Redundancy Clause & Main Part Redundancy Clause (Partial) & Main Part Redundancy Clause (Full) & Benefit Part Redundancy Clause (Partial) & Benefit Part Redundancy Clause (Full) \\
+	\hline
+	\hline
+	\endhead
+	G03 & 2 & 0 & 2 & 0&0 & 2 & 0\\
+	\hline
+	G04 & 6 & 4 & 2 & 2 &0 & 2 &0 \\
+	\hline
+	G05 & 61 & 30 & 31 & 15 &0 & 2&14  \\
+	\hline
+	G08 & 95 & 31 & 64 & 18 &0 & 5&18  \\
+	\hline
+	G10 & 30 & 25 & 5 & 14 &0 & 1 & 2 \\
+	\hline
+	G11 & 20 & 11 & 9 & 8 &0 & 10 &0 \\
+	\hline
+	G12 & 6 & 4 & 2 & 2 &0 &0 & 2 \\
+	\hline
+	G14 & 18 & 11 & 7 & 5 & 2 & 6 & 1 \\
+	\hline
+	G16 & 5 & 5 & 0 & 2 & 1 &0 &0 \\
+	\hline
+	G18 & 283 & 274 & 9 & 157 & 6 & 3 & 2 \\
+	\hline
+	G19 & 925 & 925 & 0 & 512 & 0&0 &0 \\
+	\hline
+	G21 & 31 & 24 & 7 & 13 & 1 & 2 & 3 \\
+	\hline
+	G22 & 105 & 67 & 38 & 26 & 3 & 9 & 13 \\
+	\hline
+	G23 & 12 & 12 & 0 & 6 &0 &0 &0 \\
+	\hline
+	G24 & 32 & 24 & 8 & 10 & 0& 1 & 4 \\
+	\hline
+	G25 & 89 & 89 & 0 & 38 & 2 &0 &0 \\
+	\hline
+	G26 & 19 & 18 & 1 & 9 &0 & 1 &0 \\
+	\hline
+	G27 & 22 & 19 & 3 & 8 & 1 & 2 & 1 \\
+	\hline
+	G28 & 90 & 90 & 0 & 30 & 1 & 0&0 \\
+	\hline
+	\hline
+	Grand Total & 1851 & 1663 & 188 & 875 & 17 & 46 & 60 \\
+	\hline
+	\hline
+	\caption{Detail about full and partial redundancies related to main or benefit part}\label{tb:redundancy}
+\end{tabularx}
+
+\endgroup
+
+
+\subsubsection*{Assessment of Result: Detailed Insights}
+In the dataset of Backlog G19, the clause \enquote{have alfred} was repeated in all USs, indicating that \enquote{alfred} is the end product and not a specific functionality. This also suggests that the quality of the USs should be considered so that they do not contain generic information that results in a lot of redundant information being provided.
+
+In the main parts of the USs, 1,663 clauses were fully redundant, while only 188 clauses had partial redundancy. This means that the some USs are not often written in a standardised format for the description of core functions, resulting in a higher count of fully redundant clauses. 
+\begin{example}
+In the dataset of backlog G18 (274 clauses out of 283 in the main part), for example, this is due to the clauses \enquote{have ability} in the main part, which are unnecessarily repeated in most USs:\\
+\textit{user\_story\_92:} \#g18\# as a \#researcher\# I want to have \#the \#ability\# to search files by file type and format.\\
+\textit{user\_story\_80:} \#g18\# as a \#researcher\# I want to have \#the \#ability\# to attach standard metadata for behavioural observations (and video) so that my data can be searched and understood later.\\
+Actually, the clause \enquote{have ability} in USs should be deleted and no redundancy should be possible at all:\\\\
+\textit{user\_story\_92:} \#g18\# as a researcher I want to search for files by file type and format.\\
+\textit{user\_story\_80:} \#As a researcher, I want to attach standard metadata for behavioural observations (and videos), so that my data can be searched and understood later.
+\end{example}
+
+There are also USs with the same functionality, but one provides more details about the functionality. In other words, one US is contained within another, and we refer to them as 
+redundant US-pairs, as deleting the US with less detail has no negative impact on the system. Sometimes it is necessary to merge these two US to obtain a single detailed US.
+\begin{example}
+In the dadaset of backlog G18, for example, we have two US-pairs that are marked as full redundancy between user\_story\_12 and user\_story\_11 as well as between user\_story\_13 and user\_story\_11:\\
+\textit{user\_story\_12}: \enquote{\#g18\# as a \#researcher\#, I want to \#upload\# \#files\# prior to having them \#attached\# to a \#log book page\# using the web interface.}\\
+\textit{user\_story\_11:} \enquote{\#g18\# as a \#researcher\#, I want to \#upload\# \#files\# prior to having them \#attached\# to a \#log book page\#.}\\
+\textit{user\_story\_13:} \enquote{\#g18\# as a \#researcher\#, I want to \#upload\# \#files\# prior to having them \#attached\# to a \#log book page\# using a mapped network drive.}\\
+
+As we can see, the user\_story\_11 is an incomplete version of two other USs, and deleting it has no negative impact in the system, due to the fact that its goal is achieved and fulfilled by two other USs.
+\end{example}
+\subsubsection*{Assessment of Result: Aggregated Analysis}
+We also look for an aggregate for the count of redundant clauses in both the main part and the benefit part of the USs. 
+
+In the main part, the large count of partial redundancies, especially where two clauses are present (6 clauses), indicates a high degree of similarity in the functionalities described.
+
+In the benefit part of the USs, there is a considerable count of cases where full redundancy prevails, especially where two clauses are inserted (24 clauses). The large count of full redundancies with two clauses indicates that benefits are often described in a standardised way in the different USs.
+
+Figure \ref{fig:aggregation} illustrates the aggregation of the count of redundancy clauses that occur in USs.
+
+\begin{figure}[h]
+	\center
+	\includegraphics[scale=0.5]{aggregation_benefit}
+	\includegraphics[scale=0.5]{aggregation_main}
+	\caption{The aggregation between the count of redundancy clauses occured in USs}\label{fig:aggregation}
+\end{figure} 
+\subsection{Conclusion}\label{redundancy_conclustion}
+In this study, we developed and applied a comprehensive approach that combines the CRF tool, graph transformation rules, and the CDA tool to systematically identify and report redundancies in USs within software development projects.
+
+By carefully analysing 19 different backlog datasets, our method not only separated USs into major and benefit components for nuanced examination, but also facilitated the distinction between full and partial redundancies within these components.
+
+Our results reveal a crucial finding: the effectiveness of redundancy detection is significantly influenced by the quality of the USs. Well-formulated USs that do not contain unnecessary clauses(e.g. the repetition of \enquote{end product} in all USs) significantly improve the accuracy of redundancy detection. This emphasises the importance of rigorous US formulation as a prerequisite for effective redundancy analysis.
+
+ If the main part is evaluated to be fully redundant, then we have a US-pair that is functionally identical and we can merge the US-pair into one US. In the case of full redundancy in the benefit part, this means that the US-pairs belong to the same goal and aspect, to which they should be assigned for better accessibility and understanding.
+ 
+A notable trend emerged from our analysis: the benefit parts are more often fully redundant than the main parts of USs. This indicates that multiple USs often strive for different functions that contribute to a common system aspect or goal.
+
+Recognising such redundancies not only helps to consolidate functionally identical US-pairs into single, more compact USs, but also aligns US-pairs more closely to common goals, improving accessibility and understanding of project backlogs.
+
+In summary, our study confirms the central role of a syntactic analysis approach in detecting and managing redundancies in project backlogs, thereby contributing to the rationalisation of software development processes. While the quality of USs plays a critical role in the success of this approach, the insights gained from this research provide valuable guidance for both current practices and future research in software project management.
+
+However, our investigation has also shown that we can only consider USs with syntactic redundancy. If they are indeed US-pairs with the same functionality but using different words and clauses to achieve the same goal, we cannot detect this with this approach. This finding shows that the distinction between true redundancy and mere superficial similarity can be further refined, which leads us to analyse USs semantically.
+
+In the next section, we therefore present a method for analysing conflicts and dependencies between USs in semantic way.
+%We also find that there are more full redundancy in the benefit part as compared to main part, as the USs with the same benefit achieve different functions for the same aspect of system.
+
+%We have realised that some user stories are only apparently part of other USs, so we can merge them into a compact single US.
 %\input{Section/Redundancy_Evaluation}
