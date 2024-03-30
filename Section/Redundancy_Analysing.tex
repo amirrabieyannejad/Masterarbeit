@@ -1,36 +1,44 @@
 \section{Analysing Redundancy}\label{redundancy}
 % some explenation here about what will be explain here an why
 %(Analyse von Redundanz als title und dann im Text Schreiben, dass es ein syntaktische Analyse ist
-In this Section, we present an approach for syntactically analysing redundancy using the CRF tool and Henshin.
+In this section, we present an approach for syntactically analysing redundancy using the CRF tool, the Henshin and the CDA tool.
 
-In Section \ref{redundancy_requirement} we illustrate the requirements and functional needs that are used as input to the design phase to satisfy and bring value and benefit to the stakeholder. In the Section \ref{desing} we explain the design decisions of the workflow shown in \ref{fig:workflow_diagram} and we explain how the architecture is structured and what the components and their classes look like. In Section \ref{redundancy_implementation} comes the implementation to show what we have implemented and in Section \ref{redundancy_tests} we show how we have tested it. Finally, we will apply this approach to 19 backlogs entered with the CRF tool\footnote{https://github.com/ace-design/nlp-stories} we enter all backlogs as input and the results are evaluated in section\ref{redundancy_evaluation}.
+In section \ref{redundancy_requirement} we present the requirements and functional needs that are used as input for the design phase to fulfil the requirements. In section \ref{desing} we explain the design decisions of the workflow shown in figure \ref{fig:design_phases} and explain how the architecture is structured and what the components and their classes look like. 
+\begin{figure}[h]
+	\centering 
+	\includegraphics[scale=0.35]{sequence_diagram}
+	\caption{Design phases}\label{fig:design_phases}
+\end{figure} 
+
+In Section \ref{redundancy_implementation} comes the implementation to show what we implemented and in Section \ref{redundancy_test} we show how we tested it. Finally, we apply our approach to 19 datasets of backlogs annotated with the CRF tool \footnote {https://github.com/ace-design/nlp-stories}. In Section \ref{redundancy_evaluation} we evaluate the results.
 \subsection{Requirements}\label{redundancy_requirement}
 In order to accomplish the analysis of redundancy in USs we try to address following requirements:
 \begin{itemize}
 \item As a member of a project group, I want to syntactically analyse USs that belong to a specific backlog, so that redundancies between USs can be recognise and manage accordingly.
-\item As a member of a project group, I would like to have a collection of US-pairs as a report that syntactically have the same clause in parts of user stories, so that I can change them if necessary.
-\item As a member of a project group, I want to filter the report and only see the redundancy clauses that contain \enquote{Action}(as a verb) and \enquote{Entity}(as a noun) which is called \enquote{Targets} that are duplicated in US-pair, so that I can reduce the number of potential redundancy pairs in the report.
-\item As a member of a project group, I want to mark founded redundancy clauses with hash symbol(\#) and list those that contain \enquote{Persona}(as a noun) and \enquote{Action}(as a verb) which is called \enquote{Triggers}, so that I can better see whether the Persona in is also recognised as a redundancy.
-\item As a member of a project group, I want to mark justified redundancy clauses with hash symbol (\#) and list those that contain \enquote{Entity}(as a noun) and \enquote{Entity}(as a noun), which is called \enquote{Contains}, so that I can better see whether the contained entity is also recognised as a redundancy.
-\item As a member of a project group, I would like to have a redundancy report that shows substantiated clauses in US-pairs and adds a hash symbol (\#) at the beginning and end of the substantiated clauses as tag in each user story, so that I can see which words are duplicated in a part of the sentences.
-\item As a member of a project group, I want to see how many clauses are in each US-pair, so that I can aggregate each redundant US-pair based on it.
-\item As a member of a project group, I want a table at the top of the redundancy report that lists the US-pairs and the number of clauses contained in each pair, so that I can quickly see all the US-pairs founded and the number of clauses. 
-\item As a member of a project group, I want to know whether the redundancy clauses belong to the main or benefit part of the US, so that I can make a decision accordingly.
-
+\item As a member of a project group, I would like to have a collection of US-pairs as a report that syntactically have the same clauses in main and benefit parts of USs, so that I can change them if necessary.
+\item As a member of a project group, I want to filter the report and only see the redundancy clauses that contain \enquote{Action} (as a verb) and \enquote{Entity} (as a noun) in US-pair, so that I can reduce the count of potential redundancy pairs in the report.
+\item As a member of a project group, I want to mark found redundancy clauses with a hash symbol (\#) and show those that have a redundancy in \enquote{Persona} (as a noun) and \enquote{Action} (as a verb), which is called \enquote{Triggers}, so that I can better see if the persona in is also recognised as a redundancy.
+\item As a member of a project group, I want to mark founded redundancy clauses with a hash symbol (\#) and show those that contain two \enquote{Entity}(as a noun), which is called \enquote{Contains}, so that I can better see whether the contained entity is also recognised as a redundancy.
+\item As a member of a project group, I would like to have a redundancy report that shows founded US texts in US-pairs and adds a hash symbol (\#) at the beginning and end of the founded words as a marker, so that I can better see which words are redundant in US-pairs.
+\item As a member of a project group, I want to see how many redundancy clauses were founded in each US-pair, so that I can aggregate each founded redundancy US-pair for further statistical purposes on that basis.
+\item As a member of a project group, I want a table at the top of the redundancy report that lists the US-pairs and the number of redundancy clauses contained in each pair, so that I can quickly see all the US-pairs founded and the number of redundancy clauses. 
+\item As a member of a project group, I want to know whether the redundancy clauses belong to the main or benefit part of the US, so that I can use it for further statistical purposes.
 \end{itemize}
 % here should explain what was the reiquirement and why
 
 \subsection{Design}\label{desing}
 % what are the design decisions of this workflow that I had at the beginning, then describe what happens step by step, what translation I made, what is the main design decision you made for this translation, what question and that is part of the design
 %In Desing should be how the architecture is based on which components and what is my own component, what does it use, what does the component look like, what class is there, is the class design, so everything comes from the Desing chapter
-In this section we describing the sequence of workflow shown in \ref{fig:workflow_diagram} step-wise. Additionally, we explain what are the design decisions of this workflow and how the architecture is based on which components and classes.
+In this section, the workflow process shown in figure \ref{fig:design_phases} is described step by step. It also explains which design decisions were made for this workflow and how the architecture is based on which components and classes.
 
-To fulfil the requirements mentioned in \ref{redundancy_requirement}, we use the CRF tool \cite{mosser2022modelling} for the annotation of backlogs and the Henshin API \cite{arendt2010henshin} under Java programming language for the automatic generation of rules for each US in the backlog. Moreover, we use Henshin's CDA(conflict and dependency analysis) feature \cite{mens2007analysing} to automatically recognise conflicting US-pairs.\\\\
+To fulfil the requirements mentioned in \ref{redundancy_requirement}, we use the CRF tool \cite{mosser2022modelling} for the annotation of backlogs and the Henshin API \cite{arendt2010henshin} under Java programming language for the automatic generation of rules for each US in the backlog. Moreover, we use Henshin's CDA(conflict and dependency analysis) feature \cite{mens2007analysing} to automatically recognise redundancy US-pairs.\\\\
 A detailed, step-by-step description of the workflow is given below:
 \subsubsection*{CRF Tool}\label{workflow_crf}
-As input, we receive a graph-based model generated by the CRF tool, which represents the refined and annotated dataset for the recognition of \emph{entities}, \emph{actions}, \emph{persons} and \emph{benefits} of USs \cite{mosser2022modelling}. Mooser et al. have linked each \emph{Persona} to each primary \emph{Action} (as \emph{Trigger} relationships), each primary \emph{Actions} to each primary \emph{Entity} (as \emph{Target} relationships) and each primary/secondary \emph{Entity} to each primary/secondary \emph{Entity} (implying a \emph{Contains} relationship)\cite{arulmohan2023extracting}. As output we receive a JSON-file which contains all annotated USs separated by each backlogs.
+As input, we receive a graph-based model generated by the CRF tool, which represents the refined and annotated dataset for the recognition of \emph{entities}, \emph{actions}, \emph{persons} and \emph{benefits} of USs \cite{mosser2022modelling}.
+
+Mooser et al. have linked each \emph{Persona} to each \emph{Primary Action} as \emph{Trigger} relationships, each \emph{Primary Actions} to each \emph{Primary Entity} as \emph{Target} relationships and each \emph{Primary/Secondary Entity} to each \emph{Primary/Secondary Entity} implying a \emph{Contains} relationship\cite{arulmohan2023extracting}. As output we receive a JSON-file which contains all annotated USs separated by each backlogs.
 \subsubsection*{Identifying USs in JSON-File}\label{workflow_nummerize_us}
-Annotated USs in each JSON-file have no identifier. To distinguish user stories, we use a Python script called \textit{nummerize\_us.py} \footnote{https://github.com/amirrabieyannejad/USs\_Annotation/tree/main/Skript/nummerize\_us}, which receives JSON-files as input and adds a JSON-object called \enquote{US\_Nr} with a number as value to each US and returns the JSON-files as output.
+Annotated USs in each JSON file have no identifier. To distinguish USs, we use a Python script called \textit{nummerise\_us.py} \footnote{https://github.com/amirrabieyannejad/USs\_Annotation/tree/main/Script/numberise\_us}, which receives JSON files as input and adds a JSON object named \enquote{US\_Nr} with an identifier as value (e.g. user\_story\_01) to each US and returns the JSON files as output.
 \subsubsection*{Creating Ecore Meta-Model}\label{workflow_ecore}
 To be able to create rules in Henshin, an Ecore (meta)-model should be available. Ecore is the core (meta)-model at the heart of the EMF (Eclipse Modelling Framework). It enables the formulation of other models by utilising its constructs.
 
@@ -40,7 +48,7 @@ Accordingly, we create an Ecore meta-model as shown in Figure \ref{fig:ecore_met
 	\item \textit{Entity} as an abstract class, from which \textit{Primary/Secondary Entity} inherits as a class in the meta-model, corresponds to the JSON-object \enquote{Entity}, which contains two JSON-arrays, namely \enquote{Secondary/Primary Entity} in the JSON-file.
 	\item \textit{Action} as an abstract class and \textit{Primary/Secondary Action} as an inherited class in the meta-model correspond to the JSON-object \enquote{Action}, which contains two JSON-arrays, namely \enquote{Secondary/Primary Action} in the JSON-file.
 	\item \textit{Benefit} as a class in the meta-model, which also has an attribute called \enquote{text} that corresponds to the JSON-object \enquote{Benefit} in the JSON-file.
-	\item \textit{Story} as a class in the meta-model, which also has an attribute called \enquote{text} that corresponds to the JSON-object \enquote{Text} in the JSON-file.
+	\item \textit{Story} as a class in the meta-model that contains text from US, which also has an attribute called \enquote{text} that corresponds to the JSON-object \enquote{Text} in the JSON-file.
 	\item Abstract class \textit{NamedElement} has attribute \textit{name}, which Primary/Secondary Action/Entity inherit from it, which corresponds to the value of \textit{Primary/Secondary Action/Entity} in JSON-file.
 	\item \textit{Edge} with the name \textit{triggers} between Persona and Primary Action in the meta-model, which corresponds to the JSON-array \enquote{Triggers}, where each JSON-array in it contains a pair, the first element corresponding to the \textit{Persona} and the second to the \textit{Primary Action}.
 	\item \textit{Edge} named \textit{targets} between Primary/Secondary Action and Primary/Secondary Entity in the meta-model, which corresponds to the JSON-array \enquote{Targets}, where each JSON-array has a pair, the first element corresponding to \enquote{Primary/Secondary Action} and the second element corresponding to \enquote{Primary/Secondary Entity}.
@@ -53,20 +61,27 @@ Accordingly, we create an Ecore meta-model as shown in Figure \ref{fig:ecore_met
 	\caption{Ecore meta-model inspired by Mosser et al. \cite{mosser2022modelling}}\label{fig:ecore_meta_model}
 \end{figure} 
 \subsubsection*{Creating Rules}\label{workflow_rule_creator}
-With the identified USs in the the JSON-file, we generate rules with the Henshin package \textit{org.eclipse.emf.henshin.model. compact}, which is responsible for the creation of \textit{Transformation rules} and their \textit{Classes}, \textit{Attributes}, \textit{Edges} and annotates them with \textless\emph{Delete}\textgreater, \textless\textit{Create}\textgreater or \textless\textit{Preserve}\textgreater, which are crucial for the CDA tool to recognise the redundant pairs. 
-To generating rules we create a package named \textit{package org.henshin.backlog.code.rule} and specially the class \textit{RuleCreator} which used following classes\footnote{https://wiki.eclipse.org/Henshin/Compact\_API}\label{compact_api}:
+With the identified USs in the the JSON-file, we generate rules with the Henshin package \textit{org.eclipse.emf.henshin.model.compact}, which is responsible for the creation of \textit{transformation rules} and their \textit{classes}, \textit{attributes}, \textit{edges} and annotates them with \textless\emph{Delete}\textgreater, \textless\textit{Create}\textgreater or\textless\textit{Preserve}\textgreater, which are crucial for the CDA tool to recognise the redundant pairs.
+ 
+To generating rules we create a package named \textit{org.henshin.backlog.code.rule} and specially the class \textit{RuleCreator} which used following classes\footnote{https://wiki.eclipse.org/Henshin/Compact\_API}\label{compact_api}:
 \begin{itemize}
-\item \textit{org.eclipse.emf.henshin.model.compact.CModule}: CModule class can import elements from an Ecore file to use them in the transformation process responsible for linking the Ecore meta model to the Henshin-file to be created.
+\item \textit{org.eclipse.emf.henshin.model.compact.CModule}: CModule class can import elements from an Ecore file to use them in the transformation process responsible for linking the Ecore meta-model to the Henshin-file to be created.
 \item \textit{org.eclipse.emf.henshin.model.compact.CRule}: Once we have a CModule, we can specify transformation rules with the CRule class and create them.
-\item \textit{org.eclipse.emf.henshin.model.compact.CNode}: Now that we have a transformation rule, we want to fill this rule with nodes. To create a node within a transformation rule, the CRule class is required. The default action when specifying a node is the \textless\emph{preserve}\textgreater action. We can also specify a different action when we create a node, for example \textless\emph{delete}\textgreater or \textless\emph{create}\textgreater.
-\item org.henshin.backlog.code.rule.RuleCreator: We implement RuleCreator class that creates a rule with annotated nodes, edges and attributes based on a JSON-file as input and a Henshin-file containing all rules as output, where each rule and its elements correspond to the individual US and their JSON-objects/arrays in the JSON-file. The most important design decision of this class is the way attributes and edges are annotated to apply CDA to Henshin-files. We decided to annotate the \enquote{name} attribute of all Primary/Secondary Actions/Entities and their associated edges including targets, triggers and contains in \textless delete \textgreater action. The main goal is to increase the probability of finding the US-pairs that have the same Action/Entity and target the same Entity, which can be a potentially redundant US-pair.
+\item \textit{org.eclipse.emf.henshin.model.compact.CNode}: Now that we have a transformation rule, we want to fill this rule with nodes, edges and attributes. To create a node within a transformation rule, we need the CRule class. To create an edge we need to reference two nodes together. The default action when specifying a node, edge or an attributes is the \textless\emph{preserve}\textgreater action. We can also specify a different action when we create a node or an edge, for example \textless\emph{delete}\textgreater or\textless\emph{create}\textgreater.
+\item org.henshin.backlog.code.rule.RuleCreator: We implement \textit{RuleCreator} class that creates a rule with annotated nodes, edges and attributes based on a JSON-file as input and a Henshin-file containing all rules as output, where each rule and its members(nodes, attributes, edges) correspond to the individual US and their JSON-objects/arrays in the JSON-file. 
+
+The most important design decision of this class is the way nodes, attributes and edges are annotated in order to be able to apply conflict and dependency analysis (CDA) for rules stored as a henshin file.
+
+We decided to annotate the \enquote{name} attribute of all Primary/Secondary Actions/Entities and their associated edges including \enquote{targets}, \enquote{triggers} and \enquote{contains} as \textless delete\textgreater action. 
+
+The main goal is to increase the probability of identifying US-pairs characterised by matching names of \textit{action} nodes and \textit{entity} nodes in conjunction with an edge called \textit{targets}. This congruence serves as a basic criterion for identifying potentially redundant US-pairs and simplifies the process of redundancy detection in the context of US analysis.
 \end{itemize}
 \subsubsection*{Methods of the RuleCreator Class}
-In this subsection, the method of the RuleCreator class is described as follows:
+In this section, the methods of the RuleCreator class is described as follows:
 \begin{enumerate}
-	\item readJsonArrayFromFile: This method receives a JSON file as input and reads the JSON file, tokenises the JSON content and parses the JSON content into a JSON array and returns the parsed JSON-array.
+	\item readJsonArrayFromFile: This method receives a JSON file as input. After reading, the JSON content is tokenised, parsed into a JSON array and the parsed JSON array is returned.
 	\item assingCmodule: This method assign a CModule to a Ecore meta-model. It creates a new CModule object with the provided Henshin-file name, adds imports from the Ecore file, and returns the module.
-	\item processJsonFile: It takes parsed JSON array as input and processes their attributes, such as persona, actions/entities, entities, text and their edges, such as targets, triggers. Corresponding elements are created as output in a the Henshin transformation module (CModule).
+	\item processJsonFile: It takes parsed JSON array as input and processes their attributes, such as persona, actions, entities, text and their edges, such as targets, triggers. Corresponding elements are created as output in a the Henshin transformation module (CModule).
 	\item processRule: It takes the \enquote{US\_Nr} JSON-object as input and creates a new CRule with the name of unique US identifier in the CModule.
 	\item processPersona: It receives as input the persona extracted from the JSON data and the associated CRule to create a new CNode representing the persona within the provided CRule and adds the attribute \enquote{name} with persona as value. Finally, the created CNode representing the persona is returned.
 	\item processText: It receives as input US text extracted from JSON data and the associated CRule to create a new CNode representing the text within the provided CRule and adds the attribute \enquote{text} with US text as value. Finally, the created CNode representing the US text is returned.
@@ -75,47 +90,59 @@ In this subsection, the method of the RuleCreator class is described as follows:
 	\item processEntities: It receives as parameters the JSON-object with information about the entities, the CRule object representing the US to which the entities belong and the JSON-array with information about the targets associated with the entities. The method checks whether primary/secondary entities are present, then creates a CNode for each primary/secondary entity and checks whether the entity is present in the target array. If this is the case, its attribute \enquote{name} is annotated for deletion. This method is used within the processContainsEdges method to determine whether an entity involved in a contains relationship is also a target of another entity.
 	\item processContainsEdges: It receives the JSON-object to be processed, the JSON array with information about contains/target edges and the US identifier as parameters. It first checks whether both entities belong to contains edges. If both entities exist, an edge is created between them in CRule with the name \enquote{contains}. If one of the entities is a target of another entity (as specified in the targets array), the edge is annotated for deletion. If none of the entities is a target, the edge is annotated as \enquote{preserve}.
 \end{enumerate}
+Figure \ref{fig:rule_creator_methods} shows the sequence diagram of the RuleCreator methods.
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.35]{RuleCreator_methods}
+	\caption{Sequence diagram of the RuleCreator methods}\label{fig:rule_creator_methods}
+\end{figure}
 \subsubsection*{Conflicting and Dependency Analysis}
-After the henshin file has been automatically generated through the RuleCreator class, we can now pass it to the conflict and dependency analysis (CDA) to find potential redundancy pairs.
+After the rules and the corresponding henshin file have been created by the RuleCreator class, we are now able to pass them to the conflict and dependency analysis (CDA) to find potential redundancy pairs.
 
-Since the CPA API \footnote{https://wiki.eclipse.org/Henshin/conflict\_and\_Dependency\_Analysis} does not yet take into account conflicts and dependencies related to \textit{attribute}, we decided to use the user interface (UI) of the CPA extension of Henshin , which supports domain experts in the development of rules through the interactive use of CPA.
+Since the analysis of conflicts and dependencies related to the \textit{attribute} is not yet considered in the CPA API \footnote{https://wiki.eclipse.org/Henshin/conflict\_and\_Dependency\_Analysis}, we decided to use the user interface (UI) of the CPA extension of Henshin, which supports analysis of conflict and dependencies of rules through the interactive use of CPA.
 
 To apply CDA to Henshin files, we just need to right-click on the Henshin file and select \textit{Henshin}\textgreater\textit{conflict and Dependency Analysis} from the context menu as shown in Figure \ref{fig:henshin_context_menu}.
 \begin{figure}[h]
-	\center
+	\centering
 	\includegraphics[scale=0.5]{henshin_context_menu}
 	\caption{Applying CDA to the selected Henshin file}\label{fig:henshin_context_menu}
 \end{figure}
-A user interface then appears, prompting to select the rule sets to be analysed and the type of analysis. We then select as \textit{First} and \textit{Second} \textit{Rules} all US rules and as the type of analysis we select \textit{conflicts} as illustrated in Figure \ref{fig:select_rules}
+A user interface then appears, prompting to select the rule sets to be analysed and the type of analysis. We then select as \enquote{\textit{First}} and \enquote{\textit{Second} \textit{Rules}}, all rules related to USs. Additionally, as the type of analysis we select \enquote{\textit{conflicts}} as illustrated in Figure \ref{fig:select_rules}.
+
 \begin{figure}[h]
-	\center
+	\centering
 	\includegraphics[scale=0.5]{select_rules}
 	\caption{CDA user interface: Selection of rules and type of analysis}\label{fig:select_rules}
 \end{figure}
- On the next page of the CDA user interface shown in Figure \ref{fig:select_granularity}, we specify the depth of analysis that we use with \textit{Fine} granularity when selecting \textit{Create a complete result table} and \textit{Create an abstract result table}. We choose Fine granularity as the depth of analysis due to the fact that it shows all conflict reasons for each conflicting rule pair. A conflict reason is a model fragment whose presence leads to a conflict. General conflict reasons result from different combinations of minimal conflict reasons\cite{cda_api}.
+
+ On the next page of the CDA UI shown in Figure \ref{fig:select_granularity}, we specify the depth of analysis that we use with \enquote{\textit{Fine granularity}} when selecting \enquote{\textit{Create a complete result table}} and \enquote{\textit{Create an abstract result table}}. We choose \enquote{Fine granularity} as the depth of analysis due to the fact that it shows all conflict reasons for each conflicting rule pair.
+ 
+ A conflict reason is a model fragment whose presence leads to a conflict. General conflict reasons result from different combinations of minimal conflict reasons\cite{cda_api}.
  \begin{figure}[h]
- 	\center
+ 	\centering
  	\includegraphics[scale=0.5]{select_granularity}
  	\caption{CDA user interface: Selection of report granularity}\label{fig:select_granularity}
  \end{figure}
  
- During the execution of the CDA analysis, the rule pair is analysed and a conflict analysis is performed. Once the calculation is complete, the results are listed in the CDA -\textgreater Result window, as shown in Figure \ref{fig:cda_report}. The top entry shows the granularity, which in our case is Fine. These entries contain the rule pairs that conflict with each other. Each rule pair contains a number of conflicts.
+ During the execution of the CDA analysis, the rule pairs is analysed and a conflict analysis is performed. Once the calculation is complete, the results are listed in the \enquote{CDA} -\textgreater \enquote{Result window}, as shown in Figure \ref{fig:cda_report}. The top entry shows the granularity, which in our case is \enquote{Fine}. These entries contain the rule pairs that conflict with each other. Each rule pair contains a number of conflict reasons.
   \begin{figure}[h]
- 	\center
+ 	\centering
  	\includegraphics[scale=0.5]{cda_report}
  	\caption{CDA report with fine granularity}\label{fig:cda_report}
  \end{figure}
  
- Figure \ref{fig:cda_report_in_project_dir} shows how the data is saved in the project tree view. The results folder is created in the folder containing the Henshin that was used for the analyses. The new folder name is the date and time at which the analysis was performed. In contrast to the \textit{CDA/Results} view, this folder contains all reasons and atoms together in a rule pair folder.
+ Figure \ref{fig:cda_report_in_project_dir} shows how the data is saved in the project tree view. The results directory is created in the directory containing the Henshin that was used for the analyses. The new folder name is the date and time at which the analysis was performed. In contrast to the \enquote{\textit{CDA/Results}} view, this folder contains all conflict reasons and atoms together in a rule pair directory.
   \begin{figure}[h]
- 	\center
+ 	\centering
  	\includegraphics[scale=0.5]{cda_report_in_project_dir}
  	\caption{Saving CDA results data in the project structure view}\label{fig:cda_report_in_project_dir}
  \end{figure}
  
- For each conflict reason, there is a \textit{minimal-model.ecore} that contains packages in which various conflict elements such as attributes and references (edges) are mapped together and displayed in different packages. Figure \ref{fig:minimal_model_packages} shows the representation of the conflicting attributes and references. An attribute has the property of changing the value and is represented by an arrow -\textgreater. The attribute from the first rule is separated from the second rule by an underscore, just as with the nodes.
+ For each conflict reason, there is a \enquote{\textit{minimal-model.ecore}} file, that contains packages in which various conflict elements such as \enquote{attributes} and \enquote{references} (edges) are mapped together and displayed in different packages.
+ 
+ Figure \ref{fig:minimal_model_packages} shows the representation of the conflicting attributes and references. An attribute has the property of changing the value and is represented by an arrow \enquote{-\textgreater}. The attribute from the first rule is separated from the second rule by an underscore, just as with the nodes.
   \begin{figure}[h]
- 	\center
+ 	\centering
  	\includegraphics[scale=0.5]{minimal_model_packages}
  	\caption{Representation of conflicting attributes and references in \textit{minimal-model.ecore} file}\label{fig:minimal_model_packages}
  \end{figure}

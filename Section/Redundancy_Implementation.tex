@@ -6,9 +6,10 @@ The entire implementation is available in the GitHub repository \footnote{https:
 The goal and scope of the work is divided into three phases. Firstly, converting the USs annotated by the CRF tool into graph transformation rules; secondly, using the CDA function of the Henshin to automatically report redundancy between USs; thirdly, extracting important information from the CDA report into a text report. For further analysis, we stored the information in a JSON file to be able to import the data into another platform such as MS Excel.
 Figure \ref{fig:implementation_phases} illustrates the implementation phases mentioned.
 \begin{figure}[h]
-	\center
+	\centering
 	\includegraphics[scale=0.3]{implementation_phases}
-	\caption{Three implementation phases }\label{fig:implementation_phases}
+	%\includegraphics[scale=0.35]{sequence_diagram}
+	\caption{Three Implementation phases}\label{fig:implementation_phases}
 \end{figure} 
 \subsubsection*{Methodology}
 Following approach and tools are necessary in order to develop our workflow:
@@ -45,7 +46,7 @@ In order to parsing and manipulate JSON file, we use \enquote{org.json} library 
 \subsubsection*{Error Handling}
 In annotated datasets, there have been some issues such as defective data that force us to handle them properly. Therefore, we implement/use the following \enquote{Exceptions} to accurately distinguish and handle them.
 
-The following classes, which extend \textit{Exception} calss, are used in the \textit{org.henshin.backlog.code.rule} package and refer to problems with the JSON, which contains the dataset of backlogs and Ecore files needed to address the creation of rules based on it:
+The following classes, which extend \textit{Exception} calss, are used in the \textit{org.henshin .backlog.code.rule} package and refer to problems with the JSON, which contains the dataset of backlogs and Ecore files needed to address the creation of rules based on it:
 \begin{itemize}
 	\item ActionInJsonFileNotFound: Is triggered if the entry \textit{Action}, which contains \textit{Primary/Secondary Action}, is not present in the JSON file and its absence should be reported.
 	\item ContainsInJsonFileNotFound: Is triggered if the entry in \textit{Contains} is not present as \textit{Primary/Secondary Entity} in the JSON file and its absence should be reported.
@@ -59,21 +60,27 @@ The following classes, which extend \textit{Exception} calss, are used in the \t
 	\item TriggersInJsonFileNotFound: Is triggered if the entry \textit{Triggers} does not exist in the JSON file for a specific US. 
 	\item UsNrInJsonFileNotFound: Is triggered if the entry \textit{Us\_Nr} does not exist in the JSON file for a specific US.
 \end{itemize}
-The following classes, which extend \textit{Exception} calss, are used in the \textit{org.henshin.backlog.code.report} package and refer to problems with the CDA directory that contains all US-pairs and their conflict reasons:
+Within the \textit{org.henshin.backlog.code.report} package, special classes that extend the \textit{Exception} class are designed to solve problems related to the CDA report directory, which encapsulates all US-pairs together with the associated conflict reasons. These classes include:
 \begin{itemize}
-	\item CdaReportDirIsEmpty: Is triggered if the CDA report directory is found but is empty.
-	\item CdaReportDirIsNotADirectory: Is triggered if the addressed path for the CDA report directory is actually a file or there is no directory in this path.
-	\item CdaReportDirNotFound: Is triggered if the CDA report directory is not found at all.
+	\item \textbf{CdaReportDirIsEmpty}: This exception is called if the CDA report directory is found but has no content.
+	\item \textbf{CdaReportDirIsNotADirectory}: This exception is thrown in scenarios where the path provided for the CDA report directory is either not a directory (e.g. it is a file) or the specified path does not lead to a directory.
+	\item \textbf{CdaReportDirNotFound}: This exception is triggered if the CDA report directory cannot be found within the specified path.
 \end{itemize}
-\subsubsection*{User Story Structure}
-The US contains two parts, namely:
+\subsubsection*{Structure of a US}
+A US is divided into two different components:
 \begin{itemize}
-	\item the main part, which contains the persona, the functionality and the resource for applying the action.
-	\item} and the benefit part, which describes the advantage for the end user and begins with the phrase \enquote{, so that}.
+	\item The \textit{main part}, which encapsulates the persona, the intended functionality and the resources required to execute the action.
+	\item The \textit{benefit part}, which formulates the potential benefit for the end user and typically begins with the phrase \enquote{, so that}.
 \end{itemize}
-During implementation, we also consider these parts separately, as the phrase that comes from the main part of US should not be mixed with the benefit part and vice versa.
+In the implementation phase, the delineation and checking of redundancy clauses within USs requires a methodical approach, especially when distinguishing between the main and the benefit part of a US-pair. This distinction is crucial to ensure that redundancy identifications within one part are not mistakenly transferred to the other. Consequently, the analytical framework comprises three conditions, each of which specifies its own methodology for case processing:
 
-% explain about benefit and main segment, and define their scope
+\begin{itemize}
+	\item Presence of benefit in both USs of the redundancy-pair: if a benefit is identifiable in each US of the pair, a process of separation is used to split the main content from the benefit parts. After this separation, a targeted search for redundancy clauses is carried out within the main part, whereby identified redundancies are annotated with a hash symbol (\#). This process is repeated for the benefit parts to ensure a thorough check and marking of redundancies within each individual part.
+	\item Exclusive presence of a benefit in one US of the redundancy-pair: In scenarios where only one US of the pair contains a benefit part, the analysis is limited to the main part of both USs. The aim remains the identification and annotation of redundancy clauses within this part. The lone benefit part remains in its original state and is excluded from the redundancy check.
+
+	\item Absence of benefit parts in both USs of the pair: If neither of the two USs of the redundancy-pair contains a benefit part, the focus shifts completely to the main parts. The investigation is designed to highlight redundancy clauses within these part, whereby the benefit parts are not taken into account due to their non-existence.
+\end{itemize}
+This structured and segmented approach ensures precise and efficient identification of redundancy clauses within the USs, optimising the clarity and effectiveness of textual report.
 
 \subsubsection*{Limitations}
 Following limitation which at the beginning should be clarify:
