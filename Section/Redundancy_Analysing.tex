@@ -147,29 +147,29 @@ A user interface then appears, prompting to select the rule sets to be analysed 
  	\caption{Representation of conflicting attributes and references in \textit{minimal-model.ecore} file}\label{fig:minimal_model_packages}
  \end{figure}
 \subsubsection*{Extracting Textual Report}
-To make the CDA report lightweight for the concerned group or individual, we need to extract the key information such as redundancy US-pair, redundancy clauses, number of redundancy clauses in each part or sentence (main or benefit part) and create a report as a text file containing the following information:
+To create a lightweight report for the group or individual in question, we need to extract the key information from the CDA report, e.g. redundancy US-pair, redundancy clauses, count of redundancy clauses in each part of the US (main or benefit part), and create a report as a text file with the following information:
 \begin{itemize}
 	\item A table of potential redundant pairs with the number of total redundancy clauses.
-	\item Founded potential redundant US-pairs
-	\item Redundancy words and clauses of founded US-pairs
+	\item Founded potential redundant US-pairs.
+	\item Redundancy words and clauses of founded US-pairs. Clauses consisting of two words that have one of the relationships triggers, targets or contains.
 	\item Text of US-pairs whose redundancy words are marked with a hash symbol (\#).
 	\item Parts of the sentence in which words and clauses are found.
 \end{itemize}
-Listing \ref{list:textual_report_sample} illustrates the format of the textual report. In this case, the report only contains one US-pair.
+Listing \ref{list:textual_report_sample} illustrates the example of the textual report. In this case, the report only contains one US-pair.
 
 \begin{MyListing}
 \paragraph{}
 \hrule
 \centering
 \lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/TextualReportSample.txt}
-\caption{Example of generated textual report for two US-pair}\label{list:textual_report_sample}
+\caption{Example of generated textual report for one US-pair}\label{list:textual_report_sample}
 \hrule
 \end{MyListing}
 In order to extracting a textual report associated with a specific backlog, we implement a class called \textit{ReportExtractor} within the package \textit{org.henshin.backlog.code.report}, which include the following classes form the package \textit{org.eclipse.emf.ecore}\footnote{https://download.eclipse.org/modeling/emf/emf/javadoc/2.7.0/org/eclipse/emf/ecore/}. These classes are important for reading the content of minimal-model.ecore:
 \begin{itemize}
 	\item org.eclipse.emf.ecore.resource.Resource: A resource of an appropriate type is created by a resource factory; a resource set indirectly creates a resource using such a factory. A resource is typically contained by a resource set, along with related resources.
-	\item org.eclipse.emf.ecore.resource.ResourceSet: A resource set manages a collection of related resources and notifies you of changes to this collection. It provides a tree of content. A collection of adapter factories supports the search for an adapter via a registered adapter factory. 
-	\item org.eclipse.emf.ecore.EObject: EObject is the root of all modelled objects, therefore all method names start with "e" to distinguish the EMF methods from the client methods. It provides support for the behaviour and functions that are common to all modelled objects.
+	\item org.eclipse.emf.ecore.resource.ResourceSet: A resource set manages a collection of related resources and notifies about changes to this collection. It provides a tree of content. A collection of adapter factories supports the search for an adapter via a registered adapter factory. 
+	\item org.eclipse.emf.ecore.EObject: EObject is the root of all modelled objects, therefore all method names start with "E" to distinguish the EMF methods from the client methods. It provides support for the behaviour and functions that are common to all modelled objects.
 	\item org.eclipse.emf.ecore.EPackage: A representation of the model object \enquote{EPackage}.
 	\item org.eclipse.emf.ecore.EClassifier: A representation of the model object \enquote{EClassifier}.
 	\item org.eclipse.emf.ecore.EClass: A representation of the model object \enquote{EClass}.
@@ -178,80 +178,94 @@ In order to extracting a textual report associated with a specific backlog, we i
 	
 \end{itemize}
 \subsubsection*{Storing Redundancy Items into RedundancyItems Class}
-The following classes were created to represent the extracted model object accordingly. All these classes are extensions of the class \textit{RedundancyItems}, which contains all extracted model object from minimal-model.ecore such as EClass, EAttribute or EReference:
+The following classes were created to represent the extracted model object accordingly. All these classes are extensions of the class \textit{RedundancyItems}, which contains all extracted model object from \enquote{minimal-model.ecore} such as \enquote{EClass}, \enquote{EAttribute} or \enquote{EReference}:
 \begin{itemize}
-	\item PrimaryAction/SecondaryAction: Which has only saved the EClass specified by \enquote{Primary/Secondary Action} and the E-Attribute model object with the methods \textit{getType} to retrieve the saved EClass and \textit{getName} to retrieve the saved E-Attribute.
-		\item PrimaryEntity/SecondaryEntity: Which has only saved the EClass specified by \enquote{Primary/Secondary Entity} and the E-Attribute model object with the methods \textit{getType} to retrieve the saved EClass and \textit{getName} to retrieve the saved E-Attribute.
-		\item Targets: The EClass specified by \enquote{Primary/Secondary Action} as \textit{outgoing edge} and an E-Attribute model object as \textit{incoming edge} with \enquote{Primary/Secondary Entity}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored E-Attribute.
-		\item Contains: The EClass specified by \enquote{Primary/Secondary Entity} as \textit{outgoing edge} and an E-Attribute model object as \textit{incoming edge} with \enquote{Primary/Secondary Entity}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored E-Attribute.
-		\item Triggers: \item Contains: The EClass specified by \enquote{Persona} as \textit{outgoing edge} and an E-Attribute model object as \textit{incoming edge} with \enquote{Primary Action}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored E-Attribute.
-		\item RedundantPair: Stores the identifier of the two created user stories as a redundant pair. It also saves the total number of redundancy clauses within the US-pair.
-		\item TargetsPair: Stores effective value of \textit{Primary/Secondary Action} and \textit{Primary/Secondary Entity} in action and entity fields accordingly.
-		\item ContainsPair: Stores effective value of \textit{Primary/Secondary Entity} as \textit{parent/child entity} due to the fact that parent entity is a containment of child entity.
-		\item TriggersPair: Stores effective value of \textit{Persona} as a persona and \textit{Primary Action} as an action.
+	\item PrimaryAction/SecondaryAction: Which has only saved the EClass specified by \enquote{Primary/Secondary Action} and the EAttribute model object with the methods \textit{getType} to retrieve the saved EClass and \textit{getName} to retrieve the saved EAttribute.
+		\item PrimaryEntity/SecondaryEntity: Which has only saved the EClass specified by \enquote{Primary/Secondary Entity} and the EAttribute model object with the methods \textit{getType} to retrieve the saved EClass and \textit{getName} to retrieve the saved EAttribute.
+		\item Targets: The EClass specified by \enquote{Primary/Secondary Action} as \textit{outgoing edge} and an EAttribute model object as \textit{incoming edge} with \enquote{Primary/Secondary Entity}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored EAttribute.
+		\item Contains: The EClass specified by \enquote{Primary/Secondary Entity} as \textit{outgoing edge} and an EAttribute model object as \textit{incoming edge} with \enquote{Primary/Secondary Entity}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored EAttribute.
+		\item Triggers: The EClass specified by \enquote{Persona} as \textit{outgoing edge} and an EAttribute model object as \textit{incoming edge} with \enquote{Primary Action}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored EAttribute.
+		\item RedundantPair: Stores the identifier of the two USs that were founded as a redundant pair. It also stored the total count of redundancy clauses within the US-pair.
+		\item TargetsPair: Stores effective value of \enquote{\textit{Primary/Secondary Action}} and \enquote{\textit{Primary/Secondary Entity}} in action and entity fields accordingly.
+		\item ContainsPair: Stores effective value of \enquote{\textit{Primary/Secondary Entity}} as \enquote{\textit{parent/child entity}} due to the fact that parent entity is a containment of child entity.
+		\item TriggersPair: Stores effective value of \enquote{\textit{Persona}} as a persona and \enquote{\textit{Primary Action}} as an action.
 \end{itemize}
-The calss RedundancyItems contains following methods which are crucial for class ReportExtractor:
+The class RedundancyItems contains following methods which are crucial for class ReportExtractor:
 \begin{itemize}
-	\item isInCommonContains: This method is designed to determine whether a given entity (specified by its name) is part of a redundant pair listed in the Contains array of related user stories stored in a JSON file. As input, it receives the name of the entity for which we want to check whether it exists in a redundant pair. In addition, a list of redundant pair objects that represent pairs of entities where one entity contains the other. If there is a match with the parent entity, it returns the child entity and vice versa.
-	\item isInCommonTargets: This method is responsible for determining whether a particular action/entity is part of a redundant pair listed in the "Targets" array of related user stories stored in a JSON file. As input, it receives the name and type of the first element, which is an action, and the name and type of the second element, which is an entity. It also receives a list of target pair objects, which are pairs of common actions and entities between US-pairs. For each pair, it checks whether the specified names and types match either the action or entity in the pair. If a match is found, the method returns \textit{true}, which means that the specified elements are part of a redundant pair.
-	\item printRedundantItems: This method is responsible for generating a report of redundancy items based on the data stored in the class instance. It takes several parameters, including a FileWriter for writing to a file, lists of various pairs of targets, contains, and triggers, and a JSONObject for storing the report data in JSON format which is crucial for evaluation.
+	\item isInCommonContains: This method is designed to determine whether a given entity (specified by its name) is part of a redundant pair listed in the \enquote{Contains} array of related USs stored in a JSON file.
+	
+	As input, it receives the name of the entity for which we want to check whether it exists in a redundant pair. In addition, a list of redundant pair objects that represent pairs of entities where one entity contains the other. If there is a match with the parent entity, it returns the child entity and vice versa.
+	\item isInCommonTargets: This method is responsible for determining whether a particular action/entity is part of a redundant pair listed in the "Targets" array of related USs stored in a JSON file.
+	
+	As input, it receives the name and type of the first element, which is an action, and the name and type of the second element, which is an entity. It also receives a list of TargetsPair objects, which are pairs of common actions and entities between US-pairs.
+	
+	For each pair, it checks whether the specified names and types match either the action or entity in the pair. If a match is found, the method returns \textit{true}, which means that the specified elements are part of a redundant pair.
+	\item printRedundantItems: This method is responsible for creating a report on redundancy items based on the data stored in the class instance. 
+	
+	As input, it takes several parameters, including a "FileWriter" to write to the textual report's file, lists of different pairs of "Targets", "Contains" and "Triggers", and a JSON-object to store the report data in JSON format, which is crucial for evaluation.
 \end{itemize}
 \subsubsection*{ReportExtractor Class: Methods related to Extracting Report}
 In this subsection, the method of the ReportExtractor class is described as follows:
 \begin{enumerate}
-	\item extractReports: This method orchestrates the extraction and analysis of redundancy reports from a directory containing US conflict pairs and their associated reasons created by CDA tool, and generates both text and JSON reports for further investigation and processing.
+	\item extractReports: This method orchestrates the extraction and analysis of created CDA report from a directory containing conflicted US-pairs and their associated reasons(conflict reason), and generates both text and JSON reports for further investigation and processing.
 	
-	It receives two FileWriter objects as input, one for writing text reports and one for JSON reports.
+	It receives two FileWriter objects as input, one for writing textual and one for JSON reports.
 	
-	It iterates through each directory in the main directory that represents a conflict pair and uses the \textit{checkIfReportExist} method to make sure that the current US-pair are not already proceeded and the \textit{containsAnd} method to check whether it contains the conjunction \enquote{AND} to make sure that it is the valid US-pair name.
+	It iterates through each directory in the main directory that represents a conflict pair and uses the \textit{checkIfReportExist} method to make sure that the current US-pair are not already proceeded and the \textit{containsAnd} method to check whether it contains the conjunction \enquote{AND} to make sure that it is the valid US-pair name(\textit{e.g.} "user\_stroy\_12\_AND\_user\_stroy\_39" is a valid directory name).
 	
-	For each valid conflict pair directory, iterates through the conflict reason directories within the current conflict pair directory and uses the \textit{minimalEcoreExist} method to check whether a minimal ECore file exists for a conflict reason.
+	For each valid conflict pair directory, it iterates through the conflict reason directories within the current conflict pair directory and uses the \textit{minimalEcoreExist} method to check whether a \textit{minimal-model.ecore} file exists with reference to a conflict reason.
 	
-	To identify redundancy items, it uses the method \textit{processMinimalModels} and reads a minimal model Ecore file, processes its content and iterates over the contained EPackages in order to process them further with the method \textit{iteratePackages}, which saves all redundancy items in RedundacyItems object.
+	To identify redundancy items, it uses the method \textit{processMinimalModels} and reads the "minimal-model.ecore" file, processes its content and iterates over the contained EPackages in order to process them further with the method \textit{iteratePackages}, which saves all redundancy items in RedundacyItems object.
 	
-	In addition, the methods \textit{hasEntitys}, \textit{hasActions} and \textit{hasTargets} are used to check whether the identified elements contain primary/secondary actions and primary/secondary entities and targets. If the identified elements fulfil the criteria, the redundancy pair is included in the report.
+	In addition, the methods \textit{hasEntitys}, \textit{hasActions} and \textit{hasTargets} are used to check whether the identified elements contain "Primary/Secondary actions" and "Primary/Secondary Entities" with common "Targets" reference. If the identified elements fulfil the criteria, the redundancy pair is included in the report.
 	
-	It then writes the potentially redundant USs and their clauses to the text report file. It also extracts and saves relevant information in JSON format for further analysis.
+	It then writes the potentially redundant USs and their clauses to the textual as well as JSON report files for further analysis.
 	
-	As output, the method returns a list of RedundantPair objects containing information about identified redundancies between USs.
+	As output, the method returns a list of RedundantPair objects containing information about identified redundancies between US-pairs.
 	
 	\item createOrOverwriteReportFile: The method is responsible for creating or overwriting report file. It first ensures the existence of a report file. If the file doesn't exist, it creates a new one; if it already exists, it overwrites the existing file. Finally, it returns a \textit{FileWriter} to allow writing to the report file.
 	
-	\item checkIfReportExist: This method takes two parameters, namely US-pair and the list of all previously processed pairs in the CDA report directory. It returns true if the US-pair was found in the pairList, which means that a report with the specified pairs has already been executed and therefore does not need to be executed again.
+	\item checkIfReportExist: This method takes two parameters, namely US-pair and the list of all previously processed pairs in the CDA report directory. It returns \textit{true} if the US-pair was found in the pairList, which means that a report with the specified pairs has already been executed and therefore does not need to be executed again.
 	
-	\item minimalEcoreExist: This method checks the existence of a \textit{minimal-model.ecore} file using a conflict pair and a conflict reason generated by CDA.
+	\item minimalEcoreExist: This method checks the existence of a \textit{minimal-model.ecore} file using a conflict pair and a conflict reason generated by CDA tool.
 	
-	It receives a conflict pair and a conflict reason as input. Using these parameters, the method constructs the file path to the minimal-model.ecore file and checks whether the file exists under the constructed path.
+	As input, it receives a conflict pair and a conflict reason. Using these parameters, the method constructs the file path to the minimal-model.ecore file and checks whether the file exists under the constructed path.
 	
-	If the file exists, the method returns true, indicating that the minimal-model.ecore file exists for the specified conflict pair and conflict reason. If the file does not exist, it also returns false.
+	If the ECore file exists, the method returns \textit{true}, indicating that the minimal-model.ecore file exists for the examined conflict pair and conflict reason. If the file does not exist, \textit{false} is returned.
 	
-	\item containsAnd: This method ensures that the folder name is identified with \textit{\_AND\_}, as the report generated by CDA is formatted like \enquote{user\_story\textless digit \textgreater \_AND\_ user\_story\textless digit \textgreater}. It return true if the folder contains \enquote{and}, otherwise it return false.
-	
-	\item iteratePackages:This method identifies redundancies within the attributes and references of EClasses in a minimal model, saves them accordingly and updates the RedundancyItems object.
-	
-	 It takes several parameters, such as the EPackage to be iterated over, an array list in which the names of the redundant elements are stored, and a RedundancyItems object. 
-	 
-	 It iterates through every EClassifier in the minimal package that contains EClasses and checks whether EClass \enquote{\#} is present; if this is the case, the conflict was detected by CDA. If an attribute is found, the class of the conflicting attribute is determined and added to the corresponding section within RedundancyItems (e.g. Primary/Secondary Action/Entity). 
-	 
-	 Each EReference is then iterate through in the EClass. Depending on the reference name, the reference is added to the corresponding section within RedundancyItems (e.g. Triggers, Targets, Contains). The method is completed once all EClassifiers within the specified EPackage have been processed.
+	\item containsAnd: This method ensures that the folder name is identified with "\textit{\_AND\_}", as the report generated by CDA tool is formatted like \enquote{user\_story\_\textless digit \textgreater \_AND\_ user\_story\textless digit \textgreater}. It returns \textit{true} if the examined directory contains \enquote{AND}, otherwise \textit{false} is returned.
 	
 	\item processMinimalModels: This method reads a Minimal Model Ecore file, processes its content and iterates over the contained EPackages in order to process them further with the \textit{iteratePackages} method. 
 	
-	As parameters, it receives a File object that represents this minimal model ecore file, an array list in which the names of the redundant elements are stored, and a RedundancyItems object that is used to handle redundant elements. 
+	As parameters, it receives a File object that represents examined minimal model ecore file, an array list in which the names of the redundant elements are stored, and a RedundancyItems object that is used to handle redundant elements. 
 	
-	First, a ResourceSet and a ResourceFactoryRegistry corresponding to the minimal model Ecore file are set up and a Resource object is created from the Ecore file; the iteratePackages method is called for each EPackage.
+	First, a ResourceSet and a ResourceFactoryRegistry corresponding to the minimal model Ecore file are set up and a Resource object is created from the Ecore file; the \textit{iteratePackages} method is called for each EPackage.
 	
-	\item hasActions: This method is useful for using the contents of a RedundancyItem to determine whether certain actions are present in a list of founded redundant entries, in order to check later whether founded clauses contain at least one other action.
+	\item iteratePackages: This method identifies redundancies within the attributes and references of EClasses in examined minimal model, stored them accordingly and updates the RedundancyItems object.
 	
-	It checks if there's a match with name of any primary/secondary action stored in the RedundancyItems object. If match is found, it immediately returns true.
+	It takes several parameters, such as the EPackage to be iterated over, an array list in which the names of the redundant elements are stored, and a RedundancyItems object. 
 	
-	\item hasEntitys: This method is used to determine whether certain secondary/primary entities  are present in the RedundancyItems object based on their name. For each item, it checks whether there is a match with the name of a primary/secondary entity stored in the RedundancyItems object. If a match is found, true is returned immediately.
+	It iterates through every EClassifier in the minimal package that contains EClasses and checks whether \enquote{\#} is present in EClass; if this is the case, EClass has been recognised as a conflict by CDA tool.
+	
+	If an attribute is found, the class of the conflicting attribute is determined and added to the corresponding element within RedundancyItems (e.g. Primary/Secondary Action/Entity). 
+	
+	Each EReference is then iterate through in the EClass. Depending on the reference name, the reference is added to the corresponding element within RedundancyItems (e.g. Triggers, Targets, Contains). The method is completed once all EClassifiers within the specified EPackage have been processed.
+	
+	\item hasActions: This method is useful for using the data stored in RedundancyItem to determine whether certain actions are present in a list of redundant entries, in order to later check whether the identified elements fulfil the criteria and the redundancy pair is included in the report.
+	
+	It checks if there's a match with name of any primary/secondary action stored in the RedundancyItems object. If match is found, it immediately returns \textit{true}.
+	
+	\item hasEntitys: This method is used to determine whether certain secondary/primary entities  are present in the RedundancyItems object based on their name. For each item, it checks whether there is a match with the name of a primary/secondary entity stored in the RedundancyItems object. 
+	
+	If a match is found, \textit{true} is returned immediately, in order to later check whether the identified elements fulfil the criteria and the redundancy pair is included in the report.
 	
 	\item hasTargets: This method uses the content of a RedundancyItems object to determine whether targets are present in a list of founded redundant elements.
 	
-	It receives as input an array list with the names of the redundant elements and an object of the type RedundancyItems, which contains a collection of targets.
+	As input, it receives an array list with the names of the redundant elements and an object of the type RedundancyItems, which contains a collection of founded "Targets".
 	
-	The method checks whether there is a match with the name of any target stored in the RedundancyItems object. If a match is found between the elements, the method immediately returns true, which means that at least one target is present.
+	The method checks whether there is a match with the name of any targets reference stored in the RedundancyItems object. 
+	
+	If a match is found between the elements, the method immediately returns \textit{true}, which means that at least one targets reference is present, in order to later check whether the identified elements fulfil the criteria and the redundancy pair is included in the report.
 	
 	\item readJsonArrayFromFile: This method provides the ability to read JSON data from a file and convert it into a JSONArray object, handling cases where the file is empty or does not exist.
 
@@ -260,46 +274,61 @@ In this subsection, the method of the ReportExtractor class is described as foll
 	\item getUssTexts: This method ensures that the text of the specified US-pair is retrieved from the JSON file and properly assigned to the RedundancyItems object for further processing. It receives a US-pair and RedundancyItems as input. 
 	
 	It reads a JSON array from a file using the \textit{readJsonArrayFromFile} method, iterates over each JSON object in the array and compares the extracted US identifier with the US identifier extracted from the input US-pair. If a match is found, the text of the first and second USs is set in the redundancyItems object.
+	\item getRedundancyStatus: This method add statistics like count of main/benefit/total redundancies into JSON report. It receive as input redundancyItems and as output write the count of main/benefit/total redundancies into JSON report already defined in method highlightRedundancies.
+\end{enumerate}
+\subsubsection*{Methods for Highlighting Words using Hash Symbol(\#)}
+In order to distinguish redundancy words between a US-pair, in text of each US, we decide to highlighting redundant words using hash symbol like \enquote{ ... \#\textless word\textgreater\# ... }.
+
+The following methods in the ReprortExtractor class are responsible for highlighting redundancy words:
+\begin{enumerate}
+	\item writeUsText: This method reads the text of examined US-pair, highlights redundant element between them using \textit{highlightRedundancies} method, writes the highlighted text to a file, and records information about the redundant elements. 
 	
-	\item applyHashSymbols: This method is used to mark certain words within a substring with hash symbols (\#) at the beginning and end to ensure that they are distinguishable and can be easily identified or processed later. 
+	As input it receive a US-pair, a list of redundant pairs to store redundant pairs in it, an object RedundancyItems containing stored redundancy elements and a FileWriter object used for writing output.
 	
-	It takes a substring in which replacements are to be made and a field of matches containing the words to be surrounded with hash symbols. First, the field of matches is sorted in descending order of length and processed accordingly to avoid adding hash symbols to unwanted clauses. 
-	
-	For example, let's assume that we have \enquote{data} and \enquote{data format} as redundancy elements. If we continue first with \enquote{data} and then with \enquote{import data}, \enquote{import data} will be replaced by \enquote{import \#data\#}, which is not desired.
-	
-	\item hasMoreThanFour/SixHashSymbols: These methods receive a text from the US as input. They are used to check whether there are redundant clauses in the main part of the sentence (it can be one or two clauses). If yes, true is returned.
-	
-	\item applyHashSymbolPersona: This method identifies common triggers pairs between two segments of USs, marks them with hash symbols and returns the changed text segments together with the number of redundant trigger pairs. 
-	
-	As input, it receives a list of common trigger pairs between the USs, RedundancyItems and the segments of the USs. It iterates through the list of common trigger pairs and checks whether both elements of the trigger pair are present in both segments. 
-	
-	It then increments the redundancy count to keep track of the number of redundant trigger pairs. The output returned is the text of USs containing the modified text segments with hash symbols and the redundancy count.
-	
-	\item applyHashSymbolTargets: This method identifies common target pairs between two segments of USs, marks them with hash symbols and returns the changed text segments together with the number of redundant target pairs.
-	
-	As input, it receives a list of common target pairs between the USs, RedundancyItems and the segments of the USs. 
-	
-	It iterates through the list of common target pairs and checks whether both elements of the target pair are present in both segments. It then increments the redundancy count to keep track of the number of redundant target pairs. The output returned is the text of USs containing the modified text segments with hash symbols and the redundancy count.
-	
-	\item applyHashSymbolContaians: This method identifies common contain pairs between two segments of USs, marks them with hash symbols and returns the changed text segments together with the number of redundant contain pairs. 
-	
-	As input, it receives a list of common contain pairs between the USs, RedundancyItems and the segments of the USs. It iterates through the list of common contain pairs and checks whether both elements of the contain pair are present in both segments. 
-	
-	It then increments the redundancy count to keep track of the number of redundant contain pairs. The output returned is the text of USs containing the modified text segments with hash symbols and the redundancy count.
-	
-	\item highlightRedundancies: This method identifies redundancies between US-pair, applies hash symbols to highlight common items and updates the redundancy counts in the redundancyItems object. 
+	It extract the identifier of the two USs from US-pair, retrieves the text of the USs from JSON file and add them to RedundancyItems, invoke the \textit{highlightRedundancies} method to identify and highlight redundants between the USs, it writes the highlighted text of each US to the FileWriter. Finally, sets the redundant pair and count of redundancy clauses.
+	\item highlightRedundancies: This method identifies redundancies between US-pair, applies hash symbols using \textit{applyHashSymbols} method to highlight common items and updates the redundancy counts in the redundancyItems object. 
 	
 	It takes two parameters, redundancyItems and US-pair, which represents the pair of USs to be analysed. 
 	
-	It checks whether both USs contain a main clause part or whether one of them has a benefit part or whether both USs also have a benefit part. It applies hash symbols to common elements that only occur in the part of the sentence that occurs in the same segment (e.g. only main or only benefit part of the sentence). 
+	It checks whether both USs contain a main clause part or whether one of them has a benefit part or whether both USs also have a benefit part.
 	
-	In each condition, it checks if there are redundancy clauses in the main section, then persona is also highlighted. This method also updates the count of main/benefit/total redundancies and sets the changed text of USs. Finally, it returns the updated redundancyItems object.
+	It applies hash symbols to common elements that only occur in the part of the USs that occurs in the same part (e.g. only main or only benefit part of the USs). 
 	
-	\item writeUsText: This method reads the text of two user stories, highlights redundants between them, writes the highlighted text to a file, and records information about the redundants. 
+	In each condition, it checks if there are redundancy clauses in the main part, then persona is also highlighted using \textit{applyHashSymbolPersona} method. It also updates the count of main/benefit/total redundancies and sets the changed text of USs. Finally, it returns the updated redundancyItems object.
+	\item applyHashSymbols: This method is used to mark certain words within a substring with hash symbols (\#) at the beginning and end to ensure that they are distinguishable and can be easily identified or processed later. 
 	
-	As input it receive US-pair, array list of containing redundanted elements, a list of redundant pairs to store redundant pairs, an object type RedundancyItems containing redundancy items and a FileWriter object used for writing output.
+	It takes a substring in which replacements are to be made and a field of matches containing the words to be surrounded with hash symbols. First, the field of matches is sorted in descending order of length and processed accordingly to avoid adding hash symbols to unwanted clauses. 
+	\begin{example}
+		For example, let's assume that we have \enquote{data} and \enquote{data format} as redundancy elements. If we continue first with \enquote{data} and then with \enquote{import data}, \enquote{import data} will be replaced by \enquote{import \#data\#}, which is not desired.
+	\end{example}
+	\item hasMoreThanFour/SixHashSymbols: These methods receive a text from the US as input. They are used to check whether there are redundant clauses in the main part of the sentence (it can be one or two clauses). If so, \textit{true} is returned.
 	
-	It extract the names of the two USs from US-Pair, retrieves the text of the USs from JSON file and add them to RedundancyItems, invoke the highlightRedundancies method to identify and highlight redundants between the USs, it writes the highlighted text of each US to the FileWriter, it sets the redundant pair and count of redundancy clauses.
+	\item applyHashSymbolPersona: This method identifies common "Triggers" references, marks them with hash symbols and returns the changed text parts together with the count of redundant triggers references. 
+	
+	As input, it receives a list of common triggers between US-pair, RedundancyItems and the parts of the USs. It iterates through the list of common triggers and checks whether both elements(persona and primary action) of the triggers are present in both parts. 
+	
+	It then increments the redundancy count to keep track of the count of redundant triggers. The output returned, is the text of USs containing the manipulated text parts with hash symbols and the redundancy count in main part.
+	
+	\item applyHashSymbolTargets: This method identifies common targets references between two parts of USs, marks them with hash symbols and returns the changed text parts together with the count of redundant targets references.
+	
+	As input, it receives a list of common targets between the US-pair, RedundancyItems and the parts of the USs. 
+	
+	It iterates through the list of common targets and checks whether both elements (primary/secondary action and primary/secondary entity) of the targets are present. It then increments the redundancy count in examined part of USs to keep track of the count of redundant targets. 
+	
+	The output returned is the text of USs containing the manipulated text parts with hash symbols and the redundancy count in examined part(main or benefit).
+	
+	\item applyHashSymbolContaians: This method identifies common contains references between two parts of USs, marks them with hash symbols and returns the changed text parts together with the count of redundant contains references. 
+	
+	As input, it receives a list of common contains between the US-pair, RedundancyItems and the parts of the USs. It iterates through the list of common contains and checks whether both elements of the contains are present in both parts. It then increments the redundancy count to keep track of the count of redundant contains.
+	
+	The output returned is the text of USs containing the manipulated text parts with hash symbols and the redundancy count in examined part(main or benefit).
+	
+\end{enumerate}
+\subsubsection*{Methods related to Report Parts of USs}
+To show which part of the USs with redundancy words occur between a US-pair, we have split the individual parts of the USs and included them in the report:
+
+The following methods in the ReprortExtractor class are responsible for splitting and reporting the parts of the USs :
+\begin{enumerate}
 	
 	\item splitUsText: This method is used to split the text of two USs into separate sections based on the occurrence of redundancy clauses. 
 	
@@ -307,38 +336,52 @@ In this subsection, the method of the ReportExtractor class is described as foll
 	
 	It splits each US text into three parts using commas and saves the result in arrays. It iterates over parts of the first and second USs and searches for occurrences of hash symbol pairs. For each part, the number of hash symbol pairs found is counted. Finally, all parts of the records that contain hash symbols are written to a text file and a JSON file as well.
 	
-	\item writeUsSentencePart: This method facilitates the extraction and storage of highlighted sentence parts from USs in a file for further analysis or as a reference.
+	\item writeUsSentencePart: This method facilitates the extraction and storage of highlighted USs parts from US-pair in a textual report file for further analysis.
 	
-	As input, it receives the US-pair, RedundancyItems and a FileWriter allowing the extracted sentence parts to be written. It receives the text of the USs from the reundancyItems object and calls the \textit{splitUsText} method to split the US texts into sentence parts with highlighted elements. The extracted sentence parts are also written to the file using the FileWriter. Finally, the extracted sentence parts are saved in a JSON object for further processing and analysis.
+	As input, it receives the US-pair, RedundancyItems and a FileWriter allowing the extracted USs parts to be written. It receives the text of the USs from the reundancyItems object and calls the \textit{splitUsText} method to split the US-pair texts into USs parts with highlighted elements.
 	
+	The extracted USs parts are also written to the text and JSON report files, using the FileWriter for further processing and analysis.
 	
-	\item getRedundancyStatus: This method add statistics like count of main/benefit/total redundancies into JSON report. It receive as input redundancyItems and as output write the count of main/benefit/total redundancies into JSON report already defined in method highlightRedundancies.
-	
-
-	
+	\begin{example}
+		Take, for example, the following US-pair:
+		
+		\textit{user\_story\_60:} \#g22\# as an it staff member, I want to \#know\# \#how\# the \#data\# is \#used\#, so that I can determine what kind of basic services and functionalities are required.\\\\
+		\textit{user\_story\_04:} \#g22\# as a data manager, I want to \#know\# \#how\# the \#data\# is \#used\#, so that I can develop more detailed usage and support scenarios with researchers.\\\\
+		The following sentence parts are candidates for possible redundancies between user stories:\\\\
+		user\_story\_04:  I want to \#know\# \#how\# the \#data\# is \#used\#\\\\
+		user\_story\_60:  I want to \#know\# \#how\# the \#data\# is \#used\#\\\\
+		
+	\end{example}
 \end{enumerate}
-\subsubsection*{ReportExtractor Class: Methods related to Creating Table}
-The following methods in the ReprortExtractor class are responsible for creating a suitable table at the beginning of the text report:
+\subsubsection*{Methods related to Creating Table}
+The following methods in the ReprortExtractor class are responsible for creating a table at the beginning of the text report:
 \begin{enumerate}
-	\item writeTable: This method is used to write a table of potential redundancies between USs and the count of their total redundant elements, including the addition of the count of main and benefit redundancy elements using \textit{createTable} method.
+	\item writeTable: This method is used to write a table of potential redundancies between USs and the count of their total redundant clauses \textit{createTable} method.%, including the addition of the count of main and benefit redundancy clauses using \textit{createTable} method.
 	
-	As input, it receives a file object into which the table is inserted and a list of redundancy pairs objects containing information about pairs of redundant elements in USs.
+	As input, it receives a File object into which the table is inserted and a list of redundancy pairs containing information about redundant clauses in US-pars.
 	
-	It reads the existing content of the report file into a StringBuilder. It creates a table to display the potential redundancies between USs and the count of total redundancy elements. The table headers and contents are generated based on the redundant pairs. It calculates the maximum width for each column in the table to ensure proper formatting. Finally, the table content is written to the FileWriter, followed by the existing content stored in the report's StringBuilder.
+	It reads the existing content of the textual report file into a StringBuilder. It creates a table to display the potential redundancies between USs and the count of total redundancy clauses.
+	
+	The table headers and contents are generated based on the redundant pairs. It calculates the maximum width for each column in the table to ensure proper formatting. Finally, the table content is written to the FileWriter, followed by the existing content stored in the report's StringBuilder.
+	
+	\item createTable: This method prepares the content for the table in which potential redundancies between USs are displayed, taking into account the total redundancy count between each US-pairs based on the RedundantPair objects provided.
+	
+	As input, it receives a list of unique US-pairs for which the table is to be created and a list of RedundantPair objects containing information about redundant clauses between US-pairs.
+	
+	It initialises a two-dimensional array containing the contents of the table. The size of the table is determined by the count of unique pairs of USs plus one for the header row and column.
+	
+	It fills the header row and the first column of the table with unique pairs of US-pairs, replacing \enquote{user\_story} with \enquote{us} for the purpose of brevity.
+	
+	It calculates the maximum redundancy count between each US-pair by calling the method \textit{getTotalRedundanciesFromPair}. Finally, it fills the table with the total redundancy count. 
+	
+	The output is a two-dimensional array representing the contents of the table, with each cell containing the maximum redundancy count between the corresponding pair of USs.
 	
 	\item getTotalRedundanciesFromPair: This method makes it easier to retrieve the total number of redundancies between a US-pair from a list of RedundantPair objects.
 	
-	As input, it receives a list of RedundantPair objects containing information about pairs of redundant elements in USs, where the first and second USs are to be compared.
+	As input, it receives a list of RedundantPair objects containing information about redundant elements in US-pairs, where the first and second USs are to be compared.
 	
-	It iterates through each RedundantPair object in the RedundantPairs list in a loop and checks for each RedundantPair object whether the pair of USs matches. If a matching pair is found, the maximum redundancy number stored in this RedundantPair object is returned. If no matching pair is found, 0 is returned, indicating that there are no redundancies between the specified US-pairs.
+	It iterates through each RedundantPair object in the RedundantPairs list and checks for each RedundantPair object whether the examined US-pair matches as redundant US-pair. 
 	
-	\item createTable: This method prepares the content for the table in which potential redundancies between user stories are displayed, taking into account the total redundancy count between each pair of user stories based on the RedundantPair objects provided.
-	
-	As input, it receives a list of unique US-pairs for which the table is to be created and a list of RedundantPair objects containing information about pairs of redundant elements in USs.
-	
-	It initialises a two-dimensional array containing the contents of the table. The size of the table is determined by the count of unique pairs of USs plus one for the header row and column. It fills the header row and the first column of the table with unique pairs of US-pairs, replacing \enquote{user\_story} with \enquote{us} for the purpose of brevity. It calculates the maximum redundancy count between each pair of USs by calling the method \textit{getTotalRedundanciesFromPair}. Finally, it fills the table with the total redundancy count. 
-	
-	The output is a two-dimensional array representing the contents of the table, with each cell containing the maximum redundancy count between the corresponding pair of USs.
-		
+	If a matching pair is found, the maximum redundancy number stored in this RedundantPair object is returned. If no matching pair is found, \textit{zero} is returned, indicating that there are no redundancies between the examined US-pair.
 \end{enumerate}
 \input{Section/Redundancy_Implementation}
