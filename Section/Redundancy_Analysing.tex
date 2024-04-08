@@ -4,11 +4,6 @@
 In this section, we present an approach for syntactically analysing redundancy using the CRF tool, the Henshin and the CDA tool.
 
 In section \ref{redundancy_requirement} we present the requirements and functional needs that are used as input for the design phase to fulfil the requirements. In section \ref{desing} we explain the design decisions of the workflow shown in figure \ref{fig:design_phases} and explain how the architecture is structured and what the components and their classes look like. 
-\begin{figure}[h]
-	\centering 
-	\includegraphics[scale=0.35]{sequence_diagram}
-	\caption{Design phases}\label{fig:design_phases}
-\end{figure} 
 
 In Section \ref{redundancy_implementation} comes the implementation to show what we implemented and in Section \ref{redundancy_test} we show how we tested it. Finally, we apply our approach to 19 datasets of backlogs annotated with the CRF tool \footnote {https://github.com/ace-design/nlp-stories}. In Section \ref{redundancy_evaluation} we evaluate the results.
 \subsection{Requirements}\label{redundancy_requirement}
@@ -29,9 +24,46 @@ In order to accomplish the analysis of redundancy in USs we try to address follo
 \subsection{Design}\label{desing}
 % what are the design decisions of this workflow that I had at the beginning, then describe what happens step by step, what translation I made, what is the main design decision you made for this translation, what question and that is part of the design
 %In Desing should be how the architecture is based on which components and what is my own component, what does it use, what does the component look like, what class is there, is the class design, so everything comes from the Desing chapter
-In this section, the workflow process shown in figure \ref{fig:design_phases} is described step by step. It also explains which design decisions were made for this workflow and how the architecture is based on which components and classes.
+%In this section, the workflow process shown in Figure \ref{fig:design_phases} is described step by step. It also explains which design decisions were made for this workflow and how the architecture is based on which components and classes.
 
-To fulfil the requirements mentioned in \ref{redundancy_requirement}, we use the CRF tool \cite{mosser2022modelling} for the annotation of backlogs and the Henshin API \cite{arendt2010henshin} under Java programming language for the automatic generation of rules for each US in the backlog. Moreover, we use Henshin's CDA(conflict and dependency analysis) feature \cite{mens2007analysing} to automatically recognise redundancy US-pairs.\\\\
+%To fulfil the requirements mentioned in \ref{redundancy_requirement}, we use the CRF tool \cite{mosser2022modelling} for the annotation of backlogs and the Henshin API \cite{arendt2010henshin} under Java programming language for the automatic generation of rules for each US in the backlog. Moreover, we use Henshin's CDA(conflict and dependency analysis) feature \cite{mens2007analysing} to automatically recognise redundancy US-pairs.\\\\
+This section describes the workflow and architectural considerations that underpin the framework, as shown in Figure \ref{fig:design_phases}. A thorough step-by-step representation of the workflow is provided, along with a rationale for key design decisions and an explanation of the architectural composition, highlighting the integral components and classes.
+\begin{figure}[h]
+	\centering 
+	\includegraphics[scale=0.35]{design_phases}
+	\caption{Design phases}\label{fig:design_phases}
+\end{figure} 
+\subsubsection*{Design Overview}
+
+To fulfil the redundancy detection requirements specified in \ref{redundancy_requirement}, the system uses the CRF tool \cite{mosser2022modelling} to annotate backlogs. At the same time, the Henshin API \cite{arendt2010henshin}, which is used in a Java environment, enables the automatic generation of transformation rules for each US in the backlog. The use of Henshin's conflict and dependency analysis (CDA) \cite{mens2007analysing} is central to the automated identification of potentially redundant US-pairs, which is a cornerstone of framework design.
+
+The framework ingests a graph-based model generated with the CRF tool containing a refined and annotated backlog dataset that is critical for the recognition of \textit{entities}, \textit{actions}, \textit{personas} and \textit{benefits} within the USs \cite{mosser2022modelling}. The association of each \textit{persona} with a \textit{primary action} via \textit{triggers} relationships and the association of \textit{primary/secondary actions} with \textit{primary/secondary entities} as \textit{targets} relationships, as explained by Mooser et al, form the basis for the interpretive framework of the system\cite{arulmohan2023extracting}. The output, an annotated backlog dataset as a structured JSON file, separates the annotated USs by backlog to facilitate further processing.
+\begin{definition}[\textbf{Clause}]
+	In this context, a clause is constructed as a pair of words, each pair being linked by a set of predefined relational constructs. These constructs, which are central to the contextual structuring of USs, are described below:
+	\begin{itemize}
+		
+		\item Triggers: A relationship between a persona and an action that includes the invocation of the action by the persona within the narrative of a US.
+		
+		\item Targets: A relationship between an action and an entity means that the action influences the entity in question.
+		
+		\item Contains: relation between two entities, indicating that one entity contains another one, in which one entity merges into or is enclosed by another. 
+				
+	\end{itemize}
+	Including the specified clauses in the analysis framework ensures that the words identified in potentially redundant US-pairs are linked by one of the relational constructs outlined: \textit{Triggers}, \textit{Targets}, or \textit{Contains}. 
+	
+	This methodological approach supports the identification of redundancy not only on the basis of lexical similarity, but through the contextual relationships that determine the interactions within the US narratives.
+\end{definition}
+\paragraph{US labelling in JSON files}\label{workflow_nummerize_us}
+As the annotated USs in the JSON files do not contain identifiers, a customised Python script, \textit{nummerise\_us.py}, is used to assign an unique identifier to each US, which is stored in a JSON object named \textit{"US\_Nr"} \footnote{https://github.com/amirrabieyannejad/USs\_Annotation/tree/main/Script/numberise\_us}. This addition improves the system's ability to distinguish and process individual USs within the analytical pipeline.
+
+\paragraph{Creation of an Ecore meta model}\label{workflow_ecore}
+The creation of an Ecore meta-model is essential for rule generation in Henshin. The constructed meta-model, as shown in Figure \ref{fig:ecore_meta_model}, is based on the conceptual meta-model outlined in Figure \ref{fig:conceptual_metamodel} and ensures consistency with the JSON-structured data. This correspondence between the meta-model and the JSON representation underpins the rule generation and transformation processes of the system.
+\paragraph{Rule creation process}\label{workflow_rule_creator}
+The transition from identified USs to implementable transformation rules within Henshin is facilitated by the package \textit{org.eclipse.emf.henshin.model. compact}. The class \textit{RuleCreator} within the package \textit{org.henshin.backlog.code.rule} is crucial in this process as it uses different classes to instantiate transformation rules, nodes, edges and attributes. These components are annotated with actions such as \textit{Delete}, \textit{Create} or \textit{Preserve}, which are crucial for the subsequent application of CDA to recognise redundant US-pairs. This methodological approach improves the system's ability to detect redundancies and thus optimises the efficiency of the residue analysis process.
+
+\paragraph{Conflict and Dependency Analysis (CDA)} After the creation of transformation rules and the creation of the corresponding Henshin file by the \textit{RuleCreator} class, the system is able to perform a conflict and dependency analysis (CDA) to identify potential redundancy pairs.
+
+\paragraph{Extraction of text reports} The creation of a text report is a crucial step in consolidating the results of the conflict and dependency analysis (CDA), which aims to highlight essential information such as the identification of potentially redundant US-pairs, the enumeration of redundancy clauses, the categorisation of these clauses within the main or benefit parts of the USs and a tabulation of potentially redundant pairs alongside the total number of redundancy clauses.\\\\
 A detailed, step-by-step description of the workflow is given below:
 \subsubsection*{CRF Tool}\label{workflow_crf}
 As input, we receive a graph-based model generated by the CRF tool, which represents the refined and annotated dataset for the recognition of \emph{entities}, \emph{actions}, \emph{persons} and \emph{benefits} of USs \cite{mosser2022modelling}.
@@ -70,7 +102,7 @@ To generating rules we create a package named \textit{org.henshin.backlog.code.r
 \item \textit{org.eclipse.emf.henshin.model.compact.CNode}: Now that we have a transformation rule, we want to fill this rule with nodes, edges and attributes. To create a node within a transformation rule, we need the CRule class. To create an edge we need to reference two nodes together. The default action when specifying a node, edge or an attributes is the \textless\emph{preserve}\textgreater action. We can also specify a different action when we create a node or an edge, for example \textless\emph{delete}\textgreater or\textless\emph{create}\textgreater.
 \item org.henshin.backlog.code.rule.RuleCreator: We implement \textit{RuleCreator} class that creates a rule with annotated nodes, edges and attributes based on a JSON-file as input and a Henshin-file containing all rules as output, where each rule and its members(nodes, attributes, edges) correspond to the individual US and their JSON-objects/arrays in the JSON-file. 
 
-The most important design decision of this class is the way nodes, attributes and edges are annotated in order to be able to apply conflict and dependency analysis (CDA) for rules stored as a henshin file.
+The most important design decision of this class is the way nodes, attributes and edges are annotated in order to be able to apply conflict and dependency analysis (CDA) for rules stored as a Henshin file.
 
 We decided to annotate the \enquote{name} attribute of all Primary/Secondary Actions/Entities and their associated edges including \enquote{targets}, \enquote{triggers} and \enquote{contains} as \textless delete\textgreater action. 
 
@@ -79,16 +111,25 @@ The main goal is to increase the probability of identifying US-pairs characteris
 \subsubsection*{Methods of the RuleCreator Class}
 In this section, the methods of the RuleCreator class is described as follows:
 \begin{enumerate}
-	\item readJsonArrayFromFile: This method receives a JSON file as input. After reading, the JSON content is tokenised, parsed into a JSON array and the parsed JSON array is returned.
+	
 	\item assingCmodule: This method assign a CModule to a Ecore meta-model. It creates a new CModule object with the provided Henshin-file name, adds imports from the Ecore file, and returns the module.
+	
 	\item processJsonFile: It takes parsed JSON array as input and processes their attributes, such as persona, actions, entities, text and their edges, such as targets, triggers. Corresponding elements are created as output in a the Henshin transformation module (CModule).
+	
 	\item processRule: It takes the \enquote{US\_Nr} JSON-object as input and creates a new CRule with the name of unique US identifier in the CModule.
+	
 	\item processPersona: It receives as input the persona extracted from the JSON data and the associated CRule to create a new CNode representing the persona within the provided CRule and adds the attribute \enquote{name} with persona as value. Finally, the created CNode representing the persona is returned.
+	
 	\item processText: It receives as input US text extracted from JSON data and the associated CRule to create a new CNode representing the text within the provided CRule and adds the attribute \enquote{text} with US text as value. Finally, the created CNode representing the US text is returned.
+	
 	\item processActions: The processActions method is responsible for creating CNode objects that represent actions within the CModule. As parameters, it receives the JSON-object of the actions, the CNode-object representing the persona associated with the actions and the unique identifier of the US. Since the edge triggers only refer to the persona and the primary action, a new CNode is created for each primary action that represents the primary action within the provided CRule, an attribute \enquote{name} is added and an edge is created from the persona node to the primary action with the label \enquote{triggers}. For each secondary action, a new CNode is created to represent the action within the provided CRule and an attribute \enquote{name} is added to the action node.
+	
 	\item checkEntityIsTarget: It receives the name of the entity and the JSON-array with information about target edges. The method iterates through the JSON-array targets, which contains arrays that represent targets edges between actions and entities. It compares the targets entity with the specified entity. If there is a match, it returns true to indicate that the entity is a target.
+	
 	\item processEntities: It receives as parameters the JSON-object with information about the entities, the CRule object representing the US to which the entities belong and the JSON-array with information about the targets associated with the entities. The method checks whether primary/secondary entities are present, then creates a CNode for each primary/secondary entity and checks whether the entity is present in the target array. If this is the case, its attribute \enquote{name} is annotated for deletion. This method is used within the processContainsEdges method to determine whether an entity involved in a contains relationship is also a target of another entity.
+	
 	\item processContainsEdges: It receives the JSON-object to be processed, the JSON array with information about contains/target edges and the US identifier as parameters. It first checks whether both entities belong to contains edges. If both entities exist, an edge is created between them in CRule with the name \enquote{contains}. If one of the entities is a target of another entity (as specified in the targets array), the edge is annotated for deletion. If none of the entities is a target, the edge is annotated as \enquote{preserve}.
+	
 \end{enumerate}
 Figure \ref{fig:rule_creator_methods} shows the sequence diagram of the RuleCreator methods.
 \begin{figure}[h]
@@ -99,7 +140,7 @@ Figure \ref{fig:rule_creator_methods} shows the sequence diagram of the RuleCrea
 \subsubsection*{Conflicting and Dependency Analysis}
 After the rules and the corresponding henshin file have been created by the RuleCreator class, we are now able to pass them to the conflict and dependency analysis (CDA) to find potential redundancy pairs.
 
-Since the analysis of conflicts and dependencies related to the \textit{attribute} is not yet considered in the CPA API \footnote{https://wiki.eclipse.org/Henshin/conflict\_and\_Dependency\_Analysis}, we decided to use the user interface (UI) of the CPA extension of Henshin, which supports analysis of conflict and dependencies of rules through the interactive use of CPA.
+Since the analysis of conflicts and dependencies related to the \textit{attribute} is not yet considered in the CDA API \footnote{https://wiki.eclipse.org/Henshin/conflict\_and\_Dependency\_Analysis}, we decided to use the user interface (UI) of the CDA extension of Henshin, which supports analysis of conflict and dependencies of rules through the interactive use of CDA.
 
 To apply CDA to Henshin files, we just need to right-click on the Henshin file and select \textit{Henshin}\textgreater\textit{conflict and Dependency Analysis} from the context menu as shown in Figure \ref{fig:henshin_context_menu}.
 \begin{figure}[h]
@@ -149,10 +190,15 @@ A user interface then appears, prompting to select the rule sets to be analysed 
 \subsubsection*{Extracting Textual Report}
 To create a lightweight report for the group or individual in question, we need to extract the key information from the CDA report, e.g. redundancy US-pair, redundancy clauses, count of redundancy clauses in each part of the US (main or benefit part), and create a report as a text file with the following information:
 \begin{itemize}
+	
 	\item A table of potential redundant pairs with the number of total redundancy clauses.
+	
 	\item Founded potential redundant US-pairs.
+	
 	\item Redundancy words and clauses of founded US-pairs. Clauses consisting of two words that have one of the relationships triggers, targets or contains.
+	
 	\item Text of US-pairs whose redundancy words are marked with a hash symbol (\#).
+	
 	\item Parts of the sentence in which words and clauses are found.
 \end{itemize}
 Listing \ref{list:textual_report_sample} illustrates the example of the textual report. In this case, the report only contains one US-pair.
@@ -167,28 +213,55 @@ Listing \ref{list:textual_report_sample} illustrates the example of the textual 
 \end{MyListing}
 In order to extracting a textual report associated with a specific backlog, we implement a class called \textit{ReportExtractor} within the package \textit{org.henshin.backlog.code.report}, which include the following classes form the package \textit{org.eclipse.emf.ecore}\footnote{https://download.eclipse.org/modeling/emf/emf/javadoc/2.7.0/org/eclipse/emf/ecore/}. These classes are important for reading the content of minimal-model.ecore:
 \begin{itemize}
+	
 	\item org.eclipse.emf.ecore.resource.Resource: A resource of an appropriate type is created by a resource factory; a resource set indirectly creates a resource using such a factory. A resource is typically contained by a resource set, along with related resources.
+	
 	\item org.eclipse.emf.ecore.resource.ResourceSet: A resource set manages a collection of related resources and notifies about changes to this collection. It provides a tree of content. A collection of adapter factories supports the search for an adapter via a registered adapter factory. 
+	
 	\item org.eclipse.emf.ecore.EObject: EObject is the root of all modelled objects, therefore all method names start with "E" to distinguish the EMF methods from the client methods. It provides support for the behaviour and functions that are common to all modelled objects.
+	
 	\item org.eclipse.emf.ecore.EPackage: A representation of the model object \enquote{EPackage}.
+	
 	\item org.eclipse.emf.ecore.EClassifier: A representation of the model object \enquote{EClassifier}.
+	
 	\item org.eclipse.emf.ecore.EClass: A representation of the model object \enquote{EClass}.
+	
 	\item org.eclipse.emf.ecore.EAttribute: A representation of the model object \enquote{EAttribute}.
+	
 	\item org.eclipse.emf.ecore.EReference:  A representation of the model object \enquote{EReference}.
 	
 \end{itemize}
 \subsubsection*{Storing Redundancy Items into RedundancyItems Class}
+To save the redundant elements found by the CDA tool, we implement classes to save the elements according to their type.
+
+Figure \ref{fig:redundancyItems_diagram} is a sequence diagram that illustrates the communication between the classes related to the storing of redundancy items founded by the CDA tool.
+\begin{figure}[h]
+	\centering 
+	\includegraphics[scale=0.2]{redundancyItems_diagram}
+	\caption{Sequence diagram for the classes to save redundancy elements accordingly}\label{fig:redundancyItems_diagram}
+\end{figure} 
 The following classes were created to represent the extracted model object accordingly. All these classes are extensions of the class \textit{RedundancyItems}, which contains all extracted model object from \enquote{minimal-model.ecore} such as \enquote{EClass}, \enquote{EAttribute} or \enquote{EReference}:
+
 \begin{itemize}
+	
 	\item PrimaryAction/SecondaryAction: Which has only saved the EClass specified by \enquote{Primary/Secondary Action} and the EAttribute model object with the methods \textit{getType} to retrieve the saved EClass and \textit{getName} to retrieve the saved EAttribute.
-		\item PrimaryEntity/SecondaryEntity: Which has only saved the EClass specified by \enquote{Primary/Secondary Entity} and the EAttribute model object with the methods \textit{getType} to retrieve the saved EClass and \textit{getName} to retrieve the saved EAttribute.
-		\item Targets: The EClass specified by \enquote{Primary/Secondary Action} as \textit{outgoing edge} and an EAttribute model object as \textit{incoming edge} with \enquote{Primary/Secondary Entity}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored EAttribute.
-		\item Contains: The EClass specified by \enquote{Primary/Secondary Entity} as \textit{outgoing edge} and an EAttribute model object as \textit{incoming edge} with \enquote{Primary/Secondary Entity}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored EAttribute.
-		\item Triggers: The EClass specified by \enquote{Persona} as \textit{outgoing edge} and an EAttribute model object as \textit{incoming edge} with \enquote{Primary Action}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored EAttribute.
-		\item RedundantPair: Stores the identifier of the two USs that were founded as a redundant pair. It also stored the total count of redundancy clauses within the US-pair.
-		\item TargetsPair: Stores effective value of \enquote{\textit{Primary/Secondary Action}} and \enquote{\textit{Primary/Secondary Entity}} in action and entity fields accordingly.
-		\item ContainsPair: Stores effective value of \enquote{\textit{Primary/Secondary Entity}} as \enquote{\textit{parent/child entity}} due to the fact that parent entity is a containment of child entity.
-		\item TriggersPair: Stores effective value of \enquote{\textit{Persona}} as a persona and \enquote{\textit{Primary Action}} as an action.
+	
+	\item PrimaryEntity/SecondaryEntity: Which has only saved the EClass specified by \enquote{Primary/Secondary Entity} and the EAttribute model object with the methods \textit{getType} to retrieve the saved EClass and \textit{getName} to retrieve the saved EAttribute.
+	
+	\item Targets: The EClass specified by \enquote{Primary/Secondary Action} as \textit{outgoing edge} and an EAttribute model object as \textit{incoming edge} with \enquote{Primary/Secondary Entity}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored EAttribute.
+	
+	\item Contains: The EClass specified by \enquote{Primary/Secondary Entity} as \textit{outgoing edge} and an EAttribute model object as \textit{incoming edge} with \enquote{Primary/Secondary Entity}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored EAttribute.
+	
+	\item Triggers: The EClass specified by \enquote{Persona} as \textit{outgoing edge} and an EAttribute model object as \textit{incoming edge} with \enquote{Primary Action}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored EAttribute.
+	
+	\item RedundantPair: Stores the identifier of the two USs that were founded as a redundant pair. It also stored the total count of redundancy clauses within the US-pair.
+	
+	\item TargetsPair: Stores effective value of \enquote{\textit{Primary/Secondary Action}} and \enquote{\textit{Primary/Secondary Entity}} in action and entity fields accordingly.
+	
+	\item ContainsPair: Stores effective value of \enquote{\textit{Primary/Secondary Entity}} as \enquote{\textit{parent/child entity}} due to the fact that parent entity is a containment of child entity.
+	
+	\item TriggersPair: Stores effective value of \enquote{\textit{Persona}} as a persona and \enquote{\textit{Primary Action}} as an action.
+	
 \end{itemize}
 The class RedundancyItems contains following methods which are crucial for class ReportExtractor:
 \begin{itemize}
@@ -204,8 +277,17 @@ The class RedundancyItems contains following methods which are crucial for class
 	
 	As input, it takes several parameters, including a "FileWriter" to write to the textual report's file, lists of different pairs of "Targets", "Contains" and "Triggers", and a JSON-object to store the report data in JSON format, which is crucial for evaluation.
 \end{itemize}
-\subsubsection*{ReportExtractor Class: Methods related to Extracting Report}
-In this subsection, the method of the ReportExtractor class is described as follows:
+\subsubsection*{ReportExtractor Class: Methods related to Extracting Redundancy Items}
+To extract the redundant elements and save them in a redundancyItems object, we must first iterate through all existing \textit{minimal-mode.ecore} files and extract the redundant reduandcy item from each EPackage.
+
+Figure \ref{fig:report_extractor_diagram} is a sequence diagram that illustrates the communication between the processes related to the extraction of redundancy items founded by the CDA tool and their storage in a RedundancyItems object.
+\begin{figure}[h]
+	\centering 
+	\includegraphics[scale=0.35]{report_extractor_diagram}
+	\caption{Sequence diagram for the process of extracting redundancy items founded by the CDA tool.}\label{fig:report_extractor_diagram}
+\end{figure} 
+
+The following methods in the ReprortExtractor class are responsible for extracting the redundancies found by the CDA tool:
 \begin{enumerate}
 	\item extractReports: This method orchestrates the extraction and analysis of created CDA report from a directory containing conflicted US-pairs and their associated reasons(conflict reason), and generates both text and JSON reports for further investigation and processing.
 	
@@ -271,13 +353,53 @@ In this subsection, the method of the ReportExtractor class is described as foll
 
 	It receives the file path of the JSON file to be read as input. An attempt is made to open the specified file and check whether the file is empty or does not exist. If the file exists and is not empty, it reads the JSON data from the file and creates a JSON array object from the JSON data read from the file and returns the JSON array object with the JSON data.
 	
-	\item getUssTexts: This method ensures that the text of the specified US-pair is retrieved from the JSON file and properly assigned to the RedundancyItems object for further processing. It receives a US-pair and RedundancyItems as input. 
 	
-	It reads a JSON array from a file using the \textit{readJsonArrayFromFile} method, iterates over each JSON object in the array and compares the extracted US identifier with the US identifier extracted from the input US-pair. If a match is found, the text of the first and second USs is set in the redundancyItems object.
 	\item getRedundancyStatus: This method add statistics like count of main/benefit/total redundancies into JSON report. It receive as input redundancyItems and as output write the count of main/benefit/total redundancies into JSON report already defined in method highlightRedundancies.
+\end{enumerate}
+\subsubsection*{Methods for Extracting Data from Dataset of Backlog}
+To get information about USs such as text, redundant clauses in targets/contains/triggers references between US-pairs, we need to extract data from the dataset stored in the JSON file.
+
+Figure \ref{fig:json_data_extractor_diagram} illustrate the communication between three processes.
+\begin{figure}[h]
+	\centering 
+	\includegraphics[scale=0.35]{data_extractor_diagram}
+	\caption{Sequence diagram for the processes of extracting common entries between two USs from dataset of the backlog}\label{fig:json_data_extractor_diagram}
+\end{figure} 
+The following methods in the ReprortExtractor class are responsible for extracting data from dataset within JSON file:
+\begin{enumerate}
+\item readJsonArrayFromFile: This method receives a JSON file as input. After reading, the JSON content is tokenised, parsed into a JSON array and the parsed JSON array is returned.
+
+\item getUssTexts: This method ensures that the text of the specified US-pair is retrieved from the JSON file and properly assigned to the RedundancyItems object for further processing. It receives a US-pair and RedundancyItems as input. 
+
+It reads a JSON array from a file using the \textit{readJsonArrayFromFile} method, iterates over each JSON object in the array and compares the extracted US identifier with the US identifier extracted from the input US-pair. If a match is found, the text of the first and second USs is set in the redundancyItems object.
+
+\item getCommonTargets: Used to determine overlaps in "Targets" references (pairs of actions and entities) between specified US-pairs from a JSON file.
+
+It receives the identifiers of the US-pair as input. After it finds the US objects, it compares each pair of entries (actions and entities) in "Targets" references of the two USs and looks for matches.
+
+The output is the matches, i.e. the list of common pairs of actions and entities, in "Targets" reference.
+
+\item getCommonContains: Used to determine overlaps in "Contains" references (pairs of entities) between specified US-pairs from a JSON file.
+
+It receives the identifiers of the US-pair as input. After it finds the US objects, it compares each pair of entities in "Contains" references of the two USs and looks for matches.
+
+The output is the matches, i.e. the list of common pairs of entities, in "Contains" reference.
+
+\item getCommonTriggers: Used to determine overlaps in "Triggers" references (pairs of personas and actions) between specified US-pairs from a JSON file.
+
+It receives the identifiers of the US-pair as input. After it finds the US objects, it compares each pair of entries (personas and actions) in "Triggers" references of the two USs and looks for matches.
+
+The output is the matches, i.e. the list of common pairs of personas and actions, in "Triggers" reference.
 \end{enumerate}
 \subsubsection*{Methods for Highlighting Words using Hash Symbol(\#)}
 In order to distinguish redundancy words between a US-pair, in text of each US, we decide to highlighting redundant words using hash symbol like \enquote{ ... \#\textless word\textgreater\# ... }.
+
+Figure \ref{fig:highlight_diagram} is a sequence diagram that illustrates the communication between processes related to the highlighting of redundancy words.
+\begin{figure}[h]
+	\centering 
+	\includegraphics[scale=0.35]{highlight_diagram}
+	\caption{Sequence diagram for the process of highlighting redundancy clauses in the Texts of US-pair}\label{fig:highlight_diagram}
+\end{figure} 
 
 The following methods in the ReprortExtractor class are responsible for highlighting redundancy words:
 \begin{enumerate}
@@ -325,8 +447,13 @@ The following methods in the ReprortExtractor class are responsible for highligh
 	
 \end{enumerate}
 \subsubsection*{Methods related to Report Parts of USs}
-To show which part of the USs with redundancy words occur between a US-pair, we have split the individual parts of the USs and included them in the report:
-
+To show which part of the USs with redundancy words occur between a US-pair, we have split the individual parts of the USs and included them in the report.
+Figure \ref{fig:splitUsText_diagram} is a sequence diagram that illustrates the communication between processes related to the splitting of parts of a US-pair containing redundancy words.
+\begin{figure}[h]
+	\centering 
+	\includegraphics[scale=0.35]{splitUsText_diagram}
+	\caption{Sequence diagram for the process of splitting parts of US-pair containing redundancy word}\label{fig:splitUsText_diagram}
+\end{figure} 
 The following methods in the ReprortExtractor class are responsible for splitting and reporting the parts of the USs :
 \begin{enumerate}
 	
@@ -349,11 +476,17 @@ The following methods in the ReprortExtractor class are responsible for splittin
 		\textit{user\_story\_04:} \#g22\# as a data manager, I want to \#know\# \#how\# the \#data\# is \#used\#, so that I can develop more detailed usage and support scenarios with researchers.\\\\
 		The following sentence parts are candidates for possible redundancies between user stories:\\\\
 		user\_story\_04:  I want to \#know\# \#how\# the \#data\# is \#used\#\\\\
-		user\_story\_60:  I want to \#know\# \#how\# the \#data\# is \#used\#\\\\
-		
+		user\_story\_60:  I want to \#know\# \#how\# the \#data\# is \#used\#	
 	\end{example}
 \end{enumerate}
 \subsubsection*{Methods related to Creating Table}
+The summary of potential redundancy between US-pairs is presented in a table, which makes it easy to find out which US-pairs have been identified as potentially redundant US-pairs and how many redundancy elements there are in total.
+Figure \ref{fig:writeTable_diagram} is a sequence diagram that illustrates the communication between the processes related to creating tables and addition to text reports.
+\begin{figure}[h]
+	\centering 
+	\includegraphics[scale=0.35]{writeTable_diagram}
+	\caption{Sequence diagram for the process of creating and adding tables to the textual report}\label{fig:writeTable_diagram}
+\end{figure} 
 The following methods in the ReprortExtractor class are responsible for creating a table at the beginning of the text report:
 \begin{enumerate}
 	\item writeTable: This method is used to write a table of potential redundancies between USs and the count of their total redundant clauses \textit{createTable} method.%, including the addition of the count of main and benefit redundancy clauses using \textit{createTable} method.

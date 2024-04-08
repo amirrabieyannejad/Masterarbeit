@@ -3,8 +3,9 @@ In this section, we explain the objective and scope of the implementation, the s
 
 The entire implementation is available in the GitHub repository \footnote{https://github.com/amirrabieyannejad/USs\_Annotation/tree/main}.
 \subsubsection*{Objective and Scope}
-The goal and scope of the work is divided into three phases. Firstly, converting the USs annotated by the CRF tool into graph transformation rules; secondly, using the CDA function of the Henshin to automatically report redundancy between USs; thirdly, extracting important information from the CDA report into a text report. For further analysis, we stored the information in a JSON file to be able to import the data into another platform such as MS Excel.
-Figure \ref{fig:implementation_phases} illustrates the implementation phases mentioned.
+The goal and scope of the work is divided into three phases. Firstly, converting the USs annotated by the CRF tool into graph transformation rules; secondly, using the CDA tool of the Henshin to automatically report redundancies between USs pairwise; thirdly, extracting important information from the CDA report into a text report. For further analysis, we stored the information in a JSON file to be able to import the data into another platform such as Excel.
+
+Figure \ref{fig:implementation_phases} illustrates the mentioned implementation phases.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.3]{implementation_phases}
@@ -12,19 +13,28 @@ Figure \ref{fig:implementation_phases} illustrates the implementation phases men
 	\caption{Three Implementation phases}\label{fig:implementation_phases}
 \end{figure} 
 \subsubsection*{Methodology}
+This section explains and introduces tools that are required during the development process.
+
 Following approach and tools are necessary in order to develop our workflow:
 \begin{itemize}
-	\item Eclipse as IDE: Eclipse is an integrated development environment (IDE) used in computer programming. It contains a base work workspace and an extensible plug-in system for customizing the environment.
-	\item Eclipse Modeling Project\footnote{https://eclipse.dev/modeling/}: The Eclipse Modeling Project focuses on the evolution and promotion of model-based development technologies within the Eclipse community by providing a unified set of modelling frameworks, tooling, and standards implementations.
+	\item Eclipse as IDE\footnote{https://eclipseide.org/}: Eclipse is an integrated development environment (IDE) used in computer programming. It contains a base work workspace and an extensible plug-in system for customizing the environment.
+	
+	\item Eclipse Modeling Project\footnote{https://eclipse.dev/modeling/}: It focuses on the evolution and promotion of model-based development technologies within the Eclipse community by providing a unified set of modelling frameworks, tooling, and standards implementations.
+	
 	\item Eclipse Modeling Framework (EMF)\footnote{https://eclipse.dev/modeling/emf/}: The EMF project is a modeling framework and code generation facility for building tools and other applications based on a structured data model. From a model specification described in XMI, EMF provides tools and runtime support to produce a set of Java classes for the model, along with a set of adapter classes that enable viewing and command-based editing of the model, and a basic editor.
-	\item Henshin\footnote{https://wiki.eclipse.org/Henshin}: Henshin is an in-place model transformation language for the Eclipse Modeling Framework (EMF). It supports direct transformations of EMF model instances (endogenous transformations), as well as generating instances of a target language from given instances of a source language (exogenous transformations)
-	\item Henshin's CDA feature\footnote{https://wiki.eclipse.org/Henshin/Conflict\_and\_Dependency\_Analysis}: Henshin's conflict and dependency analysis feature enables the detection of potential conflicts and dependencies of a set of rules.
-	\item GitHub as version control: GitHub is a developer platform that allows developers to create, store, manage and share their code. It uses Git software, providing the distributed version control of Git plus access control, bug tracking, software feature requests, task management, continuous integration, and wikis for every project.
+	
+	\item Henshin\footnote{https://wiki.eclipse.org/Henshin}: Henshin is an in-place model transformation language for the Eclipse Modeling Framework (EMF). It supports direct transformations of EMF model instances (endogenous transformations), as well as generating instances of a target language from given instances of a source language (exogenous transformations).
+	
+	\item Henshin's CDA feature\footnote{https://wiki.eclipse.org/Henshin/Conflict\_and\_Dependency\_Analysis}: Henshin's conflict and dependency analysis (CDA) feature enables the detection of potential conflicts and dependencies of a set of rules.
+	
+	\item Java as programming language\footnote{https://www.java.com/de/}: Java is a widely used object-oriented programming language and software platform that is used to implement the Henshin and EMF APIs, which are critical to our approach to utilising them. Therefore, we use Java as our programming language.
+	
+	\item GitHub as version control\footnote{https://github.com/}: GitHub is a developer platform that allows developers to create, store, manage and share their code. It uses Git software, providing the distributed version control of Git plus access control, bug tracking, software feature requests, task management, continuous integration, and wikis for every project.
 \end{itemize} 
 \subsubsection*{Data Structures}
-As already mentioned, the datasets annotated with the CRF tool have the JSON format, the structure of which is very important in the Java classes RuleCreator and ReportExtractor. Therefore, understanding the JSON format provided is crucial for further action.
+The datasets of the backlogs annotated with the CRF tool have the JSON format, the structure of which is very important in the Java classes \textit{RuleCreator} and \textit{ReportExtractor}. Therefore, understanding the JSON format provided is crucial for the further procedure.
 
-Each JSON file for a dataset contains a JSON array in which each US entry is defined as a JOSN object. Listing\ref{list:json_format} illustrates the format used for the US entry.
+Each JSON file for a backlog dataset contains a JSON-array in which each US entry is defined as a JOSN-object. Listing \ref{list:textual_report_sample} illustrates the format used for the US entry.
 \begin{MyListing}
 	\paragraph{}
 	\hrule
@@ -35,76 +45,86 @@ Each JSON file for a dataset contains a JSON array in which each US entry is def
 \end{MyListing}
 To interact with the entries in JSON file, we need to distinguish between the entries that are defined as JSON-objects, such as: {Text, Action, Entity, Benefit, US\_Nr} and the entries that are defined as a JSON-array, such as: {Persona, Primary/Secondary Action, Primary/Secondary Entity, Triggers, Targets, Contains}.
 
-In order to parsing and manipulate JSON file, we use \enquote{org.json} library which provide us the classes as follow:
+In order to parsing JSON file, we use \enquote{org.json} library which provide us the classes as follow:
 \begin{itemize}
 	\item \enquote{JSONObject}: An unordered collection of key and value pairs.
 	\item \enquote{JSONArray}: Provide an ordered sequence of values.
-	 \item \enquote{JSONTokener}: A tool that breaks a piece of text into a series of tokens that can be used by JSONObject or JSONArray to parse JSON strings.
+	 \item \enquote{JSONTokener}: A tool that breaks a piece of text into a series of tokens that can be used by JSONObject or JSONArray to parse JSON entries.
 \end{itemize}
 %Provide detailed explanations of key implementation aspects, such as algorithms, data structures, design patterns, and any custom solutions developed. Discuss any challenges faced during implementation and how you addressed them.
-
 \subsubsection*{Error Handling}
-In annotated datasets, there have been some issues such as defective data that force us to handle them properly. Therefore, we implement/use the following \enquote{Exceptions} to accurately distinguish and handle them.
+There were erroneous data in datasets that force us to handle them correctly. Therefore, we implement/use the following exceptions to accurately distinguish and handle them.
 
-The following classes, which extend \textit{Exception} calss, are used in the \textit{org.henshin .backlog.code.rule} package and refer to problems with the JSON, which contains the dataset of backlogs and Ecore files needed to address the creation of rules based on it:
+The following classes, which extend the \textit{Exception} class, are used in the \textit{org.henshin .backlog.code.rule} package and relate to error handling related to the JSON entries in the dataset of the backlogs and to the Ecore meta-model required to create the rules based on it:
 \begin{itemize}
-	\item ActionInJsonFileNotFound: Is triggered if the entry \textit{Action}, which contains \textit{Primary/Secondary Action}, is not present in the JSON file and its absence should be reported.
-	\item ContainsInJsonFileNotFound: Is triggered if the entry in \textit{Contains} is not present as \textit{Primary/Secondary Entity} in the JSON file and its absence should be reported.
-	\item EcoreFileNotFound: Is triggered if the required ECore meta-model file could not be found and should also be reported.
-	\item EdgeWithSameSourceAndTarget: Refers to the creation of edges in graph transformation rules and is triggered if the source and target of the edge have already been created, then the duplicate edge should be avoided.
 	\item EmptyOrNotExistJsonFile: Is triggered if the JSON file could not be found in the file system.
+	
+	\item ActionInJsonFileNotFound: Is triggered if the entry \textit{Action}, which contains \textit{Primary/Secondary Actions}, is not present in the JSON file and its absence should be reported.
+	
 	\item EntityInJsonFileNotFound: Is triggered if the entry \textit{Entity}, which contains \textit{Primary/Secondary Entity}, is not present in the JSON file and its absence should be reported.
+	
 	\item PersonaInJsonFileNotFound: Is triggered if the entry \textit{Persona} does not exist in the JSON file for a specific US.
-	\item TargetsInJsonFileNotFound: Is triggered if the entry \textit{Targets} does not exist in the JSON file for a specific US.
+	
 	\item TextInJsonFileNotFound: Is triggered if the entry \textit{Text} does not exist in the JSON file for a specific US. 
-	\item TriggersInJsonFileNotFound: Is triggered if the entry \textit{Triggers} does not exist in the JSON file for a specific US. 
+	
 	\item UsNrInJsonFileNotFound: Is triggered if the entry \textit{Us\_Nr} does not exist in the JSON file for a specific US.
+
+	\item EdgeWithSameSourceAndTarget: Refers to the creation of edges in graph transformation rules and is triggered if the source and target of the edge have already been created, then the duplicate edge should be avoided.
+		
+	\item TargetsInJsonFileNotFound: Is triggered if the entry \textit{Targets} does not exist in the JSON file for a specific US.
+	
+	\item ContainsInJsonFileNotFound: Is triggered if the entry in \textit{Contains} is not present as \textit{Primary/Secondary Entity} in the JSON file and its absence should be reported.
+	
+	\item TriggersInJsonFileNotFound: Is triggered if the entry \textit{Triggers} does not exist in the JSON file for a specific US. 
+	
+	\item EcoreFileNotFound: Is triggered if the required ECore meta-model file could not be found and should also be reported.
 \end{itemize}
 Within the \textit{org.henshin.backlog.code.report} package, special classes that extend the \textit{Exception} class are designed to solve problems related to the CDA report directory, which encapsulates all US-pairs together with the associated conflict reasons. These classes include:
 \begin{itemize}
-	\item \textbf{CdaReportDirIsEmpty}: This exception is called if the CDA report directory is found but has no content.
-	\item \textbf{CdaReportDirIsNotADirectory}: This exception is thrown in scenarios where the path provided for the CDA report directory is either not a directory (e.g. it is a file) or the specified path does not lead to a directory.
-	\item \textbf{CdaReportDirNotFound}: This exception is triggered if the CDA report directory cannot be found within the specified path.
+	\item CdaReportDirIsEmpty: This exception is called if the CDA report directory is found but has no content.
+	\item CdaReportDirIsNotADirectory: This exception is thrown in scenarios where the path provided for the CDA report directory is either not a directory (e.g. it is a file) or the specified path does not lead to a directory.
+	\item CdaReportDirNotFound: This exception is triggered if the CDA report directory cannot be found within the specified path.
 \end{itemize}
 \subsubsection*{Structure of a US}
-A US is divided into two different components:
+A US is divided into two different parts:
 \begin{itemize}
+	
 	\item The \textit{main part}, which encapsulates the persona, the intended functionality and the resources required to execute the action.
+	
 	\item The \textit{benefit part}, which formulates the potential benefit for the end user and typically begins with the phrase \enquote{, so that}.
+	
 \end{itemize}
 In the implementation phase, the delineation and checking of redundancy clauses within USs requires a methodical approach, especially when distinguishing between the main and the benefit part of a US-pair. This distinction is crucial to ensure that redundancy identifications within one part are not mistakenly transferred to the other. Consequently, the analytical framework comprises three conditions, each of which specifies its own methodology for case processing:
-
 \begin{itemize}
-	\item Presence of benefit in both USs of the redundancy-pair: if a benefit is identifiable in each US of the pair, a process of separation is used to split the main content from the benefit parts. After this separation, a targeted search for redundancy clauses is carried out within the main part, whereby identified redundancies are annotated with a hash symbol (\#). This process is repeated for the benefit parts to ensure a thorough check and marking of redundancies within each individual part.
+	\item Presence of benefit in both USs of the redundancy-pair: if a benefit is identifiable in each US of the pair, a process of separation is used to split the main content from the benefit parts. After this separation, a targeted search for redundancy clauses is carried out only within the main part, whereby identified redundancies are annotated with a hash symbol (\#). This process is repeated for the benefit parts to ensure a thorough check and marking of redundancies within each individual part.
+	
 	\item Exclusive presence of a benefit in one US of the redundancy-pair: In scenarios where only one US of the pair contains a benefit part, the analysis is limited to the main part of both USs. The aim remains the identification and annotation of redundancy clauses within this part. The lone benefit part remains in its original state and is excluded from the redundancy check.
 
-	\item Absence of benefit parts in both USs of the pair: If neither of the two USs of the redundancy-pair contains a benefit part, the focus shifts completely to the main parts. The investigation is designed to highlight redundancy clauses within these part, whereby the benefit parts are not taken into account due to their non-existence.
+	\item Absence of benefit parts in both USs of the pair: If neither of the two USs of the redundancy-pair contains a benefit part, the focus shifts completely to the main parts. The investigation is designed to highlight redundancy clauses within these parts, whereby the benefit parts are not taken into account due to their non-existence.
+	
 \end{itemize}
 This structured and segmented approach ensures precise and efficient identification of redundancy clauses within the USs, optimising the clarity and effectiveness of textual report.
 
 \subsubsection*{Limitations}
-Following limitation which at the beginning should be clarify:
+There are technical limitations that are causing us to change our implementation strategy.
+The following limitations should be clarified at the beginning:
 \begin{itemize}
-	\item We have to use Eclipse version 2023-03 because Henshin files cannot be installed with the latest version of Eclipse.
-	\item We have to work with Java because all Henshin files APIs are not available in other programming languages like Python.
-	\item CDA API is not yet implemented for considering relationships and dependencies between attributes. This forces us to use the graphical CDA interface instead of the CDA API.
+	\item Use Eclipse version 2023-03, as Henshin version 4 cannot be installed with the latest version of Eclipse.
+	
+	\item Working with Java as the programming language, as the Henshin and CDA APIs are only available in the Java programming language.
+	
+	\item CDA API is not yet implemented to take into account conflicts and dependencies for attributes that are crucial for our approach. This forces us to use the CDA graphical user interface(GUI) instead of the CDA API.
+	
 	\item Lack of Henshin documentation regarding methods and classes, which makes it time consuming to understand the methods and make the right decision.
 \end{itemize}
-
-
 \subsection{Test}\label{redundancy_test}
 In this section, we aim to validate certain functionalities, check the system requirements and ensure reliability and robustness of implemented classes and methods. As a test strategy, we perform unit tests with \textit{JUnit} version 4\footnote{https://junit.org/junit4/} as version 4 is more suitable and compatible with Eclipse version 2023-03.
-
-\subsubsection*{Test Environment Configuration}
-In the main project \textit{org.henshin.backlog}, we create a separate package called \textit{org.henshin.backlog.test}. This package contains two Java classes \textit{ReportExtractorTest.java} and \textit{RuleCreator\_Test.java}, each of which corresponds to the corresponding Java source code.
-
-Within the main project \textit{org.henshin.backlog}, we create a separate package called \textit{org.henshin.backlog.test}, which contains two Java classes \textit{ReportExtractorTest.java} and \textit{RuleCreator\_Test.java}, each of which corresponds to the corresponding Java source code.
-
+\subsubsection*{Configuration of Test Environment}
+In the main project \textit{org.henshin.backlog}, we create a separate package called \textit{org.henshin. backlog.test}. This package contains two Java classes namely \textit{ReportExtractorTest.java} and \textit{RuleCreator\_Test.java}, each of which corresponds to the Java source codes accordingly.
 \subsubsection*{Scope of Testing}
 The scope of the test depends on the system requirements and the two most important implemented classes \textit{ReportExtractorTest.java}, \textit{RuleCreator\_Test.java} and their methods. The implemented error handling classes are also tested.
-
 \subsubsection*{Test Cases}
-This section describes the specific test cases that are performed during the tests. Each test case contains a description of the test scenario, the data provided and the expected result. Table \ref{tb:test_cases_rule_creator} illustrates the test cases for the class RuleCreator\_Test.java and table \ref{tb:test_cases_report_extractor} illustrates the test case for the class ReportExtractor.java.
+We describes the specific test cases that are performed during the tests. Each test case contains a description of the test scenario, the data provided and the expected result. Table \ref{tb:test_cases_rule_creator} illustrates the test cases for the class RuleCreator.java and table \ref{tb:test_cases_report_extractor} illustrates the test cases for the class ReportExtractor.java.
 
 \newgeometry{margin=2.5cm}
 \begin{landscape}
@@ -119,13 +139,10 @@ This section describes the specific test cases that are performed during the tes
 		\hline
 		Test Case&Supplied Data&Expected Outcome&Description\\
 		\hline\hline
-		testAssignCmodule&Assing a dummy ECore model&Through an exception: \textit{EcoreFileNotFound.class}&Check whether the ECore model already exists and CModule is correctly assigned\\
+		testAssignCmodule&Assing a dummy ECore model file&Through an exception: \textit{EcoreFileNotFound.class}&Check whether the ECore model already exists and CModule is correctly assigned\\
 		
-		UndefindedEntity \newline(testProcessContainsEdges)&Specify an entity that is not contained as \enquote{Entity} in the JSON file, but appears as \enquote{Contains}&Through an exception:  \textit{EntityInJsonFileNotFound.class}&Check whether the entity that appears in the \textit{Contains} entry has already been identified as an entity\\
+		ActionNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Action} entry&Through an exception:  \textit{ActionInJsonFileNotFound.class}&Check whether there is an entry \enquote{Action} in the related US in JSON file\\
 		
-		ActionNotExist (testProcessJsonFile)&Specify an action that is not contained as \textit{Action} in the JSON file, but appears as \textit{Contains, Targets or Triggers}&Through an exception:  \textit{ActionInJsonFileNotFound.class}&Check whether the action that appears in the \enquote{Targets}, \enquote{Contains} or \enquote{Triggers} entries has already been identified as an action\\
-		
-		ContainsNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Contains} entry&Through an exception: \textit{ContainsInJsonFileNotFound.class}&Check whether there is an entry \enquote{Contains} in the related US in JSON file\\
 		
 		EntityNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Entity} entry&Through an exception: \textit{EntityInJsonFileNotFound.class}&Check whether there is an entry \enquote{Entity} in the related US in JSON file\\
 		
@@ -133,11 +150,15 @@ This section describes the specific test cases that are performed during the tes
 		
 		TargetsNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Targets} entry&Through an exception: \textit{TargetsInJsonFileNotFound.class}&Check whether there is an entry \enquote{Targets} in the related US in JSON file\\
 		
-		TextNotExist (testProcessJsonFile) &JSON file with a US without \enquote{Text} entry&Through an exception: \textit{TextInJsonFileNotFound.class}&Check whether there is an entry \enquote{Text} in the related US in JSON file\\
+		ContainsNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Contains} entry&Through an exception: \textit{ContainsInJsonFileNotFound.class}&Check whether there is an entry \enquote{Contains} in the related US in JSON file\\
 		
 		TriggersNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Triggers} entry &Through an exception: \textit{TriggersInJsonFileNotFound.class}&Check whether there is an entry \enquote{Triggers} in the related US in JSON file\\
 		
+		TextNotExist (testProcessJsonFile) &JSON file with a US without \enquote{Text} entry&Through an exception: \textit{TextInJsonFileNotFound.class}&Check whether there is an entry \enquote{Text} in the related US in JSON file\\
+		
 		UsNrNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Us\_Nr} entry&Through an exception: \textit{UsNrInJsonFileNotFound.class}&Check whether there is an entry \enquote{US\_Nr} in the related US in JSON file\\
+		
+		UndefindedEntity \newline(testProcessContainsEdges)&Specify an entity that is not contained as \enquote{Entity} in the JSON file, but appears as \enquote{Contains}&Through an exception:  \textit{EntityInJsonFileNotFound.class}&Check whether the entity that appears in the \textit{Contains} entry has already been identified as an entity\\
 		
 		PrimaryActionNotFound \newline(testProcessTargetsEdges)&Specify a primary action that is not contained as \enquote{Primary Action} in the JSON file, but appears as \enquote{Targets}&Through an exception: \textit{ActionInJsonFileNotFound.class}&Check whether the primary action that appears in the \textit{Targets} entry has already been identified as a primary action\\
 		
@@ -182,11 +203,11 @@ This section describes the specific test cases that are performed during the tes
 			
 			testEmptyJSONFile&Assing an empty JSON dataset file&Through an exception: \textit{EmptyOrNotExistJsonFile.class}&Check if JSON dataset file is empty\\
 			
-			completeMajorElements \newline Edge\newline(testExtractReports)&Provision of a CDA report for US-pair with exactly one \enquote{Targets} edge&Inclusion of this US-pair in the text report with the nodes \enquote{Action}, \enquote{Entity} and \enquote{Targets} edge&Verifies \textit{extractReports} method when all major elements are present in the CDA report and the edge case is reached\\
+			completeMajorElements \newline Edge\newline(testExtractReports)&Provision of a CDA report for US-pair with exactly one \enquote{Targets} edge&Inclusion of this US-pair in the text report with the nodes \enquote{Action}, \enquote{Entity} and \enquote{Targets} edge&Verifies \textit{extractReports} method when all major elements are present in the CDA report\\
 			
-			completeMajorElements\newline Upper Edge\newline(testExtractReports)&Provide a CDA report for a US-pair with at least one \enquote{Targets} edge and redundancy elements such as \enquote{Triggers}&Generated textual report contains information about Secondary Entities, Secondary Actions, Targets, and \enquote{Triggers}&Verifies \textit{extractReports} method when all major elements are present in the CDA report and the upper edge case is reached\\
+			completeMajorElements\newline Upper Edge\newline(testExtractReports)&Provide a CDA report for a US-pair with at least one \enquote{Targets} edge and redundancy elements such as Triggers&Generated textual report contains information about Secondary Entities, Secondary Actions, Targets, and Triggers&Verifies \textit{extractReports} method when all major elements are present in the CDA report and the upper edge case is reached\\
 			
-			notCompleteMajor\newline Elements\newline(testExtractReports)&Provide a CDA report for a US-pair without \enquote{Targets} edge, but with action and entity&The US-pair should not reported&Verifies the behavior of the \textit{extractReports} methodwhen not all major elements are present in the input data\\
+			notCompleteMajor\newline Elements\newline(testExtractReports)&Provide a CDA report for a US-pair without \enquote{Targets} edge, but with action and entity&The US-pair should not reported&Verifies the behavior of the \textit{extractReports} method when not all major elements are present in the input data\\
 			
 			getBenefitPart\newline RedundanciesElements\newline(testExtractReports)&Provision of a CDA report for a US-pair that only contains redundancy clauses in the \enquote{Benefit} part&Check whether the count of redundancy clauses in the benefit part of the USs matches the value \enquote{Benefit Part Redundancy Clause} specified in the
 			JSON\_Report file&Verifies the behaviour of the \textit{extractReports} method when there are redundancy elements in the benefit part of USs\\
@@ -195,23 +216,23 @@ This section describes the specific test cases that are performed during the tes
 			
 			getTotalRedundancy\newline Elements\newline(testExtractReports)&Provision of a CDA report for a US-pair that contains redundancy clauses in the \enquote{Main}and \enquote{Benefit} parts&Check whether the count of redundancy clauses in the main and benefit parts of the USs matches the value \enquote{Total Redundancy Clause} specified in the JSON\_Report file&Verifies the behaviour of the \textit{extractReports} method when there are redundancy elements in the main and benefit parts of USs\\
 			
-			highlightPersona\newline(testExtractReports)&Providing a CDA report for a US-pair with redundancy clause in \enquote{Triggers}edge (from Persona to Primary Action)&The persona should only be marked with hash symbol if there is a redundant clause in the main part&Checks the behaviour of the \textit{extractReports} method when highlighting redundant personas in USs\\
+			highlightPersona\newline(testExtractReports)&Providing a CDA report for a US-pair with redundancy clause in \enquote{Triggers}edge (from Persona to Primary Action)&The persona should only be marked with hash symbol if there is a redundant clause in the main part&Checks the behaviour of the \textit{extractReports} method when highlighting redundant persona in USs\\
 				
-			BenefitInBothUss\newline(testhigHlightRedundancies)&Provision of a report for a US-pair where both USs have the \enquote{benefit} part&Search both the main and the benefit part of USs and mark redundancy clauses with a hash symbol if they occur&Verifies the behaviour of the \textit{highlightRedundancies} method when both USs have benefit\\
+			BenefitInBothUss\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where both USs have the \enquote{benefit} part&Search both the main and the benefit parts of USs and mark redundancy clauses with a hash symbol if they occur&Verifies the behaviour of the \textit{highlightRedundancies} method when both USs have benefit part\\
 			
-			noBenefitInBothUss\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where both USs do not have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when both USs don't have benefit\\
+			noBenefitInBothUss\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where both USs do not have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when both USs don't have benefit part\\
 			
-			noBenefitInUs1\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where only the second US have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when only the second US have benefit\\
+			noBenefitInUs1\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where only the second US have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when only the second US have benefit part\\
 			
-			noBenefitInUs2\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where only the first US have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when only the first US have benefit\\
+			noBenefitInUs2\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where only the first US have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when only the first US have benefit part\\
 			
 			ContainInBenefitPart\newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses of \enquote{Contains} within \enquote{Benefit} part&The entities included in Contains should be marked with hash symbol&Checks the behaviour of the \textit{highlightRedundancies} method when highlighting redundant entities included in the Contains\\
 			
 			ContainInMainPart\newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses of \enquote{Contains} within \enquote{Main} part&The entities included in Contains should be marked with hash symbol&Checks the behaviour of the \textit{highlightRedundancies} method when highlighting redundant entities included in the Contains\\
 			
-			TargetsInMainPart \newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses with more than one \enquote{Targets} within the \enquote{Main} part&founded redundancy clauses should also be marked with a hash symbol, if the main part contains more than one redundancy clause as a target&Check the behaviour of the \textit{highlightRedundancies} method if there is more than one redundancy clause as a target in main part\\
+			TargetsInMainPart \newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses with more than one \enquote{Targets} within the \enquote{Main} part&Founded redundancy clauses should also be marked with a hash symbol, if the main part contains more than one redundancy clause as Targets&Check the behaviour of the \textit{highlightRedundancies} method if there is more than one redundancy clause as Targets in main part\\
 			
-			TargetsInBenefitPart \newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses with more than one \enquote{Targets} within the \enquote{Benefit} part&founded redundancy clauses should also be marked with a hash symbol, if the benefit part contains more than one redundancy clause as a target&Check the behaviour of the \textit{highlightRedundancies} method if there is more than one redundancy clause as a target in benefit part\\
+			TargetsInBenefitPart \newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses with more than one \enquote{Targets} within the \enquote{Benefit} part&Founded redundancy clauses should also be marked with a hash symbol, if the benefit part contains more than one redundancy clause as Targets&Check the behaviour of the \textit{highlightRedundancies} method if there is more than one redundancy clause as Targets in benefit part\\
 			\hline
 				\caption{Test cases for ReportExtractor  class}\label{tb:test_cases_report_extractor}
 		\end{tabularx}		
