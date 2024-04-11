@@ -9,15 +9,16 @@ In Section \ref{redundancy_implementation} comes the implementation to show what
 \subsection{Requirements}\label{redundancy_requirement}
 In order to accomplish the analysis of redundancy in USs we try to address following requirements:
 \begin{itemize}
-\item As a member of a project group, I want to syntactically analyse USs that belong to a specific backlog, so that redundancies between USs can be recognise and manage accordingly.
-\item As a member of a project group, I would like to have a collection of US-pairs as a report that syntactically have the same clauses in main and benefit parts of USs, so that I can change them if necessary.
-\item As a member of a project group, I want to filter the report and only see the redundancy clauses that contain \enquote{Action} (as a verb) and \enquote{Entity} (as a noun) in US-pair, so that I can reduce the count of potential redundancy pairs in the report.
-\item As a member of a project group, I want to mark found redundancy clauses with a hash symbol (\#) and show those that have a redundancy in \enquote{Persona} (as a noun) and \enquote{Action} (as a verb), which is called \enquote{Triggers}, so that I can better see if the persona in is also recognised as a redundancy.
-\item As a member of a project group, I want to mark founded redundancy clauses with a hash symbol (\#) and show those that contain two \enquote{Entity}(as a noun), which is called \enquote{Contains}, so that I can better see whether the contained entity is also recognised as a redundancy.
-\item As a member of a project group, I would like to have a redundancy report that shows founded US texts in US-pairs and adds a hash symbol (\#) at the beginning and end of the founded words as a marker, so that I can better see which words are redundant in US-pairs.
-\item As a member of a project group, I want to see how many redundancy clauses were founded in each US-pair, so that I can aggregate each founded redundancy US-pair for further statistical purposes on that basis.
-\item As a member of a project group, I want a table at the top of the redundancy report that lists the US-pairs and the number of redundancy clauses contained in each pair, so that I can quickly see all the US-pairs founded and the number of redundancy clauses. 
-\item As a member of a project group, I want to know whether the redundancy clauses belong to the main or benefit part of the US, so that I can use it for further statistical purposes.
+\item As a user, I want to syntactically analyse USs that belong to a specific backlog, so that redundancies between USs can be recognise and manage accordingly.
+\item As a user, I would like to have a collection of US-pairs as a report that syntactically have the same clauses in main and benefit parts of USs, so that I can change them if necessary.
+\item As a user, I want to filter the report and only see the redundancy clauses that contain \enquote{Action} (as a verb) and \enquote{Entity} (as a noun) in US-pair, so that I ca38457
+n reduce the count of potential redundancy pairs in the report.
+\item As a user, I want to mark found redundancy clauses with a hash symbol (\#) and show those that have a redundancy in \enquote{Persona} (as a noun) and \enquote{Action} (as a verb), which is called \enquote{Triggers}, so that I can better see if the persona in is also recognised as a redundancy.
+\item As a user, I want to mark founded redundancy clauses with a hash symbol (\#) and show those that contain two \enquote{Entity}(as a noun), which is called \enquote{Contains}, so that I can better see whether the contained entity is also recognised as a redundancy.
+\item As a user, I would like to have a redundancy report that shows founded US texts in US-pairs and adds a hash symbol (\#) at the beginning and end of the founded words as a marker, so that I can better see which words are redundant in US-pairs.
+\item As a user, I want to see how many redundancy clauses were founded in each US-pair, so that I can aggregate each founded redundancy US-pair for further statistical purposes on that basis.
+\item As a user, I want a table at the top of the redundancy report that lists the US-pairs and the number of redundancy clauses contained in each pair, so that I can quickly see all the US-pairs founded and the number of redundancy clauses. 
+\item As a user, I want to know whether the redundancy clauses belong to the main or benefit part of the US, so that I can use it for further statistical purposes.
 \end{itemize}
 % here should explain what was the reiquirement and why
 
@@ -89,7 +90,7 @@ Accordingly, we create an Ecore meta-model as shown in Figure \ref{fig:ecore_met
 
 \begin{figure}[h]
 	\center
-	\includegraphics[scale=0.5]{ecore_metamodel}
+	\includegraphics[scale=0.6]{ecore_metamodel}
 	\caption{Ecore meta-model inspired by Mosser et al. \cite{mosser2022modelling}}\label{fig:ecore_meta_model}
 \end{figure} 
 \subsubsection*{Creating Rules}\label{workflow_rule_creator}
@@ -134,8 +135,8 @@ In this section, the methods of the RuleCreator class is described as follows:
 Figure \ref{fig:rule_creator_methods} shows the sequence diagram of the RuleCreator methods.
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.35]{RuleCreator_methods}
-	\caption{Sequence diagram of the RuleCreator methods}\label{fig:rule_creator_methods}
+	\includegraphics[scale=0.3]{rule_creator_class_diagram}
+	\caption{Class diagram of the RuleCreator methods}\label{fig:rule_creator_methods}
 \end{figure}
 \subsubsection*{Conflicting and Dependency Analysis}
 After the rules and the corresponding henshin file have been created by the RuleCreator class, we are now able to pass them to the conflict and dependency analysis (CDA) to find potential redundancy pairs.
@@ -237,8 +238,8 @@ To save the redundant elements found by the CDA tool, we implement classes to sa
 Figure \ref{fig:redundancyItems_diagram} is a sequence diagram that illustrates the communication between the classes related to the storing of redundancy items founded by the CDA tool.
 \begin{figure}[h]
 	\centering 
-	\includegraphics[scale=0.2]{redundancyItems_diagram}
-	\caption{Sequence diagram for the classes to save redundancy elements accordingly}\label{fig:redundancyItems_diagram}
+	\includegraphics[scale=0.2]{redundancyItems_class_diagram.png}
+	\caption{Class diagram for the classes to save redundancy elements accordingly}\label{fig:redundancyItems_diagram}
 \end{figure} 
 The following classes were created to represent the extracted model object accordingly. All these classes are extensions of the class \textit{RedundancyItems}, which contains all extracted model object from \enquote{minimal-model.ecore} such as \enquote{EClass}, \enquote{EAttribute} or \enquote{EReference}:
 
@@ -282,9 +283,9 @@ To extract the redundant elements and save them in a redundancyItems object, we 
 
 Figure \ref{fig:report_extractor_diagram} is a sequence diagram that illustrates the communication between the processes related to the extraction of redundancy items founded by the CDA tool and their storage in a RedundancyItems object.
 \begin{figure}[h]
-	\centering 
-	\includegraphics[scale=0.35]{report_extractor_diagram}
-	\caption{Sequence diagram for the process of extracting redundancy items founded by the CDA tool.}\label{fig:report_extractor_diagram}
+	\centering
+	\includegraphics[scale=0.21]{report_extractor_class_diagram}
+	\caption{Class diagram for the process of extracting redundancy items}\label{fig:report_extractor_diagram}
 \end{figure} 
 
 The following methods in the ReprortExtractor class are responsible for extracting the redundancies found by the CDA tool:
@@ -359,12 +360,12 @@ The following methods in the ReprortExtractor class are responsible for extracti
 \subsubsection*{Methods for Extracting Data from Dataset of Backlog}
 To get information about USs such as text, redundant clauses in targets/contains/triggers references between US-pairs, we need to extract data from the dataset stored in the JSON file.
 
-Figure \ref{fig:json_data_extractor_diagram} illustrate the communication between three processes.
-\begin{figure}[h]
-	\centering 
-	\includegraphics[scale=0.35]{data_extractor_diagram}
-	\caption{Sequence diagram for the processes of extracting common entries between two USs from dataset of the backlog}\label{fig:json_data_extractor_diagram}
-\end{figure} 
+%Figure \ref{fig:json_data_extractor_diagram} illustrate the communication between three processes.
+%\begin{figure}[h]
+	%\centering 
+	%\includegraphics[scale=0.35]{data_extractor_diagram}
+	%\caption{Sequence diagram for the processes of extracting common entries between two USs from dataset of the %backlog}\label{fig:json_data_extractor_diagram}
+%\end{figure} 
 The following methods in the ReprortExtractor class are responsible for extracting data from dataset within JSON file:
 \begin{enumerate}
 \item readJsonArrayFromFile: This method receives a JSON file as input. After reading, the JSON content is tokenised, parsed into a JSON array and the parsed JSON array is returned.
@@ -394,12 +395,12 @@ The output is the matches, i.e. the list of common pairs of personas and actions
 \subsubsection*{Methods for Highlighting Words using Hash Symbol(\#)}
 In order to distinguish redundancy words between a US-pair, in text of each US, we decide to highlighting redundant words using hash symbol like \enquote{ ... \#\textless word\textgreater\# ... }.
 
-Figure \ref{fig:highlight_diagram} is a sequence diagram that illustrates the communication between processes related to the highlighting of redundancy words.
-\begin{figure}[h]
-	\centering 
-	\includegraphics[scale=0.35]{highlight_diagram}
-	\caption{Sequence diagram for the process of highlighting redundancy clauses in the Texts of US-pair}\label{fig:highlight_diagram}
-\end{figure} 
+%Figure \ref{fig:highlight_diagram} is a sequence diagram that illustrates the communication between processes related to the highlighting of redundancy words.
+%\begin{figure}[h]
+	%\centering 
+	%\includegraphics[scale=0.35]{highlight_diagram}
+	%\caption{Sequence diagram for the process of highlighting redundancy clauses in the Texts of US-pair}\label{fig:highlight_diagram}
+%\end{figure} 
 
 The following methods in the ReprortExtractor class are responsible for highlighting redundancy words:
 \begin{enumerate}
@@ -448,12 +449,12 @@ The following methods in the ReprortExtractor class are responsible for highligh
 \end{enumerate}
 \subsubsection*{Methods related to Report Parts of USs}
 To show which part of the USs with redundancy words occur between a US-pair, we have split the individual parts of the USs and included them in the report.
-Figure \ref{fig:splitUsText_diagram} is a sequence diagram that illustrates the communication between processes related to the splitting of parts of a US-pair containing redundancy words.
-\begin{figure}[h]
-	\centering 
-	\includegraphics[scale=0.35]{splitUsText_diagram}
-	\caption{Sequence diagram for the process of splitting parts of US-pair containing redundancy word}\label{fig:splitUsText_diagram}
-\end{figure} 
+%Figure \ref{fig:splitUsText_diagram} is a sequence diagram that illustrates the communication between processes related to the splitting of parts of a US-pair containing redundancy words.
+%\begin{figure}[h]
+	%\centering 
+	%\includegraphics[scale=0.35]{splitUsText_diagram}
+	%\caption{Sequence diagram for the process of splitting parts of US-pair containing redundancy word}\label{fig:splitUsText_diagram}
+%\end{figure} 
 The following methods in the ReprortExtractor class are responsible for splitting and reporting the parts of the USs :
 \begin{enumerate}
 	
@@ -481,12 +482,12 @@ The following methods in the ReprortExtractor class are responsible for splittin
 \end{enumerate}
 \subsubsection*{Methods related to Creating Table}
 The summary of potential redundancy between US-pairs is presented in a table, which makes it easy to find out which US-pairs have been identified as potentially redundant US-pairs and how many redundancy elements there are in total.
-Figure \ref{fig:writeTable_diagram} is a sequence diagram that illustrates the communication between the processes related to creating tables and addition to text reports.
-\begin{figure}[h]
-	\centering 
-	\includegraphics[scale=0.35]{writeTable_diagram}
-	\caption{Sequence diagram for the process of creating and adding tables to the textual report}\label{fig:writeTable_diagram}
-\end{figure} 
+%Figure \ref{fig:writeTable_diagram} is a sequence diagram that illustrates the communication between the processes related to creating tables and addition to text reports.
+%\begin{figure}[h]
+	%\centering 
+	%\includegraphics[scale=0.35]{writeTable_diagram}
+	%\caption{Sequence diagram for the process of creating and adding tables to the textual report}\label{fig:writeTable_diagram}
+%\end{figure} 
 The following methods in the ReprortExtractor class are responsible for creating a table at the beginning of the text report:
 \begin{enumerate}
 	\item writeTable: This method is used to write a table of potential redundancies between USs and the count of their total redundant clauses \textit{createTable} method.%, including the addition of the count of main and benefit redundancy clauses using \textit{createTable} method.
