@@ -124,62 +124,75 @@ In the main project \textit{org.henshin.backlog}, we create a separate package c
 \subsubsection*{Scope of Testing}
 The scope of the test depends on the system requirements and the two most important implemented classes \textit{ReportExtractorTest.java}, \textit{RuleCreator\_Test.java} and their methods. The implemented error handling classes are also tested.
 \subsubsection*{Test Cases}
-We describes the specific test cases that are performed during the tests. Each test case contains a description of the test scenario, the data provided and the expected result. Table \ref{tb:test_cases_rule_creator} illustrates the test cases for the class RuleCreator.java and table \ref{tb:test_cases_report_extractor} illustrates the test cases for the class ReportExtractor.java.
+We describes the specific test cases that are performed during the tests. Each test case contains a description of the test scenario, the data provided and the expected result. Table \ref{tb:test_cases_rule_creator} illustrates the test cases for the class RuleCreator.java, table \ref{tb:test_cases_report_extractor} illustrates the test cases for the class ReportExtractor.java and table \ref{tb:test_cases_evaluation} illustrates the test cases for the class Evaluation.java
 
-\newgeometry{margin=2.5cm}
-\begin{landscape}
+%\newgeometry{margin=2.5cm}
+%\begin{landscape}
 \thispagestyle{empty}
-\begin{figure}[h]
-	\begingroup
-	\centering
-	\scriptsize
-	\renewcommand{\arraystretch}{1,5} 
+%\begin{figure}[h]
+\begingroup
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{1,5} 
+\keepXColumns
 	
-	\begin{tabularx}{25cm}{X  X  X  X}
-		\hline
-		Test Case&Supplied Data&Expected Outcome&Description\\
-		\hline\hline
-		testAssignCmodule&Assing a dummy ECore model file&Through an exception: \textit{EcoreFileNotFound.class}&Check whether the ECore model already exists and CModule is correctly assigned\\
+	\begin{tabularx}{\textwidth}{X  X  X  X}
+	\hline
+	Test Case &Supplied Data&Expected Outcome&Description\\
+	\hline\hline
+	\endfirsthead
+	\hline
+	Test Case &Supplied Data&Expected Outcome&Description\\
+	\hline\hline
+	\endhead
+		testAssignCmodule&Assing a dummy ECore model file&Through an exception: \textit{EcoreFileNotFound}&Check whether the ECore model already exists and CModule is correctly assigned\\
 		
-		ActionNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Action} entry&Through an exception:  \textit{ActionInJsonFileNotFound.class}&Check whether there is an entry \enquote{Action} in the related US in JSON file\\
+		ActionNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Action} entry&Through an exception:  \textit{ActionInJsonFileNotFound}&Check whether there is an entry \enquote{Action} in the related US in JSON file\\
 		
 		
-		EntityNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Entity} entry&Through an exception: \textit{EntityInJsonFileNotFound.class}&Check whether there is an entry \enquote{Entity} in the related US in JSON file\\
+		EntityNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Entity} entry&Through an exception: \textit{EntityInJsonFileNotFound}&Check whether there is an entry \enquote{Entity} in the related US in JSON file\\
 		
-		PersonaNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Persona} entry&Through an exception: \textit{PersonaInJsonFileNotFound.class}&Check whether there is an entry \enquote{Persona} in the related US in JSON file\\
+		PersonaNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Persona} entry&Through an exception: \textit{PersonaInJsonFileNotFound}&Check whether there is an entry \enquote{Persona} in the related US in JSON file\\
 		
-		TargetsNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Targets} entry&Through an exception: \textit{TargetsInJsonFileNotFound.class}&Check whether there is an entry \enquote{Targets} in the related US in JSON file\\
+		TargetsNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Targets} entry&Through an exception: \textit{TargetsInJsonFileNotFound}&Check whether there is an entry \enquote{Targets} in the related US in JSON file\\
 		
-		ContainsNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Contains} entry&Through an exception: \textit{ContainsInJsonFileNotFound.class}&Check whether there is an entry \enquote{Contains} in the related US in JSON file\\
+		ContainsNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Contains} entry&Through an exception: \textit{ContainsInJsonFileNotFound}&Check whether there is an entry \enquote{Contains} in the related US in JSON file\\
+		ContainsInTargets (testProcessContainsEdges)&JSON file with a US which the entity in \enquote{Contains} entry also belong to Targets&The entity in Contains should be annotated as \textless Delete\textgreater&Check whether entity in Targets have connection as Contains, if so entity in Contains should also annotated as \textless Delete\textgreater\\
 		
-		TriggersNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Triggers} entry &Through an exception: \textit{TriggersInJsonFileNotFound.class}&Check whether there is an entry \enquote{Triggers} in the related US in JSON file\\
+		TriggersNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Triggers} entry &Through an exception: \textit{TriggersInJsonFileNotFound}&Check whether there is an entry \enquote{Triggers} in the related US in JSON file\\
 		
-		TextNotExist (testProcessJsonFile) &JSON file with a US without \enquote{Text} entry&Through an exception: \textit{TextInJsonFileNotFound.class}&Check whether there is an entry \enquote{Text} in the related US in JSON file\\
+		DuplicateTriggers (testProcessContainsEdges)&JSON file with a US with duplicate Triggers entries&Through an exception:\textit{EdgeWithSameSource AndTarget}&Verify whether there is duplicated entries in Triggers JSON-array\\
 		
-		UsNrNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Us\_Nr} entry&Through an exception: \textit{UsNrInJsonFileNotFound.class}&Check whether there is an entry \enquote{US\_Nr} in the related US in JSON file\\
+		TextNotExist (testProcessJsonFile) &JSON file with a US without \enquote{Text} entry&Through an exception: \textit{TextInJsonFileNotFound}&Check whether there is an entry \enquote{Text} in the related US in JSON file\\
 		
-		UndefindedEntity \newline(testProcessContainsEdges)&Specify an entity that is not contained as \enquote{Entity} in the JSON file, but appears as \enquote{Contains}&Through an exception:  \textit{EntityInJsonFileNotFound.class}&Check whether the entity that appears in the \textit{Contains} entry has already been identified as an entity\\
+		UsNrNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Us\_Nr} entry&Through an exception: \textit{UsNrInJsonFileNotFound}&Check whether there is an entry \enquote{US\_Nr} in the related US in JSON file\\
 		
-		PrimaryActionNotFound \newline(testProcessTargetsEdges)&Specify a primary action that is not contained as \enquote{Primary Action} in the JSON file, but appears as \enquote{Targets}&Through an exception: \textit{ActionInJsonFileNotFound.class}&Check whether the primary action that appears in the \textit{Targets} entry has already been identified as a primary action\\
+		UndefindedEntity \newline(testProcessContainsEdges)&Specify an entity that is not contained as \enquote{Entity} in the JSON file, but appears as \enquote{Contains}&Through an exception:  \textit{EntityInJsonFileNotFound}&Check whether the entity that appears in the \textit{Contains} entry has already been identified as an entity\\
 		
-		PrimaryEntityNotFound \newline(testProcessTargetsEdges)&Specify a primary entity that is not contained as \enquote{Primary Entity} in the JSON file, but appears as \enquote{Targets}&Through an exception: \textit{EntityInJsonFileNotFound.class}&Check whether the primary entity that appears in the \textit{Targets} entry has already been identified as a primary entity\\
+		PrimaryActionNotFound \newline(testProcessTargetsEdges)&Specify a primary action that is not contained as \enquote{Primary Action} in the JSON file, but appears as \enquote{Targets}&Through an exception: \textit{ActionInJsonFileNotFound}&Check whether the primary action that appears in the \textit{Targets} entry has already been identified as a primary action\\
+		
+		PrimaryEntityNotFound \newline(testProcessTargetsEdges)&Specify a primary entity that is not contained as \enquote{Primary Entity} in the JSON file, but appears as \enquote{Targets}&Through an exception: \textit{EntityInJsonFileNotFound}&Check whether the primary entity that appears in the \textit{Targets} entry has already been identified as a primary entity\\
 		
 		SecondaryActionNotFound \newline(testProcessTargetsEdges)&Specify a secondary action that is not contained as \enquote{Secondary Action} in the JSON file, but appears as \enquote{Targets}&Through an exception: \textit{ActionInJsonFileNotFound.class}&Check whether the secondary action that appears in the \textit{Targets} entry has already been identified as a secondary action\\
 		
 		SecondaryEntityNotFound \newline(testProcessTargetsEdges)&Specify a secondary entity that is not contained as \enquote{Secondary Entity} in the JSON file, but appears as \enquote{Targets}&Through an exception: \textit{EntityInJsonFileNotFound.class}&Check whether the secondary entity that appears in the \textit{Targets} entry has already been identified as a secondary entity\\
 		
-		UndefindedEntity (testProcessTargetsEdges) &Specify an entity that is not contained as \enquote{Entity} in the JSON file, but appears as \enquote{Targets}&Through an exception:  \textit{EntityInJsonFileNotFound.class}&Check whether the entity that appears in the \textit{Targets} entry has already been identified as an entity\\
+		UndefindedEntity (testProcessTargetsEdges) &Specify an entity that is not contained as \enquote{Entity} in the JSON file, but appears as \enquote{Targets}&Through an exception:  \textit{EntityInJsonFileNotFound}&Check whether the entity that appears in the \textit{Targets} entry has already been identified as an entity\\
 		
-		ReadJsonArrayFromFile&Assign a dummy JSON file&Through an exception:  \textit{EmptyOrNotExistJsonFile}&Check whether the JSON file already exists.\\
+		ActionNotFound&Provision of a JSON file that contains actions in \textit{Targets} that are not entered in primary/secondary action&Through an exception:  \textit{EntityInJsonFileNotFound}&Verify whether the action that appear in the \textit{Targets} entry has already been identified as an action\\
+		
+		ReadJsonArrayFromFile&Assign a dummy JSON file&Through an exception:  \textit{EmptyOrNotExistJsonFile}&Check whether the JSON file already exists\\
+		
+		EmptyOrNotExistJsonFile&Assign an empty JSON file&Through an exception: \textit{EmptyOrNotExistJsonFile}&Check whether the JSON file is empty\\
 		\hline
+		\caption{Test cases for RuleCreator  class}\label{tb:test_cases_rule_creator}
 	\end{tabularx}
 
-
-	\captionof{table}{Test cases for RuleCreator  class}\label{tb:test_cases_rule_creator}
+	%\captionof{table}{Test cases for RuleCreator  class}\label{tb:test_cases_rule_creator}
 	\endgroup
-\end{figure}
-\end{landscape}
-\restoregeometry
+%\end{figure}
+%\end{landscape}
+%\restoregeometry
 %\newgeometry{margin=2.5cm}
 %\begin{landscape}
 	\thispagestyle{empty}
@@ -201,7 +214,17 @@ We describes the specific test cases that are performed during the tests. Each t
 			\endhead
 			testEmptyDirectroy&Assing a dummy directory&Through an exception: \textit{CdaReportDirIsEmpty.class}&Check if CDA Report directory is empty\\
 			
-			testEmptyJSONFile&Assing an empty JSON dataset file&Through an exception: \textit{EmptyOrNotExistJsonFile.class}&Check if JSON dataset file is empty\\
+			testEmptyJSONFile&Assing an empty JSON dataset file&Through an exception: \textit{EmptyOrNotExistJsonFile}&Check if JSON dataset file is empty\\
+			
+			testCdaDirNotDirectroy&Assing a file instead of CDA directory&Through an exception:\textit{CdaReportDirIsNotADirectory}&Check if assigned path is a directory\\
+			
+			testCdaDirectroy&Assing a not readable directory&Through an exception:\textit{CdaReportDirNotFound}&Check whether CDA directory is accessible\\
+			
+			testFinalReportDir&Assign an empty dataset directory&Return \textit{false} if the assigned directory is empty&Check if directory of datasets are empty\\
+			
+			testMinimalEcoreExist&Assign a CDA directory without minimal-ecore file&Return \textit{false} if the minimal-ecore file not found&Check whether the Ecore file already exist in CDA directory\\
+			
+			testWriteTable&Provide a CDA report for a US-pair&A table should be created in the report file&Check whether the table for US-pairs has already been created\\
 			
 			completeMajorElements \newline Edge\newline(testExtractReports)&Provision of a CDA report for US-pair with exactly one \enquote{Targets} edge&Inclusion of this US-pair in the text report with the nodes \enquote{Action}, \enquote{Entity} and \enquote{Targets} edge&Verifies \textit{extractReports} method when all major elements are present in the CDA report\\
 			
@@ -233,12 +256,69 @@ We describes the specific test cases that are performed during the tests. Each t
 			TargetsInMainPart \newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses with more than one \enquote{Targets} within the \enquote{Main} part&Founded redundancy clauses should also be marked with a hash symbol, if the main part contains more than one redundancy clause as Targets&Check the behaviour of the \textit{highlightRedundancies} method if there is more than one redundancy clause as Targets in main part\\
 			
 			TargetsInBenefitPart \newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses with more than one \enquote{Targets} within the \enquote{Benefit} part&Founded redundancy clauses should also be marked with a hash symbol, if the benefit part contains more than one redundancy clause as Targets&Check the behaviour of the \textit{highlightRedundancies} method if there is more than one redundancy clause as Targets in benefit part\\
+			
+			
 			\hline
 				\caption{Test cases for ReportExtractor  class}\label{tb:test_cases_report_extractor}
 		\end{tabularx}		
 	%	\captionof{table}{Test cases for ReportExtractor  class}\label{tb:test_cases_report_extractor}
 		\endgroup
 	%\end{figure}
+\thispagestyle{empty}
+
+%\newgeometry{margin=2.5cm}
+%\begin{landscape}
+\thispagestyle{empty}
+%\begin{figure}[h]
+\begingroup
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{1,5} 
+\keepXColumns
+
+\begin{tabularx}{\textwidth}{X  X  X  X}
+	\hline
+	Test Case &Supplied Data&Expected Outcome&Description\\
+	\hline\hline
+	\endfirsthead
+	\hline
+	Test Case &Supplied Data&Expected Outcome&Description\\
+	\hline\hline
+	\endhead
+	
+	testEmptyOrNotExist JsonFile&Provision of a dummy JSON file&Through an exception:\textit{EmptyOrNotExistJsonFile}&Check whether the provided JSON file already exists and is not empty\\
+	
+	testJsonFile&Provision of a JSON file which is not accessible&Through an exception:\textit{IOException}&Check whether the provided JSON file is accessible\\
+	
+	main/benefitFull\_Case1&Provide a JSON file with US-pair that have no common textit{Contains} entries but have common \textit{Targets} entries in main/benefit part&In JSON report the entry "Main/Benefit Part Fully Redundant" should be \textit{true}&Check whether US-pair without \textit{Contains} entries can also be fully redundant in main/benefit part\\
+	
+	main/benefitFull\_Case2&Provide a JSON file with US-pair that have not common textit{Contains} entries but one US has entries as Contains in main/benefit&In JSON report the entry "Main/Benefit Part Fully Redundant" should be \textit{true}&Check whether US-pair without common \textit{Contains} entries can also be fully redundant in main/benefit part\\
+	
+	main/benefitFull\_Case3&Provide a JSON file with US-pair that have common textit{Contains} entries but one US have additional entries as Contains in main/benefit part&In JSON report the entry "Main/Benefit Part Fully Redundant" should be \textit{true}&Check whether USs with additional \textit{Contains} entries from common contains can also be fully redundant in main/benefit part\\
+		
+	main/benefitFull\_Case4&Provide a JSON file with US-pair that have exactly common textit{Contains} entries as well as common \textit{Targets} in main/benefit part&In JSON report the entry "Main/Benefit Part Fully Redundant" should be \textit{true}&Check whether USs with \textit{Contains} and \textit{Targets} entries can also be fully redundant in main/benefit part\\
+	
+	mainBenefitFull&Provide a JSON file with US-pair that all clauses in the main and benefit parts are identical&The JSON report the entries "Main Part Fully Redundant" and "Benefit Part Fully Redundant" should be \textit{true}&Check that all clauses in the main and benefit part are identical, main and benefit part are evaluated as fully redundant\\
+	
+	mainPartial\_Case1&Provide a JSON file with a US-pair whose entries in \textit{Targets} are partially identical&In the JSON report, the entry "Main Part Partially Redundant" should be \textit{true}&Check whether USs with partially redundant entries in \textit{Targets} are evaluated as partially redundant\\
+	
+	mainPartial\_Case2&Provide a JSON file with a US-pair whose entries in \textit{Contains} are partially identical&In the JSON report, the entry "Main Part Partially Redundant" should be \textit{true}&Check whether USs with partially redundant entries in \textit{Contains} are evaluated as partially redundant\\
+	
+	benefitParial&Provide a JSON file with US-pair where only some clauses in \textit{Targets} and \textit{Contains} entries are common&In the JSON report, the entry "Benefit Part Partially Redundant" should be \textit{true}&Check whether USs with partially common \textit{Targets} and \textit{Contains} entries are evaluated as partially redundant\\
+	
+	mainFullBenefitPartial&Provide a JSON file with US-pair where all clauses in the main part and some in the benefit part are identical&In the JSON report, the entry "Main Part Fully Redundant" and "Benefit Part Partially Redundant" should be \textit{true}&Check whether the main part is evaluated as fully redundant if all clauses are identical and the benefit part is evaluated as partially redundant if some clauses are identical\\
+	
+	mainPartialBenefitFull&Provide a JSON file with US-pair where some clauses in the main part and all in the benefit part are identical&In the JSON report, the entry "Main Part Partially Redundant" and "Benefit Part Fully Redundant" should be \textit{true}&Check whether the main part is evaluated as partially redundant if some clauses are identical and the benefit part is evaluated as fully redundant if all clauses are identical\\
+	
+	
+	
+
+	\hline
+	\caption{Test cases for Evaluation  class}\label{tb:test_cases_evaluation}
+\end{tabularx}
+
+%\captionof{table}{Test cases for RuleCreator  class}\label{tb:test_cases_rule_creator}
+\endgroup
 \thispagestyle{empty}
 %\end{landscape}
 %\restoregeometry
