@@ -25,47 +25,7 @@ In this section, we recap the methodology employed to analyse redundancy between
 	
 	\item Redundancy analysis: A separate redundancy analysis was carried out between the main parts of US-pair and the benefit parts of US-pair. The redundancy analysis was categorised as either \enquote{Full or Partial Redundancy}.
 	
-	\begin{definition}[\textbf{Full Redundancy}]
-	A US-pair was categorised as \enquote{Full Redundancy} if all clauses were identical in either the \enquote{Main part} or the \enquote{Benefit part}. This indicates "Full Redundancy" between USs in that particular part.
-	\end{definition}
-	\begin{example}
-		For example, the following US-pair is identified as \enquote{Full Redundancy} in the main part:
-		
-		\textit{user\_story\_01:} \enquote{\#g14\# as a \#publisher\#, i want to \#publish\# a \#dataset\#, so that i can view just the dataset with a few people.}
-		
-		\textit{user\_story\_02:} \enquote{\#g14\# as a \#publisher\#, i want to \#publish\# a \#dataset\#, so that i can share the dataset publicly with everyone.}\\\\
-		 As all clauses in the main part are identical between USs, therefore, we call it \enquote{Full Redundancy} in \enquote{Main} part.
-	\end{example}
-	\begin{example}
-		Following US-pair is identified as \enquote{Full Redundancy} in \enquote{Benefit} part:
-		
-		\textit{user\_story\_02:} \#g05\# as a data publishing user, I want to be able to edit the model of data I have already imported, so that I can \#fix\# \#bugs\# or \#make\# \#enhancements\# in the \#API\# built for my \#data\#.
-		
-		\textit{user\_story\_07:} \#g05\# as a data publishing user, I want to be able to edit the data source of data I have already imported, so that i can \#fix\# \#bugs\# or \#make\# \#enhancements\# in the \#API\# built for my \#data\#.
-		
-		As we can see, all clauses in the benefit part are identical between USs, therefore, we call it \enquote{Full Redundancy} in \enquote{Benefit} part.
-	\end{example}
-	\begin{definition}[\textbf{Partial Redundancy}]
-		Was found when only some clauses were redundant in either the Main or Benefit parts, while others were unique. This indicates overlapping clauses, but not full redundancy.
-	\end{definition}
-	\begin{example}
-		Following US-pair is identified as \enquote{Partial Redundancy} in main part, as only some clauses are redundant:
-		
-		\textit{user\_story\_09:} \#g04\# as a \#user\#, I want to be able to \#view\# a \#map display\# of the public recycling bins around my \#area\#.
-		
-		\textit{user\_story\_10:} \#g04\# as a \#user\#, I want to be able to \#view\# a \#map display\# of the special waste drop off sites around my \#area\#.
-		
-		As we can see, there are some redundancy clauses between the USs, but not all (\textit{e.g.} Noun\enquote{public recycling bins} vs. \enquote{special waste drop-off centres}), which leads us to evaluate this as \enquote{Partial Redundancy} in \enquote{Main} part.
-	\end{example}
-	\begin{example}
-	Following US-pair is identified as \enquote{Partial Redundancy} in benefit part, as only some clauses are redundant:
 	
-	\textit{user\_story\_17:} \#g03\# as a staff member, I want to manage approved proffers, so that I can \#ensure\# \#compliance\# with and satisfaction of the proffer in the future.
-	
-	\textit{user\_story\_30:} \#g03\# as a staff member, I want to manage affidavits, so that I can \#ensure\# \#compliance\# with the requirements prior to the hearing.
-	
-	As we can see, there are some redundancy clauses between the USs, but not all (\textit{e.g.} Clause\enquote{proffer}and\enquote{satisfaction} vs. \enquote{requirements}and\enquote{hearing}), which leads us to evaluate this as \enquote{Partial Redundancy} in \enquote{Benefit} part.
-	\end{example} 
 	
 	%\item Preprocessing: \item preprocessing: We transform each data set into graph transformation rules, apply CDA and generate a textual report in which each redundancy clause between US-pairs is marked with a hash symbol. Additionally,  the number of founded redundancies in the main and benefit sections is also determined.
 \end{itemize}

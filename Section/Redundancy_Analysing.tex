@@ -1,7 +1,70 @@
 \section{Analysing Redundancy}\label{redundancy}
 % some explenation here about what will be explain here an why
 %(Analyse von Redundanz als title und dann im Text Schreiben, dass es ein syntaktische Analyse ist
-In this section, we present an approach for syntactically analysing redundancy using the CRF tool, the Henshin and the CDA tool.
+In this section, we present an approach for syntactically analysing redundancy using the CRF tool, the Henshin and the CDA tool. Firstly, some definitions regarding redundancy and its level as full or partial redundancy in terms of clauses are clarified.
+
+\begin{definition}[\textbf{Redundancy}]
+	Redundancy refers to situations where some phrases of USs duplicate or largely overlap with others, reducing the need for separate representations. This is the case when only a part (main vs. benefit part) or entire USs are identical, i.e. some or all phrases and their arrangements match perfectly between two USs. To improve the quality of the search for redundancy between USs, we take into account the combination of phrases as well as the relationships (triggers, targets, contains) between phrases in USs .
+\end{definition}	
+\begin{definition}[\textbf{Clause}]
+	In this context, a clause is constructed as a pair of words, each pair being linked by a set of predefined relational constructs. These constructs, which are central to the contextual structuring of USs, are described below:
+	\begin{itemize}
+		
+		\item Triggers: A relationship between a persona and an action that includes the invocation of the action by the persona within the narrative of a US.
+		
+		\item Targets: A relationship between an action and an entity means that the action influences the entity in question.
+		
+		\item Contains: relation between two entities, indicating that one entity contains another one, in which one entity merges into or is enclosed by another. 
+		
+	\end{itemize}
+	Including the specified clauses in the analysis framework ensures that the words identified in potentially redundant US-pairs are linked by one of the relational constructs outlined: \textit{Triggers}, \textit{Targets}, or \textit{Contains}. 
+	
+	This methodological approach supports the identification of redundancy not only on the basis of lexical similarity, but through the contextual relationships that determine the interactions within the US narratives.
+\end{definition}
+
+\begin{definition}[\textbf{Full Redundancy}]
+	A US-pair was categorised as \enquote{Full Redundancy} if all clauses were identical in either the \enquote{Main part} or the \enquote{Benefit part}. This indicates "Full Redundancy" between USs in that particular part.
+\end{definition}
+\begin{example}
+	For example, the following US-pair is identified as \enquote{Full Redundancy} in the main part:
+	
+	\textit{user\_story\_01:} \enquote{\#g14\# as a \#publisher\#, i want to \#publish\# a \#dataset\#, so that i can view just the dataset with a few people.}
+	
+	\textit{user\_story\_02:} \enquote{\#g14\# as a \#publisher\#, i want to \#publish\# a \#dataset\#, so that i can share the dataset publicly with everyone.}\\\\
+	As all clauses in the main part are identical between USs, therefore, we call it \enquote{Full Redundancy} in \enquote{Main} part.
+\end{example}
+\begin{example}
+	Following US-pair is identified as \enquote{Full Redundancy} in \enquote{Benefit} part:
+	
+	\textit{user\_story\_02:} \#g05\# as a data publishing user, I want to be able to edit the model of data I have already imported, so that I can \#fix\# \#bugs\# or \#make\# \#enhancements\# in the \#API\# built for my \#data\#.
+	
+	\textit{user\_story\_07:} \#g05\# as a data publishing user, I want to be able to edit the data source of data I have already imported, so that i can \#fix\# \#bugs\# or \#make\# \#enhancements\# in the \#API\# built for my \#data\#.
+	
+	As we can see, all clauses in the benefit part are identical between USs, therefore, we call it \enquote{Full Redundancy} in \enquote{Benefit} part.
+\end{example}
+\begin{definition}[\textbf{Partial Redundancy}]
+	Was found when only some clauses were redundant in either the Main or Benefit parts, while others were unique. This indicates overlapping clauses, but not full redundancy.
+\end{definition}
+\begin{example}
+	Following US-pair is identified as \enquote{Partial Redundancy} in main part, as only some clauses are redundant:
+	
+	\textit{user\_story\_09:} \#g04\# as a \#user\#, I want to be able to \#view\# a \#map display\# of the public recycling bins around my \#area\#.
+	
+	\textit{user\_story\_10:} \#g04\# as a \#user\#, I want to be able to \#view\# a \#map display\# of the special waste drop off sites around my \#area\#.
+	
+	As we can see, there are some redundancy clauses between the USs, but not all (\textit{e.g.} Noun\enquote{public recycling bins} vs. \enquote{special waste drop-off centres}), which leads us to evaluate this as \enquote{Partial Redundancy} in \enquote{Main} part.
+\end{example}
+\begin{example}
+	Following US-pair is identified as \enquote{Partial Redundancy} in benefit part, as only some clauses are redundant:
+	
+	\textit{user\_story\_17:} \#g03\# as a staff member, I want to manage approved proffers, so that I can \#ensure\# \#compliance\# with and satisfaction of the proffer in the future.
+	
+	\textit{user\_story\_30:} \#g03\# as a staff member, I want to manage affidavits, so that I can \#ensure\# \#compliance\# with the requirements prior to the hearing.
+	
+	As we can see, there are some redundancy clauses between the USs, but not all (\textit{e.g.} Clause\enquote{proffer}and\enquote{satisfaction} vs. \enquote{requirements}and\enquote{hearing}), which leads us to evaluate this as \enquote{Partial Redundancy} in \enquote{Benefit} part.
+\end{example} 
+
+
 
 In section \ref{redundancy_requirement} we present the requirements and functional needs that are used as input for the design phase to fulfil the requirements. In section \ref{desing} we explain the design decisions of the workflow shown in figure \ref{fig:design_phases} and explain how the architecture is structured and what the components and their classes look like. 
 
@@ -39,21 +102,8 @@ This section describes the workflow and architectural considerations that underp
 To fulfil the redundancy detection requirements specified in \ref{redundancy_requirement}, the system uses the CRF tool \cite{mosser2022modelling} to annotate backlogs. At the same time, the Henshin API \cite{arendt2010henshin}, which is used in a Java environment, enables the automatic generation of transformation rules for each US in the backlog. The use of Henshin's conflict and dependency analysis (CDA) \cite{mens2007analysing} is central to the automated identification of potentially redundant US-pairs, which is a cornerstone of framework design.
 
 The framework ingests a graph-based model generated with the CRF tool containing a refined and annotated backlog dataset that is critical for the recognition of \textit{entities}, \textit{actions}, \textit{personas} and \textit{benefits} within the USs \cite{mosser2022modelling}. The association of each \textit{persona} with a \textit{primary action} via \textit{triggers} relationships and the association of \textit{primary/secondary actions} with \textit{primary/secondary entities} as \textit{targets} relationships, as explained by Mooser et al, form the basis for the interpretive framework of the system\cite{arulmohan2023extracting}. The output, an annotated backlog dataset as a structured JSON file, separates the annotated USs by backlog to facilitate further processing.
-\begin{definition}[\textbf{Clause}]
-	In this context, a clause is constructed as a pair of words, each pair being linked by a set of predefined relational constructs. These constructs, which are central to the contextual structuring of USs, are described below:
-	\begin{itemize}
-		
-		\item Triggers: A relationship between a persona and an action that includes the invocation of the action by the persona within the narrative of a US.
-		
-		\item Targets: A relationship between an action and an entity means that the action influences the entity in question.
-		
-		\item Contains: relation between two entities, indicating that one entity contains another one, in which one entity merges into or is enclosed by another. 
-				
-	\end{itemize}
-	Including the specified clauses in the analysis framework ensures that the words identified in potentially redundant US-pairs are linked by one of the relational constructs outlined: \textit{Triggers}, \textit{Targets}, or \textit{Contains}. 
-	
-	This methodological approach supports the identification of redundancy not only on the basis of lexical similarity, but through the contextual relationships that determine the interactions within the US narratives.
-\end{definition}
+%\begin{definition}[\textbf{Clause}]
+
 \paragraph{US labelling in JSON files}\label{workflow_nummerize_us}
 As the annotated USs in the JSON files do not contain identifiers, a customised Python script, \textit{nummerise\_us.py}, is used to assign an unique identifier to each US, which is stored in a JSON object named \textit{"US\_Nr"} \footnote{https://github.com/amirrabieyannejad/USs\_Annotation/tree/main/Script/numberise\_us}. This addition improves the system's ability to distinguish and process individual USs within the analytical pipeline.
 
@@ -89,13 +139,13 @@ Accordingly, we create an Ecore meta-model as shown in Figure \ref{fig:ecore_met
 \end{itemize}
 
 \begin{figure}[h]
-	\center
+	\centering
 	\includegraphics[scale=0.6]{ecore_metamodel}
 	\caption{Ecore meta-model inspired by Mosser et al. \cite{mosser2022modelling}}\label{fig:ecore_meta_model}
 \end{figure} 
 \subsubsection*{Creating Rules}\label{workflow_rule_creator}
 With the identified USs in the the JSON-file, we generate rules with the Henshin package \textit{org.eclipse.emf.henshin.model.compact}, which is responsible for the creation of \textit{transformation rules} and their \textit{classes}, \textit{attributes}, \textit{edges} and annotates them with \textless\emph{Delete}\textgreater, \textless\textit{Create}\textgreater or\textless\textit{Preserve}\textgreater, which are crucial for the CDA tool to recognise the redundant pairs.
- 
+
 To generating rules we create a package named \textit{org.henshin.backlog.code.rule} and specially the class \textit{RuleCreator} which used following classes\footnote{https://wiki.eclipse.org/Henshin/Compact\_API}\label{compact_api}:
 \begin{itemize}
 \item \textit{org.eclipse.emf.henshin.model.compact.CModule}: CModule class can import elements from an Ecore file to use them in the transformation process responsible for linking the Ecore meta-model to the Henshin-file to be created.
@@ -132,11 +182,12 @@ In this section, the methods of the RuleCreator class is described as follows:
 	\item processContainsEdges: It receives the JSON-object to be processed, the JSON array with information about contains/target edges and the US identifier as parameters. It first checks whether both entities belong to contains edges. If both entities exist, an edge is created between them in CRule with the name \enquote{contains}. If one of the entities is a target of another entity (as specified in the targets array), the edge is annotated for deletion. If none of the entities is a target, the edge is annotated as \enquote{preserve}.
 	
 \end{enumerate}
-Figure \ref{fig:rule_creator_methods} shows the sequence diagram of the RuleCreator methods.
+Figure \ref{fig:rule_creator_class_diagram} is a class diagram that illustrates the methods, properties and relationships related to the RuleCreator class.
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.3]{rule_creator_class_diagram}
-	\caption{Class diagram of the RuleCreator methods}\label{fig:rule_creator_methods}
+	\caption{Class diagram of the RuleCreator class and its relationships}\label{fig:rule_creator_class_diagram}
 \end{figure}
 \subsubsection*{Conflicting and Dependency Analysis}
 After the rules and the corresponding henshin file have been created by the RuleCreator class, we are now able to pass them to the conflict and dependency analysis (CDA) to find potential redundancy pairs.
@@ -235,11 +286,11 @@ In order to extracting a textual report associated with a specific backlog, we i
 \subsubsection*{Storing Redundancy Items into RedundancyItems Class}
 To save the redundant elements found by the CDA tool, we implement classes to save the elements according to their type.
 
-Figure \ref{fig:redundancyItems_diagram} is a sequence diagram that illustrates the communication between the classes related to the storing of redundancy items founded by the CDA tool.
+Figure \ref{fig:redundancyItems_class_diagram} is a class diagram that illustrates the methods, properties and relationships related to the ReundancyItems class to store the redundancy elements provided by the CDA tool.
 \begin{figure}[h]
 	\centering 
-	\includegraphics[scale=0.2]{redundancyItems_class_diagram.png}
-	\caption{Class diagram for the classes to save redundancy elements accordingly}\label{fig:redundancyItems_diagram}
+	\includegraphics[scale=0.36]{redundancyItems_class_diagram.png}
+	\caption{Class diagram for the RedundancyItems class and its relationship}\label{fig:redundancyItems_class_diagram}
 \end{figure} 
 The following classes were created to represent the extracted model object accordingly. All these classes are extensions of the class \textit{RedundancyItems}, which contains all extracted model object from \enquote{minimal-model.ecore} such as \enquote{EClass}, \enquote{EAttribute} or \enquote{EReference}:
 
@@ -281,11 +332,11 @@ The class RedundancyItems contains following methods which are crucial for class
 \subsubsection*{ReportExtractor Class: Methods related to Extracting Redundancy Items}
 To extract the redundant elements and save them in a redundancyItems object, we must first iterate through all existing \textit{minimal-mode.ecore} files and extract the redundant reduandcy item from each EPackage.
 
-Figure \ref{fig:report_extractor_diagram} is a sequence diagram that illustrates the communication between the processes related to the extraction of redundancy items founded by the CDA tool and their storage in a RedundancyItems object.
+Figure \ref{fig:report_extractor_class_diagram} is a class diagram that illustrates the properties, methods and relationship related to the extraction of redundancy items founded by the CDA tool and their storage in a RedundancyItems object.
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.21]{report_extractor_class_diagram}
-	\caption{Class diagram for the process of extracting redundancy items}\label{fig:report_extractor_diagram}
+	\includegraphics[scale=0.27]{report_extractor_class_diagram}
+	\caption{Class diagram for the process of extracting redundancy items}\label{fig:report_extractor_class_diagram}
 \end{figure} 
 
 The following methods in the ReprortExtractor class are responsible for extracting the redundancies found by the CDA tool:
@@ -518,4 +569,73 @@ The following methods in the ReprortExtractor class are responsible for creating
 	
 	If a matching pair is found, the maximum redundancy number stored in this RedundantPair object is returned. If no matching pair is found, \textit{zero} is returned, indicating that there are no redundancies between the examined US-pair.
 \end{enumerate}
+\subsubsection*{Report Evaluation}
+The Evaluation class, part of the org.henshin.backlog.code.evaluation package, was developed to determine the level of redundancy in USs based on JSON reports. This class provides methods to evaluate whether two USs are either fully or partially redundant, analysing different application components of these USs.
+
+Figure \ref{fig:evaluation_class_diagram} is a class diagram that illustrates the properties and methods of the Evaluation class and its relationship to other classes.
+
+\begin{figure}[h]
+\centering 
+\includegraphics[scale=0.4]{evaluation_class_diagram}
+\caption{Class diagram related to Evaluation class}\label{fig:evaluation_class_diagram}
+\end{figure} 
+
+The evaluation process involves a complex logic to determine whether user stories are redundant. This includes:
+\begin{itemize}
+	\item Checking whether the arrays are empty or contain similar elements.
+	\item Comparing the individual elements in the arrays for both USs to determine if they fully match (full redundancy) or if they have some common elements (partial redundancy).
+\end{itemize}
+The class performs these checks by iterating through the JSON arrays of Triggers, Targets and Contains and comparing each element with those in the common sections to determine redundancy.
+
+The class offers a detailed mechanism to evaluate redundancy through following methods:
+\begin{itemize}
+	\item\textit{evaluateRedundancyCriteria}: This method compares elements such as "Triggers", "Targets" and "Contains" in the "Main" and "Benefit" parts of USs. The method checks whether these clauses are fully redundant (i.e. they are identical between USs) or partially redundant (i.e. they share some clauses but are not fully identical).
+
+	As input, it receives the JSON object for a specific US-pair.
+
+	In particular, it checks various conditions, e.g. whether common clauses are present, whether targets or contains are empty and whether the clauses in the stories are fully or partially identical.
+
+	As output, the method updates the JSON report with new keys indicating the redundancy status:
+
+	Main Part Fully Redundant: A Boolean value indicating whether the "main part" of the USs is fully redundant.
+
+	Main Part Partially Redundant: A Boolean value that indicates whether the "main part" of the USs is partially redundant.
+
+	Benefit Part Fully Redundant: A Boolean value that indicates whether the "benefit part" of the USs is fully redundant.
+
+	Benefit Partially Redundant: A Boolean value that indicates whether the "benefit part" of the USs is partially redundant.
+	 
+	 \item checkPartialRedundancy: The method processes these arrays to identify partial redundancy by checking whether elements from arrays of elements match elements from another array. 
+	 
+	 It receives the two arrays of elements as input, iterates through each element of the first input array and compares each of these elements with all elements in the second input array. A match counter records how often elements from the first input array find a match in the second input array.
+	 
+	 As output, method returns a Boolean value. True: indicates that there is at least one matching element pair between the two JSON arrays, which means partial redundancy. False: indicates that there are no matching elements, indicating no partial redundancy between these specific parts of the USs.
+	 
+	 \begin{example} Assume we have the following JSON arrays for two different USs: \\\\
+	 First JSON array: [["login", "button"], ["help", "link"]]\\
+	 Second JSON array:	[["logout", "button"], ["help", "link"]]\\\\
+	 The method would determine that the second element of the first array ("help", "link") matches the second element of the second array. As there is at least one match, checkPartialRedundancy would return true, indicating partial redundancy.
+	 \end{example}
+	 
+		
+	\item getJSONArraySafely: This method is designed to handle JSON operations safely by retrieving JSON array from a JSON object without the risk of throwing exceptions if the specified key does not exist.
+	
+	As input it receives the JSON object from which the JSON array needs to be extracted and a key corresponding to the JSON array within the provided JSON object.
+	
+	The method first checks whether the provided key exists in the JSON object. If the key exists, it retrieves the JSON array associated with that key. If the key does not exist, it returns an empty JSON array.
+	\begin{example} Let's assume that a JSON object representing USs details should contain the key for "Benefit Part", which does not exist:\\
+		\{\\
+			"Common Targets" : \{\\
+				"Main Part" : [["login","button"],["help","link"]]
+			\}\\
+		\} \\\\
+	If the "Benefit Part" in the "Common Targets" needs to be accessed that does not exist, this is handled safely with \textit{getJSONArraySafely} by returning an empty array to avoid runtime errors.
+	\end{example}
+	
+	\item readJsonArrayFromFile: The method enables JSON data to be read from a file and converted into a JSON array object. It takes the file path as input and attempts to open the file, checking whether the file is empty or missing. If the file is available and contains data, this data is read, converted into a JSON array object and returned.
+	 
+\end{itemize}
+
+
+
 \input{Section/Redundancy_Implementation}
