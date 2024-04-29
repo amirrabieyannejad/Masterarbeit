@@ -3,55 +3,735 @@ In this section, we explain the objective and scope of the implementation, the s
 
 The entire implementation is available in the GitHub repository \footnote{https://github.com/amirrabieyannejad/USs\_Annotation/tree/main}.
 \subsubsection*{Objective and Scope}
-The goal and scope of the work is divided into three phases. Firstly, converting the USs annotated by the CRF tool into graph transformation rules; secondly, using the CDA tool of the Henshin to automatically report redundancies between USs pairwise; thirdly, extracting important information from the CDA report into a text report. For further analysis, we stored the information in a JSON file to be able to import the data into another platform such as Excel.
+The goal and scope of the work is divided into four phases. Firstly, converting the USs annotated by the CRF tool into graph transformation rules; secondly, using the CDA tool of the Henshin to automatically report redundancies between USs pairwise; thirdly, extracting important information from the CDA report into a text report; fifthly, evaluation of reports. %For further analysis, we stored the information in a JSON file to be able to import the data into another platform such as Excel.
 
-Figure \ref{fig:implementation_phases} illustrates the mentioned implementation phases.
-\begin{figure}[h]
-	\centering
-	\includegraphics[scale=0.3]{implementation_phases}
-	%\includegraphics[scale=0.35]{sequence_diagram}
-	\caption{Three Implementation phases}\label{fig:implementation_phases}
-\end{figure} 
+%Figure \ref{fig:implementation_phases} illustrates the mentioned implementation phases.
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[scale=0.3]{implementation_phases}
+%	%\includegraphics[scale=0.35]{sequence_diagram}
+%	\caption{Three Implementation phases}\label{fig:implementation_phases}
+%\end{figure} 
 \subsubsection*{Methodology}
 This section explains and introduces tools that are required during the development process.
 
 Following approach and tools are necessary in order to develop our workflow:
-\begin{itemize}
-	\item Eclipse as IDE\footnote{https://eclipseide.org/}: Eclipse is an integrated development environment (IDE) used in computer programming. It contains a base work workspace and an extensible plug-in system for customizing the environment.
-	
-	\item Eclipse Modeling Project\footnote{https://eclipse.dev/modeling/}: It focuses on the evolution and promotion of model-based development technologies within the Eclipse community by providing a unified set of modelling frameworks, tooling, and standards implementations.
-	
-	\item Eclipse Modeling Framework (EMF)\footnote{https://eclipse.dev/modeling/emf/}: The EMF project is a modeling framework and code generation facility for building tools and other applications based on a structured data model. From a model specification described in XMI, EMF provides tools and runtime support to produce a set of Java classes for the model, along with a set of adapter classes that enable viewing and command-based editing of the model, and a basic editor.
-	
-	\item Henshin\footnote{https://wiki.eclipse.org/Henshin}: Henshin is an in-place model transformation language for the Eclipse Modeling Framework (EMF). It supports direct transformations of EMF model instances (endogenous transformations), as well as generating instances of a target language from given instances of a source language (exogenous transformations).
-	
-	\item Henshin's CDA feature\footnote{https://wiki.eclipse.org/Henshin/Conflict\_and\_Dependency\_Analysis}: Henshin's conflict and dependency analysis (CDA) feature enables the detection of potential conflicts and dependencies of a set of rules.
-	
+\begin{itemize}	
 	\item Java as programming language\footnote{https://www.java.com/de/}: Java is a widely used object-oriented programming language and software platform that is used to implement the Henshin and EMF APIs, which are critical to our approach to utilising them. Therefore, we use Java as our programming language.
 	
 	\item GitHub as version control\footnote{https://github.com/}: GitHub is a developer platform that allows developers to create, store, manage and share their code. It uses Git software, providing the distributed version control of Git plus access control, bug tracking, software feature requests, task management, continuous integration, and wikis for every project.
 \end{itemize} 
-\subsubsection*{Data Structures}
-The datasets of the backlogs annotated with the CRF tool have the JSON format, the structure of which is very important in the Java classes \textit{RuleCreator} and \textit{ReportExtractor}. Therefore, understanding the JSON format provided is crucial for the further procedure.
+\subsubsection*{Implementation Phases}\label{implementation_phases}
+To provide a comprehensive overview of the implementation phases, this section explains each step of the process, from initial setup to final evaluation, using practical examples.
+\subsubsection*{Step 1: Data Preparation}\label{step_1}
+As primary input, we receive a graph-based model generated by the CRF tool, which represents the refined and annotated dataset for the recognition of \emph{entities}, \emph{actions}, \emph{persons} and \emph{benefits} of USs \cite{mosser2022modelling}.
 
-Each JSON file for a backlog dataset contains a JSON-array in which each US entry is defined as a JOSN-object. Listing \ref{list:textual_report_sample} illustrates the format used for the US entry.
+The datasets have the JSON format, the structure of which is very important in the Java classes \textit{RuleCreator}, \textit{ReportExtractor}, and \textit{Evaluation}. Therefore, understanding the JSON format provided is needed for the further procedure.
+
+Each JSON file for a backlog dataset contains a JSON-array in which each US entry is defined as a JSON-object. Listing \ref{list:json_format} illustrates the format used for the US entry.
 \begin{MyListing}
 	\paragraph{}
 	\hrule
 	\centering
 	\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/json_format.json}
-	\caption{The JSON format of each US entry in JSON file}\label{list:textual_report_sample}
+	\caption{The JSON format of each US entry in JSON file}\label{list:json_format}
 	\hrule
 \end{MyListing}
-To interact with the entries in JSON file, we need to distinguish between the entries that are defined as JSON-objects, such as: {Text, Action, Entity, Benefit, US\_Nr} and the entries that are defined as a JSON-array, such as: {Persona, Primary/Secondary Action, Primary/Secondary Entity, Triggers, Targets, Contains}.
+Mooser et al. have linked each \emph{Persona} to each \emph{Primary Action} as \emph{Trigger} relationships, each \emph{Primary Actions} to each \emph{Primary Entity} as \emph{Target} relationships and each \emph{Primary/Secondary Entity} to each \emph{Primary/Secondary Entity} implying a \emph{Contains} relationship\cite{arulmohan2023extracting}.
 
-In order to parsing JSON file, we use \enquote{org.json} library which provide us the classes as follow:
+To interact with the entries in JSON file, we need to distinguish between the entries that are defined as JSON-objects, such as: {Text, Action, Entity, Benefit, US\_Nr} and the entries that are defined as a JSON-array, such as: {Persona, Primary/Secondary Action, Primary/Secondary Entity, Triggers, Targets, Contains}.
+%In order to parsing JSON file, we use \enquote{org.json} library which provide us the classes as follow:
+%\begin{itemize}
+%	\item \enquote{JSONObject}: An unordered collection of key and value pairs.
+%	\item \enquote{JSONArray}: Provide an ordered sequence of values.
+%	\item \enquote{JSONTokener}: A tool that breaks a piece of text into a series of tokens that can be used by JSONObject or JSONArray to parse JSON entries.
+%\end{itemize}
+\subsubsection*{Identifying USs in JSON-File}\label{workflow_nummerize_us}
+Annotated USs in each JSON file have no identifier. To distinguish USs, we use a Python script called \textit{nummerise\_us.py} \footnote{https://github.com/amirrabieyannejad/USs\_Annotation/tree/main/Script/numberise\_us}, which receives JSON files as input and adds a JSON object named \enquote{US\_Nr} with an identifier as value (e.g. user\_story\_01) to each US and returns the JSON files as output.
+Listing \ref{list:json_format_sample} illustrates the added JSON object "US\_Nr" and its value in the JSON file.
+\begin{MyListing}
+	\paragraph{}
+	\hrule
+	\centering
+	\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/json_format_sample.json}
+	\caption{The JSON format with the additional JSON object "US\_Nr" and its value}\label{list:json_format_sample}
+	\hrule
+\end{MyListing}
+\subsubsection*{Step 2: Creation of Rules}\label{step_2}
+Step 2 of the implementation involves a central process in which the US data structured in JSON files is transformed into transformation rules using the Henshin API. This involves the creation of an Ecore meta-model that represents the structure of the data we are working with, followed by the generation of Henshin transformation rules using RuleCreator class.
+
+\subsubsection*{Creating Ecore Meta-Model}\label{workflow_ecore}
+To be able to create rules in Henshin, an Ecore (meta)-model should be available. Ecore is the core (meta)-model at the heart of the EMF (Eclipse Modelling Framework). It enables the formulation of other models by utilising its constructs.
+
+Accordingly, we create an Ecore meta-model as shown in Figure \ref{fig:ecore_meta_model}, which is inspired by the meta-model shown in Figure \ref{fig:conceptual_metamodel} and corresponds to the JSON-objects in the JSON-file as follows:
 \begin{itemize}
-	\item \enquote{JSONObject}: An unordered collection of key and value pairs.
-	\item \enquote{JSONArray}: Provide an ordered sequence of values.
-	 \item \enquote{JSONTokener}: A tool that breaks a piece of text into a series of tokens that can be used by JSONObject or JSONArray to parse JSON entries.
+	\item \textit{Persona} as a class in the meta-model corresponds to the JSON-object \enquote{Persona} in the JSON-file.
+	\item \textit{Entity} as an abstract class, from which \textit{Primary/Secondary Entity} inherits as a class in the meta-model, corresponds to the JSON-object \enquote{Entity}, which contains two JSON-arrays, namely \enquote{Secondary/Primary Entity} in the JSON-file.
+	\item \textit{Action} as an abstract class and \textit{Primary/Secondary Action} as an inherited class in the meta-model correspond to the JSON-object \enquote{Action}, which contains two JSON-arrays, namely \enquote{Secondary/Primary Action} in the JSON-file.
+	\item \textit{Benefit} as a class in the meta-model, which also has an attribute called \enquote{text} that corresponds to the JSON-object \enquote{Benefit} in the JSON-file.
+	\item \textit{Story} as a class in the meta-model that contains text from US, which also has an attribute called \enquote{text} that corresponds to the JSON-object \enquote{Text} in the JSON-file.
+	\item Abstract class \textit{NamedElement} has attribute \textit{name}, which Primary/Secondary Action/Entity inherit from it, which corresponds to the value of \textit{Primary/Secondary Action/Entity} in JSON-file.
+	\item \textit{Edge} with the name \textit{triggers} between Persona and Primary Action in the meta-model, which corresponds to the JSON-array \enquote{Triggers}, where each JSON-array in it contains a pair, the first element corresponding to the \textit{Persona} and the second to the \textit{Primary Action}.
+	\item \textit{Edge} named \textit{targets} between Primary/Secondary Action and Primary/Secondary Entity in the meta-model, which corresponds to the JSON-array \enquote{Targets}, where each JSON-array has a pair, the first element corresponding to \enquote{Primary/Secondary Action} and the second element corresponding to \enquote{Primary/Secondary Entity}.
+	\item \textit{Edge} named \textit{contains} between Primary/Secondary Entity and itself in the meta-model, which corresponds to the JSON-array \enquote{Contains}, where each JSON-array in it has a pair where the first element corresponds to \enquote{Primary/Secondary Entity} and the second element corresponds to \enquote{Primary/Secondary Entity}.
 \end{itemize}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.6]{ecore_metamodel}
+	\caption{Ecore meta-model inspired by Mosser et al. \cite{mosser2022modelling}}\label{fig:ecore_meta_model}
+\end{figure} 
+%\subsubsection*{Data Structures}
+%The datasets of the backlogs annotated with the CRF tool have the JSON format, the structure of which is very important in the Java classes \textit{RuleCreator} and \textit{ReportExtractor}. Therefore, understanding the JSON format provided is crucial for the further procedure.
+
+%Each JSON file for a backlog dataset contains a JSON-array in which each US entry is defined as a JOSN-object. Listing \ref{list:json_format} illustrates the format used for the US entry.
+%\begin{MyListing}
+	%\paragraph{}
+	%\hrule
+	%\centering
+	%\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/json_format.json}
+	%\caption{The JSON format of each US entry in JSON file}\label{list:json_format}
+	%\hrule
+%\end{MyListing}
+%To interact with the entries in JSON file, we need to distinguish between the entries that are defined as JSON-objects, such as: {Text, Action, Entity, Benefit, US\_Nr} and the entries that are defined as a JSON-array, such as: {Persona, Primary/Secondary Action, Primary/Secondary Entity, Triggers, Targets, Contains}.
+
+%In order to parsing JSON file, we use \enquote{org.json} library which provide us the classes as follow:
+%\begin{itemize}
+	%\item \enquote{JSONObject}: An unordered collection of key and value %pairs.
+	%\item \enquote{JSONArray}: Provide an ordered sequence of values.
+%	 \item \enquote{JSONTokener}: A tool that breaks a piece of text into a series of tokens that can be used by JSONObject or JSONArray to parse JSON entries.
+%\end{itemize}
 %Provide detailed explanations of key implementation aspects, such as algorithms, data structures, design patterns, and any custom solutions developed. Discuss any challenges faced during implementation and how you addressed them.
+\subsubsection*{Creating Rules}\label{workflow_rule_creator}
+With the identified USs in the the JSON-file, we generate rules with the Henshin package \textit{org.eclipse.emf.henshin.model.compact}, which is responsible for the creation of \textit{transformation rules} and their \textit{classes}, \textit{attributes}, \textit{edges} and annotates them with \textless\emph{Delete}\textgreater, \textless\textit{Create}\textgreater or\textless\textit{Preserve}\textgreater, which are vital for the CDA tool to recognise the redundant pairs.
+
+To generating rules we create a package named \textit{org.henshin.backlog.code.rule} and specially the class \textit{RuleCreator} which used following classes\footnote{https://wiki.eclipse.org/Henshin/Compact\_API}\label{compact_api}:
+\begin{itemize}
+	\item \textit{org.eclipse.emf.henshin.model.compact.CModule}: CModule class can import elements from an Ecore file to use them in the transformation process responsible for linking the Ecore meta-model to the Henshin-file to be created.
+	\item \textit{org.eclipse.emf.henshin.model.compact.CRule}: Once we have a CModule, we can specify transformation rules with the CRule class and create them.
+	\item \textit{org.eclipse.emf.henshin.model.compact.CNode}: Now that we have a transformation rule, we want to fill this rule with nodes, edges and attributes. To create a node within a transformation rule, we need the CRule class. To create an edge we need to reference two nodes together. The default action when specifying a node, edge or an attributes is the \textless\emph{preserve}\textgreater action. We can also specify a different action when we create a node or an edge, for example \textless\emph{delete}\textgreater or\textless\emph{create}\textgreater.
+	\item org.henshin.backlog.code.rule.RuleCreator: We implement \textit{RuleCreator} class that creates a rule with annotated nodes, edges and attributes based on a JSON-file as input and a Henshin-file containing all rules as output, where each rule and its members(nodes, attributes, edges) correspond to the individual US and their JSON-objects/arrays in the JSON-file. 
+	
+	The most important design decision of this class is the way nodes, attributes and edges are annotated in order to be able to apply conflict and dependency analysis (CDA) for rules stored as a Henshin file.
+	
+	We decided to annotate the \enquote{name} attribute of all Primary/Secondary Actions/Entities and their associated edges including \enquote{targets}, \enquote{triggers} and \enquote{contains} as \textless delete\textgreater action. 
+	
+	The main goal is to increase the probability of identifying US-pairs characterised by matching names of \textit{action} nodes and \textit{entity} nodes in conjunction with an edge called \textit{targets}. This congruence serves as a basic criterion for identifying potentially redundant US-pairs and simplifies the process of redundancy detection in the context of US analysis.
+\end{itemize}
+\subsubsection*{Methods of the RuleCreator Class}
+In this section, the methods of the RuleCreator class is described as follows:
+\begin{enumerate}
+	
+	\item assingCmodule: This method assign a CModule to a Ecore meta-model. It creates a new CModule object with the provided Henshin-file name, adds imports from the Ecore file, and returns the module.
+	
+	\item processJsonFile: It takes parsed JSON array as input and processes their attributes, such as persona, actions, entities, text and their edges, such as targets, triggers. Corresponding elements are created as output in a the Henshin transformation module (CModule).
+	
+	\item processRule: It takes the \enquote{US\_Nr} JSON-object as input and creates a new CRule with the name of unique US identifier in the CModule.
+	
+	\item processPersona: It receives as input the persona extracted from the JSON data and the associated CRule to create a new CNode representing the persona within the provided CRule and adds the attribute \enquote{name} with persona as value. Finally, the created CNode representing the persona is returned.
+	
+	\item processText: It receives as input US text extracted from JSON data and the associated CRule to create a new CNode representing the text within the provided CRule and adds the attribute \enquote{text} with US text as value. Finally, the created CNode representing the US text is returned.
+	
+	\item processActions: The processActions method is responsible for creating CNode objects that represent actions within the CModule. As parameters, it receives the JSON-object of the actions, the CNode-object representing the persona associated with the actions and the unique identifier of the US. Since the edge triggers only refer to the persona and the primary action, a new CNode is created for each primary action that represents the primary action within the provided CRule, an attribute \enquote{name} is added and an edge is created from the persona node to the primary action with the label \enquote{triggers}. For each secondary action, a new CNode is created to represent the action within the provided CRule and an attribute \enquote{name} is added to the action node.
+	
+	\item checkEntityIsTarget: It receives the name of the entity and the JSON-array with information about target edges. The method iterates through the JSON-array targets, which contains arrays that represent targets edges between actions and entities. It compares the targets entity with the specified entity. If there is a match, it returns true to indicate that the entity is a target.
+	
+	\item processEntities: It receives as parameters the JSON-object with information about the entities, the CRule object representing the US to which the entities belong and the JSON-array with information about the targets associated with the entities. The method checks whether primary/secondary entities are present, then creates a CNode for each primary/secondary entity and checks whether the entity is present in the target array. If this is the case, its attribute \enquote{name} is annotated for deletion. This method is used within the processContainsEdges method to determine whether an entity involved in a contains relationship is also a target of another entity.
+	
+	\item processContainsEdges: It receives the JSON-object to be processed, the JSON array with information about contains/target edges and the US identifier as parameters. It first checks whether both entities belong to contains edges. If both entities exist, an edge is created between them in CRule with the name \enquote{contains}. If one of the entities is a target of another entity (as specified in the targets array), the edge is annotated for deletion. If none of the entities is a target, the edge is annotated as \enquote{preserve}.
+	
+\end{enumerate}
+Figure \ref{fig:rule_creator_class_diagram} is a class diagram that illustrates the attributes, operations and relationships related to the RuleCreator class.
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.3]{rule_creator_class_diagram}
+	\caption{Class diagram of the RuleCreator class and its relationships}\label{fig:rule_creator_class_diagram}
+\end{figure}
+To illustrate this step, three example is given in which the RuleCreator class is applied to a dataset (G03) with three collected USs and the resulting artefact is presented.
+
+\begin{example}
+Listing \ref{list:json_user_story_12} shows the JSON format in relation to user\_story\_12 and Figure \ref{fig:rule_user_story_12} shows the application of the RuleCreator class in this US, which is a transformation rule where the targets and the associated contains relationships are annotated as a \textless Delete\textgreater action and the rest of the nodes and edges are annotated as a \textless Preserve\textgreater action.\\\\
+Text of US is:
+user\_story\_12: "\#G03\# As a Staff member, I want to Assign an Application for Detailed Review, so that I can review the for compliance and subsequently approved or denied."
+%Considering the backlog dataset as shown in Listing \ref{list:backlog_g03}:
+\begin{MyListing}
+	\paragraph{}
+	\centering
+	\includegraphics[scale=0.8]{Listing/json_user_story_12.png}
+	\caption{JSON entities Related to user\_story\_12}\label{list:json_user_story_12}
+\end{MyListing}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.6]{rule_user_story_12}
+	\caption{Generated transformation rule related to user\_story\_12 using RuleCreator class}\label{fig:rule_user_story_12}
+\end{figure}
+As we can see, the "targets" edges and their direct relationships ("triggers" and "contain", if any) are also annotated as \textless delete\textgreater, which is very important to find redundant elements with the CDA tool.
+\end{example}
+
+\begin{example}
+Listing \ref{list:json_user_story_39} shows the JSON entities related to user\_story\_39 and Figure \ref{fig:rule_user_story_39} shows transformation rule generated by RuleCreator class.\\\\
+Text of US is:
+user\_story\_39: "\#G03\# As a Plan Review Staff member, I want to Review Plans, so that I can review them for compliance and either approve, or fail or deny the plans and record any conditions, clearances, or corrections needed from the Applicant."
+\begin{MyListing}
+	\paragraph{}
+	\centering
+	\includegraphics[scale=0.8]{Listing/json_user_story_39.png}
+	\caption{JSON entities Related to user\_story\_39}\label{list:json_user_story_39}
+\end{MyListing}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.43]{rule_user_story_39}
+	\caption{Generated transformation rule related to user\_story\_39 using RuleCreator class}\label{fig:rule_user_story_39}
+\end{figure}
+Attribute "Plan", as we can see, it appears both in the main part as a primary entity and in the benefit part as a secondary entity, forming the various relationships as targets and contains.
+\end{example}
+
+\begin{example}
+Listing \ref{list:json_user_story_51} shows the JSON entities related to user\_story\_51 and Figure \ref{fig:rule_user_story_51} shows transformation rule generated by RuleCreator class.\\\\
+Text of US is:
+user\_story\_51: "\#G03\# As an Enforcement Staff member, I want to Issue a Notice of Violation, so that I can provide formal communication to the responsible party."
+\begin{MyListing}
+	\paragraph{}
+	\centering
+	\includegraphics[scale=0.8]{Listing/json_user_story_51.png}
+	\caption{JSON entities Related to user\_story\_51}\label{list:json_user_story_51}
+\end{MyListing}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.55]{rule_user_story_51}
+	\caption{Generated transformation rule related to user\_story\_51 using RuleCreator class}\label{fig:rule_user_story_51}
+\end{figure}
+Last but not least, we have determined that the secondary entity "responsible party" has neither a target nor a contains relationship. Therefore, it is not annotated as \textless delete\textgreater, but as \textless preserve\textgreater. This is due to the fact that some phrases have been identified as entities in the CRF tool, but their relationship is not annotated at all, which is problematic for analysing redundancy.
+\end{example}
+
+\subsubsection*{Step 3: Conflicting and Dependency Analysis}\label{step_3}
+After the rules and the corresponding henshin file have been created by the RuleCreator class, we are now able to pass them to the conflict and dependency analysis (CDA) to find potential redundancy pairs.
+
+Since the analysis of conflicts and dependencies related to the \textit{attribute} is not yet considered in the CDA API \footnote{https://wiki.eclipse.org/Henshin/conflict\_and\_Dependency\_Analysis}, we decided to use the user interface (UI) of the CDA extension of Henshin, which supports analysis of conflict and dependencies of rules through the interactive use of CDA.
+
+To apply CDA to Henshin files, we just need to right-click on the Henshin file and select \textit{Henshin}\textgreater\textit{conflict and Dependency Analysis} from the context menu as shown in Figure \ref{fig:henshin_context_menu}.
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{henshin_context_menu}
+	\caption{Applying CDA to the selected Henshin file}\label{fig:henshin_context_menu}
+\end{figure}
+A user interface then appears, prompting to select the rule sets to be analysed and the type of analysis. We then select as \enquote{\textit{First}} and \enquote{\textit{Second} \textit{Rules}}, all rules related to USs. Additionally, as the type of analysis we select \enquote{\textit{conflicts}} as illustrated in Figure \ref{fig:select_rules}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{select_rules}
+	\caption{CDA user interface: Selection of rules and type of analysis}\label{fig:select_rules}
+\end{figure}
+
+On the next page of the CDA UI shown in Figure \ref{fig:select_granularity}, we specify the depth of analysis that we use with \enquote{\textit{Fine granularity}} when selecting \enquote{\textit{Create a complete result table}} and \enquote{\textit{Create an abstract result table}}. 
+
+Fine granularity provides a detailed examination of each conflicting rule by listing all conflict reasons. Unlike coarse granularity, which focuses only on minimal conflict reasons, fine granularity includes both minimal and more general conflict reasons. The binary granularity, where simple conflicting rule pairs are listed, may be too simple for complex systems where understanding the nature of the conflict is essential for the solution. 
+We choose \enquote{Fine granularity} as the depth of analysis due to the fact that it shows all conflict reasons for each conflicting rule pair. This allows for a deeper understanding of how different model fragments contribute to conflicts.
+
+A conflict reason is a model fragment whose presence leads to a conflict. General conflict reasons result from different combinations of minimal conflict reasons\cite{cda_api}.
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{select_granularity}
+	\caption{CDA user interface: Selection of report granularity}\label{fig:select_granularity}
+\end{figure}
+
+During the execution of the CDA analysis, the rule pairs is analysed and a conflict analysis is performed. Once the calculation is complete, the results are listed in the \enquote{CDA} -\textgreater \enquote{Result window}, as shown in Figure \ref{fig:cda_report}. The top entry shows the granularity, which in our case is \enquote{Fine}. These entries contain the rule pairs that conflict with each other. Each rule pair contains a number of conflict reasons.
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{cda_report}
+	\caption{CDA report with fine granularity}\label{fig:cda_report}
+\end{figure}
+
+Figure \ref{fig:cda_report_in_project_dir} shows how the data is saved in the project tree view. The results directory is created in the directory containing the Henshin that was used for the analyses. The new folder name is the date and time at which the analysis was performed. In contrast to the \enquote{\textit{CDA/Results}} view, this folder contains all conflict reasons and atoms together in a rule pair directory.
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{cda_report_in_project_dir}
+	\caption{Saving CDA results data in the project structure view}\label{fig:cda_report_in_project_dir}
+\end{figure}
+
+For each conflict reason, there is a \enquote{\textit{minimal-model.ecore}} file, that contains packages in which various conflict elements such as \enquote{attributes} and \enquote{references} (edges) are mapped together and displayed in different packages.
+
+Figure \ref{fig:minimal_model_packages} shows the representation of the conflicting attributes and references. An attribute has the property of changing the value and is represented by an arrow \enquote{-\textgreater}. The attribute from the first rule is separated from the second rule by an underscore, just as with the nodes.
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{minimal_model_packages}
+	\caption{Representation of redundant attributes and references in \textit{minimal-model.ecore} file}\label{fig:minimal_model_packages}
+\end{figure}
+
+\begin{example}
+	To illustrate this step, we also pass the transformation rules created in step 2, which reflect three USs (user\_story\_12/39/51), to the CDA tool and selecting "conflicts" as conflict type to calculate with "fine granularity" as the depth of analysis.\\
+	Once the calculation is complete, the results are listed in the "CDA" -\textgreater "Results Window" as shown in Figure\ref{fig:step_3_cda_report}. Figure\ref{fig:step3_cda_report_project_tree_view} shows how the data is saved in the project's tree view, which contains all conflict reasons and atoms together in a rule pair directory.
+	\begin{figure}[h]
+		\centering
+		\includegraphics[scale=0.5]{step_3_cda_report}
+		\caption{CDA report in relation to three transformation rules with "conflicts" as the type to be calculated and "fine granularity" as the depth of the analysis}\label{fig:step_3_cda_report}
+	\end{figure}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[scale=0.5]{step3_cda_report_project_tree_view}
+		\caption{Saving CDA results data in the project's tree view}\label{fig:step3_cda_report_project_tree_view}
+	\end{figure}
+	As we can see, the CDA tool has only found redundancy between user\_story\_12 and user\_story\_39. This is because there are no redundant clauses between two USs (user\_story\_12 and user\_story\_39) and user\_story\_51.\\
+	Regarding the redundant elements specifically, we can refer to the created file "minimal-model.ecore", which is located in the tree view of the project under each conflict reason. Figure \ref{fig:step3_cda_report_project_tree_view} show the minimal-model.ecore file related to user\_story\_12 and user\_story\_39.\\\\
+	The file Minimal-model.ecore, which refers to user\_story\_12 and user\_story\_39, is divided into packages, with each package containing different matches of redundant elements. If there is a redundancy between two elements, this is explicitly indicated by a hash symbol (\#). Figure \ref{fig:step3_cda_package} illustrates the redundant elements found in each package.\\\\
+	\begin{figure}[h]
+		\centering
+		\includegraphics[scale=0.5]{minimal_model_packages}
+		\caption{Representation of the redundant elements in each package within \textit{minimal-model.ecore} file}\label{fig:step3_cda_package}
+	\end{figure}
+	For example, the attribute "name" with the value "review" in "Secondary Action" and the attribute "targets" with the value "compliance" in "Secondary Entity" are labelled as redundant (both with a hash symbol). The reference to "targets" is also marked as redundant (with a hash symbol), which means that the reference (targets) from "Secondary Action" to "Secondary Entity" is also redundant between USs, which is a very important criterion for finding redundancy correctly.
+\end{example}
+
+\subsubsection*{Step 4: Report Extraction}\label{step_4}
+To create a lightweight report for the group or individual in question, we need to extract the key information from the CDA report, e.g. redundancy US-pair, redundancy clauses, count of redundancy clauses in each part of the US (main or benefit part), and create a report as a text file with the following information:
+\begin{itemize}
+	
+	\item A table of potential redundant pairs with the number of total redundancy clauses.
+	
+	\item Founded potential redundant US-pairs.
+	
+	\item Redundancy words and clauses of founded US-pairs. Clauses consisting of two words that have one of the relationships triggers, targets or contains.
+	
+	\item Text of US-pairs whose redundancy words are marked with a hash symbol (\#).
+	
+	\item Parts of the sentence in which words and clauses are found.
+\end{itemize}
+\begin{example}
+	After the CDA directory for user\_story\_12 and user\_story\_39 is created by CDA tool graphic interface (UI), we pass the location of directory into ReportExtractor class and in order to extracting the important information and save it into the texual report as well as JSON report.
+	Listing \ref{list:textual_report_sample} illustrates the example of the textual report. In this case, the report only contains one US-pair.
+	\begin{MyListing}
+		\paragraph{}
+		
+		\centering
+		%\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/TextualReportSample.txt}
+		\includegraphics[scale=0.7]{Listing/TextualReportSample.png}
+		\caption{Example of generated textual report for one US-pair}\label{list:textual_report_sample}
+		
+	\end{MyListing}	
+	As we can see, the text report consists of a 2x2 table whose first column and first row are US identifiers, and the numbers inside the table are the total number (benefit part + main part) of redundancy elements between two USs; secondly, the redundant clauses related to the redundant US-pair are listed; thirdly, the text of US whose redundant phrases are marked with a hash symbol; finally, the part of the clauses in which redundant elements occur is displayed.\\\\
+	
+\end{example}
+For further evaluation purposes and easy export of the report to another platform such as Excel, a JSON report is created that collects the information about redundant US-pairs separately in a JSON object with the following entries:
+\begin{itemize}
+	\item Potential Redundant User Stories:  which has stored the US-pair identifier(e.g. "user\_story\_12\_AND\_user\_story\_39"). 
+	
+	\item Status: consisting of "Main/Beneift Part Redundancy Clauses" and "Total Redundancy Clauses", which store the count of redundancy clauses in the main and benefit part as well as in the total part of the US.
+	
+	\item Entity: which can consist of a "Secondary/Primary Entity" and stores the founded redundant entities.
+	
+	\item Common Targets/Contains: which consists of the "Main Part" and "Benefit Part" entries and only stores the targets/contains relationships that are common between the USs in a particular part of the USs. For example, if there are common redundant targets in the main part of the USs, these are included in the "Main Part" entity of the "Common Targets".
+	
+	\item Text: consisting of two entries, namely "First UserStory" and "Second UserStory", in which the text of the US-pair whose hash symbol has already been applied in redundant phrases is stored.
+	
+	\item Project Number: stores the number of the Project(e.g. "G03").
+	
+	\item Part of Sentence: consists of the entries "First UserStory" and "Second UserStory", in which the part of the US sentences containing redundant clauses is stored.
+	
+	\item All Targets/Contains: which consists of the "Main Part" and "Benefit Part" entries and stores the whole targets/contains relationships that are occurred in the particular part of the USs.
+	
+\end{itemize}
+\begin{example}
+	Listing \ref{list:json_report_sample} illustrates the example of the JSON report regarding user\_story\_12 and user\_story\_39.
+	\begin{MyListing}
+		\paragraph{}
+		
+		\centering
+		%\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/TextualReportSample.txt}
+		\includegraphics[scale=0.7]{Listing/JSONReportSample.png}
+		\caption{Example of generated JSON report for one US-pair}\label{list:json_report_sample}
+		
+	\end{MyListing}	
+\end{example}
+
+In order to extracting a textual report associated with a specific backlog, we implement a class called \textit{ReportExtractor} within the package \textit{org.henshin.backlog.code.report}, which include the following classes form the package \textit{org.eclipse.emf.ecore}\footnote{https://download.eclipse.org/modeling/emf/emf/javadoc/2.7.0/org/eclipse/emf/ecore/}. These classes are important for reading the content of minimal-model.ecore:
+\begin{itemize}
+	
+	\item org.eclipse.emf.ecore.resource.Resource: A resource of an appropriate type is created by a resource factory; a resource set indirectly creates a resource using such a factory. A resource is typically contained by a resource set, along with related resources.
+	
+	\item org.eclipse.emf.ecore.resource.ResourceSet: A resource set manages a collection of related resources and notifies about changes to this collection. It provides a tree of content. A collection of adapter factories supports the search for an adapter via a registered adapter factory. 
+	
+	\item org.eclipse.emf.ecore.EObject: EObject is the root of all modelled objects, therefore all method names start with "E" to distinguish the EMF methods from the client methods. It provides support for the behaviour and functions that are common to all modelled objects.
+	
+	\item org.eclipse.emf.ecore.EPackage: A representation of the model object \enquote{EPackage}.
+	
+	\item org.eclipse.emf.ecore.EClassifier: A representation of the model object \enquote{EClassifier}.
+	
+	\item org.eclipse.emf.ecore.EClass: A representation of the model object \enquote{EClass}.
+	
+	\item org.eclipse.emf.ecore.EAttribute: A representation of the model object \enquote{EAttribute}.
+	
+	\item org.eclipse.emf.ecore.EReference:  A representation of the model object \enquote{EReference}.
+	
+\end{itemize}
+\subsubsection*{Storing Redundancy Items into RedundancyItems Class}
+To save the redundant elements found by the CDA tool, we implement classes to save the elements according to their type.
+
+Figure \ref{fig:redundancyItems_class_diagram} is a class diagram that illustrates the attributes, operations and relationships related to the ReundancyItems class to store the redundancy elements provided by the CDA tool.
+\begin{figure}[h]
+	\centering 
+	\includegraphics[scale=0.36]{redundancyItems_class_diagram.png}
+	\caption{Class diagram for the RedundancyItems class and its relationship}\label{fig:redundancyItems_class_diagram}
+\end{figure} 
+The following classes were created to represent the extracted model object accordingly. All these classes are extensions of the class \textit{RedundancyItems}, which contains all extracted model object from \enquote{minimal-model.ecore} such as \enquote{EClass}, \enquote{EAttribute} or \enquote{EReference}:
+
+\begin{itemize}
+	
+	\item PrimaryAction/SecondaryAction: Which has only saved the EClass specified by \enquote{Primary/Secondary Action} and the EAttribute model object with the methods \textit{getType} to retrieve the saved EClass and \textit{getName} to retrieve the saved EAttribute.
+	
+	\item PrimaryEntity/SecondaryEntity: Which has only saved the EClass specified by \enquote{Primary/Secondary Entity} and the EAttribute model object with the methods \textit{getType} to retrieve the saved EClass and \textit{getName} to retrieve the saved EAttribute.
+	
+	\item Targets: The EClass specified by \enquote{Primary/Secondary Action} as \textit{outgoing edge} and an EAttribute model object as \textit{incoming edge} with \enquote{Primary/Secondary Entity}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored EAttribute.
+	
+	\item Contains: The EClass specified by \enquote{Primary/Secondary Entity} as \textit{outgoing edge} and an EAttribute model object as \textit{incoming edge} with \enquote{Primary/Secondary Entity}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored EAttribute.
+	
+	\item Triggers: The EClass specified by \enquote{Persona} as \textit{outgoing edge} and an EAttribute model object as \textit{incoming edge} with \enquote{Primary Action}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored EAttribute.
+	
+	\item RedundantPair: Stores the identifier of the two USs that were founded as a redundant pair. It also stored the total count of redundancy clauses within the US-pair.
+	
+	\item TargetsPair: Stores effective value of \enquote{\textit{Primary/Secondary Action}} and \enquote{\textit{Primary/Secondary Entity}} in action and entity fields accordingly.
+	
+	\item ContainsPair: Stores effective value of \enquote{\textit{Primary/Secondary Entity}} as \enquote{\textit{parent/child entity}} due to the fact that parent entity is a containment of child entity.
+	
+	\item TriggersPair: Stores effective value of \enquote{\textit{Persona}} as a persona and \enquote{\textit{Primary Action}} as an action.
+	
+\end{itemize}
+The class RedundancyItems contains following methods which are important for class ReportExtractor:
+\begin{itemize}
+	\item isInCommonContains: This method is designed to determine whether a given entity (specified by its name) is part of a redundant pair listed in the \enquote{Contains} array of related USs stored in a JSON file.
+	
+	As input, it receives the name of the entity for which we want to check whether it exists in a redundant pair. In addition, a list of redundant pair objects that represent pairs of entities where one entity contains the other. If there is a match with the parent entity, it returns the child entity and vice versa.
+	\item isInCommonTargets: This method is responsible for determining whether a particular action/entity is part of a redundant pair listed in the "Targets" array of related USs stored in a JSON file.
+	
+	As input, it receives the name and type of the first element, which is an action, and the name and type of the second element, which is an entity. It also receives a list of TargetsPair objects, which are pairs of common actions and entities between US-pairs.
+	
+	For each pair, it checks whether the specified names and types match either the action or entity in the pair. If a match is found, the method returns \textit{true}, which means that the specified elements are part of a redundant pair.
+	\item printRedundantItems: This method is responsible for creating a report on redundancy items based on the data stored in the class instance. 
+	
+	As input, it takes several parameters, including a "FileWriter" to write to the textual report's file, lists of different pairs of "Targets", "Contains" and "Triggers", and a JSON-object to store the report data in JSON format, which is vital for evaluation.
+\end{itemize}
+\subsubsection*{ReportExtractor Class: Methods related to Extracting Redundancy Items}
+To extract the redundant elements and save them in a redundancyItems object, we must first iterate through all existing \textit{minimal-mode.ecore} files and extract the redundant reduandcy item from each EPackage.
+
+Figure \ref{fig:report_extractor_class_diagram} is a class diagram that illustrates the attributes, operations and relationship related to the extraction of redundancy items founded by the CDA tool and their storage in a RedundancyItems object.
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.27]{report_extractor_class_diagram}
+	\caption{Class diagram for the process of extracting redundancy items}\label{fig:report_extractor_class_diagram}
+\end{figure} 
+
+The following methods in the ReprortExtractor class are responsible for extracting the redundancies found by the CDA tool:
+\begin{itemize}
+	\item extractReports: This method orchestrates the extraction and analysis of created CDA report from a directory containing conflicted US-pairs and their associated reasons(conflict reason), and generates both text and JSON reports for further investigation and processing.
+	
+	It receives two FileWriter objects as input, one for writing textual and one for JSON reports.
+	
+	It iterates through each directory in the main directory that represents a conflict pair and uses the \textit{checkIfReportExist} method to make sure that the current US-pair are not already proceeded and the \textit{containsAnd} method to check whether it contains the conjunction \enquote{AND} to make sure that it is the valid US-pair name(\textit{e.g.} "user\_stroy\_12\_AND\_user\_stroy\_39" is a valid directory name).
+	
+	For each valid conflict pair directory, it iterates through the conflict reason directories within the current conflict pair directory and uses the \textit{minimalEcoreExist} method to check whether a \textit{minimal-model.ecore} file exists with reference to a conflict reason.
+	
+	To identify redundancy items, it uses the method \textit{processMinimalModels} and reads the "minimal-model.ecore" file, processes its content and iterates over the contained EPackages in order to process them further with the method \textit{iteratePackages}, which saves all redundancy items in RedundacyItems object.
+	
+	In addition, the methods \textit{hasEntitys}, \textit{hasActions} and \textit{hasTargets} are used to check whether the identified elements contain "Primary/Secondary actions" and "Primary/Secondary Entities" with common "Targets" reference. If the identified elements fulfil the criteria, the redundancy pair is included in the report.
+	
+	It then writes the potentially redundant USs and their clauses to the textual as well as JSON report files for further analysis.
+	
+	As output, the method returns a list of RedundantPair objects containing information about identified redundancies between US-pairs.
+	
+	\item createOrOverwriteReportFile: The method is responsible for creating or overwriting report file. It first ensures the existence of a report file. If the file doesn't exist, it creates a new one; if it already exists, it overwrites the existing file. Finally, it returns a \textit{FileWriter} to allow writing to the report file.
+	
+	\item checkIfReportExist: This method takes two parameters, namely US-pair and the list of all previously processed pairs in the CDA report directory. It returns \textit{true} if the US-pair was found in the pairList, which means that a report with the specified pairs has already been executed and therefore does not need to be executed again.
+	
+	\item minimalEcoreExist: This method checks the existence of a \textit{minimal-model.ecore} file using a conflict pair and a conflict reason generated by CDA tool.
+	
+	As input, it receives a conflict pair and a conflict reason. Using these parameters, the method constructs the file path to the minimal-model.ecore file and checks whether the file exists under the constructed path.
+	
+	If the ECore file exists, the method returns \textit{true}, indicating that the minimal-model.ecore file exists for the examined conflict pair and conflict reason. If the file does not exist, \textit{false} is returned.
+	
+	\item containsAnd: This method ensures that the folder name is identified with "\textit{\_AND\_}", as the report generated by CDA tool is formatted like \enquote{user\_story\_\textless digit \textgreater \_AND\_ user\_story\textless digit \textgreater}. It returns \textit{true} if the examined directory contains \enquote{AND}, otherwise \textit{false} is returned.
+	
+	\item processMinimalModels: This method reads a Minimal Model Ecore file, processes its content and iterates over the contained EPackages in order to process them further with the \textit{iteratePackages} method. 
+	
+	As parameters, it receives a File object that represents examined minimal model ecore file, an array list in which the names of the redundant elements are stored, and a RedundancyItems object that is used to handle redundant elements. 
+	
+	First, a ResourceSet and a ResourceFactoryRegistry corresponding to the minimal model Ecore file are set up and a Resource object is created from the Ecore file; the \textit{iteratePackages} method is called for each EPackage.
+	
+	\item iteratePackages: This method identifies redundancies within the attributes and references of EClasses in examined minimal model, stored them accordingly and updates the RedundancyItems object.
+	
+	It takes several parameters, such as the EPackage to be iterated over, an array list in which the names of the redundant elements are stored, and a RedundancyItems object. 
+	
+	It iterates through every EClassifier in the minimal package that contains EClasses and checks whether \enquote{\#} is present in EClass; if this is the case, EClass has been recognised as a conflict by CDA tool.
+	
+	If an attribute is found, the class of the conflicting attribute is determined and added to the corresponding element within RedundancyItems (e.g. Primary/Secondary Action/Entity). 
+	
+	Each EReference is then iterate through in the EClass. Depending on the reference name, the reference is added to the corresponding element within RedundancyItems (e.g. Triggers, Targets, Contains). The method is completed once all EClassifiers within the specified EPackage have been processed.
+	
+	\item hasActions: This method is useful for using the data stored in RedundancyItem to determine whether certain actions are present in a list of redundant entries, in order to later check whether the identified elements fulfil the criteria and the redundancy pair is included in the report.
+	
+	It checks if there's a match with name of any primary/secondary action stored in the RedundancyItems object. If match is found, it immediately returns \textit{true}.
+	
+	\item hasEntitys: This method is used to determine whether certain secondary/primary entities  are present in the RedundancyItems object based on their name. For each item, it checks whether there is a match with the name of a primary/secondary entity stored in the RedundancyItems object. 
+	
+	If a match is found, \textit{true} is returned immediately, in order to later check whether the identified elements fulfil the criteria and the redundancy pair is included in the report.
+	
+	\item hasTargets: This method uses the content of a RedundancyItems object to determine whether targets are present in a list of founded redundant elements.
+	
+	As input, it receives an array list with the names of the redundant elements and an object of the type RedundancyItems, which contains a collection of founded "Targets".
+	
+	The method checks whether there is a match with the name of any targets reference stored in the RedundancyItems object. 
+	
+	If a match is found between the elements, the method immediately returns \textit{true}, which means that at least one targets reference is present, in order to later check whether the identified elements fulfil the criteria and the redundancy pair is included in the report.
+	
+	\item readJsonArrayFromFile: This method provides the ability to read JSON data from a file and convert it into a JSONArray object, handling cases where the file is empty or does not exist.
+	
+	It receives the file path of the JSON file to be read as input. An attempt is made to open the specified file and check whether the file is empty or does not exist. If the file exists and is not empty, it reads the JSON data from the file and creates a JSON array object from the JSON data read from the file and returns the JSON array object with the JSON data.
+	
+	
+	\item getRedundancyStatus: This method add statistics like count of main/benefit/total redundancies into JSON report. It receive as input redundancyItems and as output write the count of main/benefit/total redundancies into JSON report already defined in method highlightRedundancies.
+\end{itemize}
+\subsubsection*{Methods for Extracting Data from Dataset of Backlog}
+To get information about USs such as text, redundant clauses in targets/contains/triggers references between US-pairs, we need to extract data from the dataset stored in the JSON file.
+
+%Figure \ref{fig:json_data_extractor_diagram} illustrate the communication between three processes.
+%\begin{figure}[h]
+%\centering 
+%\includegraphics[scale=0.35]{data_extractor_diagram}
+%\caption{Sequence diagram for the processes of extracting common entries between two USs from dataset of the %backlog}\label{fig:json_data_extractor_diagram}
+%\end{figure} 
+The following methods in the ReprortExtractor class are responsible for extracting data from dataset within JSON file:
+\begin{itemize}
+	\item readJsonArrayFromFile: This method receives a JSON file as input. After reading, the JSON content is tokenised, parsed into a JSON array and the parsed JSON array is returned.
+	
+	\item getUssTexts: This method ensures that the text of the specified US-pair is retrieved from the JSON file and properly assigned to the RedundancyItems object for further processing. It receives a US-pair and RedundancyItems as input. 
+	
+	It reads a JSON array from a file using the \textit{readJsonArrayFromFile} method, iterates over each JSON object in the array and compares the extracted US identifier with the US identifier extracted from the input US-pair. If a match is found, the text of the first and second USs is set in the redundancyItems object.
+	
+	\item getCommonTargets: Used to determine overlaps in "Targets" references (pairs of actions and entities) between specified US-pairs from a JSON file.
+	
+	It receives the identifiers of the US-pair as input. After it finds the US objects, it compares each pair of entries (actions and entities) in "Targets" references of the two USs and looks for matches.
+	
+	The output is the matches, i.e. the list of common pairs of actions and entities, in "Targets" reference.
+	
+	\item getCommonContains: Used to determine overlaps in "Contains" references (pairs of entities) between specified US-pairs from a JSON file.
+	
+	It receives the identifiers of the US-pair as input. After it finds the US objects, it compares each pair of entities in "Contains" references of the two USs and looks for matches.
+	
+	The output is the matches, i.e. the list of common pairs of entities, in "Contains" reference.
+	
+	\item getCommonTriggers: Used to determine overlaps in "Triggers" references (pairs of personas and actions) between specified US-pairs from a JSON file.
+	
+	It receives the identifiers of the US-pair as input. After it finds the US objects, it compares each pair of entries (personas and actions) in "Triggers" references of the two USs and looks for matches.
+	
+	The output is the matches, i.e. the list of common pairs of personas and actions, in "Triggers" reference.
+\end{itemize}
+\subsubsection*{Methods for Highlighting Words using Hash Symbol(\#)}
+In order to distinguish redundancy words between a US-pair, in text of each US, we decide to highlighting redundant words using hash symbol like \enquote{ ... \#\textless word\textgreater\# ... }.
+
+%Figure \ref{fig:highlight_diagram} is a sequence diagram that illustrates the communication between processes related to the highlighting of redundancy words.
+%\begin{figure}[h]
+%\centering 
+%\includegraphics[scale=0.35]{highlight_diagram}
+%\caption{Sequence diagram for the process of highlighting redundancy clauses in the Texts of US-pair}\label{fig:highlight_diagram}
+%\end{figure} 
+
+The following methods in the ReprortExtractor class are responsible for highlighting redundancy words:
+\begin{itemize}
+	\item writeUsText: This method reads the text of examined US-pair, highlights redundant element between them using \textit{highlightRedundancies} method, writes the highlighted text to a file, and records information about the redundant elements. 
+	
+	As input it receive a US-pair, a list of redundant pairs to store redundant pairs in it, an object RedundancyItems containing stored redundancy elements and a FileWriter object used for writing output.
+	
+	It extract the identifier of the two USs from US-pair, retrieves the text of the USs from JSON file and add them to RedundancyItems, invoke the \textit{highlightRedundancies} method to identify and highlight redundants between the USs, it writes the highlighted text of each US to the FileWriter. Finally, sets the redundant pair and count of redundancy clauses.
+	\item highlightRedundancies: This method identifies redundancies between US-pair, applies hash symbols using \textit{applyHashSymbols} method to highlight common items and updates the redundancy counts in the redundancyItems object. 
+	
+	It takes two parameters, redundancyItems and US-pair, which represents the pair of USs to be analysed. 
+	
+	It checks whether both USs contain a main clause part or whether one of them has a benefit part or whether both USs also have a benefit part.
+	
+	It applies hash symbols to common elements that only occur in the part of the USs that occurs in the same part (e.g. only main or only benefit part of the USs). 
+	
+	In each condition, it checks if there are redundancy clauses in the main part, then persona is also highlighted using \textit{applyHashSymbolPersona} method. It also updates the count of main/benefit/total redundancies and sets the changed text of USs. Finally, it returns the updated redundancyItems object.
+	\item applyHashSymbols: This method is used to mark certain words within a substring with hash symbols (\#) at the beginning and end to ensure that they are distinguishable and can be easily identified or processed later. 
+	
+	It takes a substring in which replacements are to be made and a field of matches containing the words to be surrounded with hash symbols. First, the field of matches is sorted in descending order of length and processed accordingly to avoid adding hash symbols to unwanted clauses. 
+	\begin{example}
+		For example, let's assume that we have \enquote{data} and \enquote{data format} as redundancy elements. If we continue first with \enquote{data} and then with \enquote{import data}, \enquote{import data} will be replaced by \enquote{import \#data\#}, which is not desired.
+	\end{example}
+	\item hasMoreThanFour/SixHashSymbols: These methods receive a text from the US as input. They are used to check whether there are redundant clauses in the main part of the sentence (it can be one or two clauses). If so, \textit{true} is returned.
+	
+	\item applyHashSymbolPersona: This method identifies common "Triggers" references, marks them with hash symbols and returns the changed text parts together with the count of redundant triggers references. 
+	
+	As input, it receives a list of common triggers between US-pair, RedundancyItems and the parts of the USs. It iterates through the list of common triggers and checks whether both elements(persona and primary action) of the triggers are present in both parts. 
+	
+	It then increments the redundancy count to keep track of the count of redundant triggers. The output returned, is the text of USs containing the manipulated text parts with hash symbols and the redundancy count in main part.
+	
+	\item applyHashSymbolTargets: This method identifies common targets references between two parts of USs, marks them with hash symbols and returns the changed text parts together with the count of redundant targets references.
+	
+	As input, it receives a list of common targets between the US-pair, RedundancyItems and the parts of the USs. 
+	
+	It iterates through the list of common targets and checks whether both elements (primary/secondary action and primary/secondary entity) of the targets are present. It then increments the redundancy count in examined part of USs to keep track of the count of redundant targets. 
+	
+	The output returned is the text of USs containing the manipulated text parts with hash symbols and the redundancy count in examined part(main or benefit).
+	
+	\item applyHashSymbolContaians: This method identifies common contains references between two parts of USs, marks them with hash symbols and returns the changed text parts together with the count of redundant contains references. 
+	
+	As input, it receives a list of common contains between the US-pair, RedundancyItems and the parts of the USs. It iterates through the list of common contains and checks whether both elements of the contains are present in both parts. It then increments the redundancy count to keep track of the count of redundant contains.
+	
+	The output returned is the text of USs containing the manipulated text parts with hash symbols and the redundancy count in examined part(main or benefit).
+	
+\end{itemize}
+\subsubsection*{Methods related to Report Parts of USs}
+To show which part of the USs with redundancy words occur between a US-pair, we have split the individual parts of the USs and included them in the report.
+%Figure \ref{fig:splitUsText_diagram} is a sequence diagram that illustrates the communication between processes related to the splitting of parts of a US-pair containing redundancy words.
+%\begin{figure}[h]
+%\centering 
+%\includegraphics[scale=0.35]{splitUsText_diagram}
+%\caption{Sequence diagram for the process of splitting parts of US-pair containing redundancy word}\label{fig:splitUsText_diagram}
+%\end{figure} 
+The following methods in the ReprortExtractor class are responsible for splitting and reporting the parts of the USs :
+\begin{itemize}
+	
+	\item splitUsText: This method is used to split the text of two USs into separate sections based on the occurrence of redundancy clauses. 
+	
+	The input is the text of the first and second US and their corresponding identifiers, a FileWriter for writing to a file and a JSON object for processing JSON data. 
+	
+	It splits each US text into three parts using commas and saves the result in arrays. It iterates over parts of the first and second USs and searches for occurrences of hash symbol pairs. For each part, the number of hash symbol pairs found is counted. Finally, all parts of the records that contain hash symbols are written to a text file and a JSON file as well.
+	
+	\item writeUsSentencePart: This method facilitates the extraction and storage of highlighted USs parts from US-pair in a textual report file for further analysis.
+	
+	As input, it receives the US-pair, RedundancyItems and a FileWriter allowing the extracted USs parts to be written. It receives the text of the USs from the reundancyItems object and calls the \textit{splitUsText} method to split the US-pair texts into USs parts with highlighted elements.
+	
+	The extracted USs parts are also written to the text and JSON report files, using the FileWriter for further processing and analysis.
+	
+	\begin{example}
+		Take, for example, the following US-pair:
+		
+		\textit{user\_story\_60:} \#g22\# as an it staff member, I want to \#know\# \#how\# the \#data\# is \#used\#, so that I can determine what kind of basic services and functionalities are required.\\\\
+		\textit{user\_story\_04:} \#g22\# as a data manager, I want to \#know\# \#how\# the \#data\# is \#used\#, so that I can develop more detailed usage and support scenarios with researchers.\\\\
+		The following sentence parts are candidates for possible redundancies between user stories:\\\\
+		user\_story\_04:  I want to \#know\# \#how\# the \#data\# is \#used\#\\\\
+		user\_story\_60:  I want to \#know\# \#how\# the \#data\# is \#used\#	
+	\end{example}
+\end{itemize}
+\subsubsection*{Methods related to Creating Table}
+The summary of potential redundancy between US-pairs is presented in a table, which makes it easy to find out which US-pairs have been identified as potentially redundant US-pairs and how many redundancy elements there are in total.
+%Figure \ref{fig:writeTable_diagram} is a sequence diagram that illustrates the communication between the processes related to creating tables and addition to text reports.
+%\begin{figure}[h]
+%\centering 
+%\includegraphics[scale=0.35]{writeTable_diagram}
+%\caption{Sequence diagram for the process of creating and adding tables to the textual report}\label{fig:writeTable_diagram}
+%\end{figure} 
+The following methods in the ReprortExtractor class are responsible for creating a table at the beginning of the text report:
+\begin{itemize}
+	\item writeTable: This method is used to write a table of potential redundancies between USs and the count of their total redundant clauses \textit{createTable} method.%, including the addition of the count of main and benefit redundancy clauses using \textit{createTable} method.
+	
+	As input, it receives a File object into which the table is inserted and a list of redundancy pairs containing information about redundant clauses in US-pars.
+	
+	It reads the existing content of the textual report file into a StringBuilder. It creates a table to display the potential redundancies between USs and the count of total redundancy clauses.
+	
+	The table headers and contents are generated based on the redundant pairs. It calculates the maximum width for each column in the table to ensure proper formatting. Finally, the table content is written to the FileWriter, followed by the existing content stored in the report's StringBuilder.
+	
+	\item createTable: This method prepares the content for the table in which potential redundancies between USs are displayed, taking into account the total redundancy count between each US-pairs based on the RedundantPair objects provided.
+	
+	As input, it receives a list of unique US-pairs for which the table is to be created and a list of RedundantPair objects containing information about redundant clauses between US-pairs.
+	
+	It initialises a two-dimensional array containing the contents of the table. The size of the table is determined by the count of unique pairs of USs plus one for the header row and column.
+	
+	It fills the header row and the first column of the table with unique pairs of US-pairs, replacing \enquote{user\_story} with \enquote{us} for the purpose of brevity.
+	
+	It calculates the maximum redundancy count between each US-pair by calling the method \textit{getTotalRedundanciesFromPair}. Finally, it fills the table with the total redundancy count. 
+	
+	The output is a two-dimensional array representing the contents of the table, with each cell containing the maximum redundancy count between the corresponding pair of USs.
+	
+	\item getTotalRedundanciesFromPair: This method makes it easier to retrieve the total number of redundancies between a US-pair from a list of RedundantPair objects.
+	
+	As input, it receives a list of RedundantPair objects containing information about redundant elements in US-pairs, where the first and second USs are to be compared.
+	
+	It iterates through each RedundantPair object in the RedundantPairs list and checks for each RedundantPair object whether the examined US-pair matches as redundant US-pair. 
+	
+	If a matching pair is found, the maximum redundancy number stored in this RedundantPair object is returned. If no matching pair is found, \textit{zero} is returned, indicating that there are no redundancies between the examined US-pair.
+\end{itemize}
+\subsubsection*{Step 5: Report Evaluation}
+The Evaluation class, part of the org.henshin.backlog.code.evaluation package, was developed to determine the level of redundancy in USs based on JSON reports. This class provides methods to evaluate whether two USs are either fully or partially redundant, analysing different application components of these USs.
+
+Figure \ref{fig:evaluation_class_diagram} is a class diagram that illustrates the attributes, operations of the Evaluation class and its relationship to other classes.
+
+\begin{figure}[h]
+	\centering 
+	\includegraphics[scale=0.4]{evaluation_class_diagram}
+	\caption{Class diagram related to Evaluation class}\label{fig:evaluation_class_diagram}
+\end{figure} 
+
+The evaluation process involves a complex logic to determine whether user stories are redundant. This includes:
+\begin{itemize}
+	\item Checking whether the arrays are empty or contain similar elements.
+	\item Comparing the individual elements in the arrays for both USs to determine if they fully match (full redundancy) or if they have some common elements (partial redundancy).
+\end{itemize}
+\begin{example}
+	For the two US-pairs of dataset G03, we apply the evaluation class to determine whether there is redundancy in the main or benefit part, and if so, what type of redundancy is recognised(full or partially).\\\\
+	As shown in Listing \ref{list:json_evaluation}, four entries are added to the JSON report, namely "Main Partially Redundant", "Benefit Part Fully Redundant",
+	"Main Part Fully Redundant", "Benefit Partially Redundant" as "Status" which their value is whether true or false. 
+	\begin{MyListing}
+		\paragraph{}
+		
+		\centering
+		%\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/TextualReportSample.txt}
+		\includegraphics[scale=0.7]{Listing/json_evaluation.png}
+		\caption{Example of generated entries in JSON report regarding evaluation of level of redundancy in main or benefit part}\label{list:json_evaluation}
+		
+	\end{MyListing}	
+	
+	In the case of user\_story\_12 and user\_story\_39, the entry "Benefit Partially Redundant" was marked as \textit{true}, which means that US-pair in benefit parts are partially redundant.
+	
+\end{example}
+The class performs these checks by iterating through the JSON arrays of Triggers, Targets and Contains and comparing each element with those in the common sections to determine redundancy.
+
+The class offers a detailed mechanism to evaluate redundancy through following methods:
+\begin{itemize}
+	\item\textit{evaluateRedundancyCriteria}: This method compares elements such as "Triggers", "Targets" and "Contains" in the "Main" and "Benefit" parts of USs. The method checks whether these clauses are fully redundant (i.e. they are identical between USs) or partially redundant (i.e. they share some clauses but are not fully identical).
+	
+	As input, it receives the JSON object for a specific US-pair.
+	
+	In particular, it checks various conditions, e.g. whether common clauses are present, whether targets or contains are empty and whether the clauses in the stories are fully or partially identical.
+	
+	As output, the method updates the JSON report with new keys indicating the redundancy status:
+	
+	Main Part Fully Redundant: A Boolean value indicating whether the "main part" of the USs is fully redundant.
+	
+	Main Part Partially Redundant: A Boolean value that indicates whether the "main part" of the USs is partially redundant.
+	
+	Benefit Part Fully Redundant: A Boolean value that indicates whether the "benefit part" of the USs is fully redundant.
+	
+	Benefit Partially Redundant: A Boolean value that indicates whether the "benefit part" of the USs is partially redundant.
+	
+	\item checkPartialRedundancy: The method processes these arrays to identify partial redundancy by checking whether elements from arrays of elements match elements from another array. 
+	
+	It receives the two arrays of elements as input, iterates through each element of the first input array and compares each of these elements with all elements in the second input array. A match counter records how often elements from the first input array find a match in the second input array.
+	
+	As output, method returns a Boolean value. True: indicates that there is at least one matching element pair between the two JSON arrays, which means partial redundancy. False: indicates that there are no matching elements, indicating no partial redundancy between these specific parts of the USs.
+	
+	\begin{example} Assume we have the following JSON arrays for two different USs: \\\\
+		First JSON array: [["login", "button"], ["help", "link"]]\\
+		Second JSON array:	[["logout", "button"], ["help", "link"]]\\\\
+		The method would determine that the second element of the first array ("help", "link") matches the second element of the second array. As there is at least one match, checkPartialRedundancy would return true, indicating partial redundancy.
+	\end{example}
+	
+	
+	\item getJSONArraySafely: This method is designed to handle JSON operations safely by retrieving JSON array from a JSON object without the risk of throwing exceptions if the specified key does not exist.
+	
+	As input it receives the JSON object from which the JSON array needs to be extracted and a key corresponding to the JSON array within the provided JSON object.
+	
+	The method first checks whether the provided key exists in the JSON object. If the key exists, it retrieves the JSON array associated with that key. If the key does not exist, it returns an empty JSON array.
+	\begin{example} Let's assume that a JSON object representing USs details should contain the key for "Benefit Part", which does not exist:\\
+		\{\\
+		"Common Targets" : \{\\
+		"Main Part" : [["login","button"],["help","link"]]
+		\}\\
+		\} \\\\
+		If the "Benefit Part" in the "Common Targets" needs to be accessed that does not exist, this is handled safely with \textit{getJSONArraySafely} by returning an empty array to avoid runtime errors.
+	\end{example}
+	
+	\item readJsonArrayFromFile: The method enables JSON data to be read from a file and converted into a JSON array object. It takes the file path as input and attempts to open the file, checking whether the file is empty or missing. If the file is available and contains data, this data is read, converted into a JSON array object and returned.
+	
+\end{itemize}
 \subsubsection*{Error Handling}
 There were erroneous data in datasets that force us to handle them correctly. Therefore, we implement/use the following exceptions to accurately distinguish and handle them.
 
@@ -85,25 +765,7 @@ Within the \textit{org.henshin.backlog.code.report} package, special classes tha
 	\item CdaReportDirIsNotADirectory: This exception is thrown in scenarios where the path provided for the CDA report directory is either not a directory (e.g. it is a file) or the specified path does not lead to a directory.
 	\item CdaReportDirNotFound: This exception is triggered if the CDA report directory cannot be found within the specified path.
 \end{itemize}
-\subsubsection*{Structure of a US}
-A US is divided into two different parts:
-\begin{itemize}
-	
-	\item The \textit{main part}, which encapsulates the persona, the intended functionality and the resources required to execute the action.
-	
-	\item The \textit{benefit part}, which formulates the potential benefit for the end user and typically begins with the phrase \enquote{, so that}.
-	
-\end{itemize}
-In the implementation phase, the delineation and checking of redundancy clauses within USs requires a methodical approach, especially when distinguishing between the main and the benefit part of a US-pair. This distinction is crucial to ensure that redundancy identifications within one part are not mistakenly transferred to the other. Consequently, the analytical framework comprises three conditions, each of which specifies its own methodology for case processing:
-\begin{itemize}
-	\item Presence of benefit in both USs of the redundancy-pair: if a benefit is identifiable in each US of the pair, a process of separation is used to split the main content from the benefit parts. After this separation, a targeted search for redundancy clauses is carried out only within the main part, whereby identified redundancies are annotated with a hash symbol (\#). This process is repeated for the benefit parts to ensure a thorough check and marking of redundancies within each individual part.
-	
-	\item Exclusive presence of a benefit in one US of the redundancy-pair: In scenarios where only one US of the pair contains a benefit part, the analysis is limited to the main part of both USs. The aim remains the identification and annotation of redundancy clauses within this part. The lone benefit part remains in its original state and is excluded from the redundancy check.
 
-	\item Absence of benefit parts in both USs of the pair: If neither of the two USs of the redundancy-pair contains a benefit part, the focus shifts completely to the main parts. The investigation is designed to highlight redundancy clauses within these parts, whereby the benefit parts are not taken into account due to their non-existence.
-	
-\end{itemize}
-This structured and segmented approach ensures precise and efficient identification of redundancy clauses within the USs, optimising the clarity and effectiveness of textual report.
 
 \subsubsection*{Limitations}
 There are technical limitations that are causing us to change our implementation strategy.

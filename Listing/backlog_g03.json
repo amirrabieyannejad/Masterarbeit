@@ -1,0 +1,41 @@
+[
+{
+    "Text": "#G03# As a Staff member, I want to Assign an Application for Detailed Review, so that I can review the for compliance and subsequently approved or denied.",
+    "Persona": ["Staff member"],
+    "Action": {"Primary Action": ["Assign"],
+	"Secondary Action": ["subsequently approved","denied","review"]},
+    "Entity": {"Primary Entity": ["Application"],
+	"Secondary Entity": ["compliance","Detailed Review"]},
+    "Benefit": "I can review the for compliance and subsequently approved or denied",
+    "Triggers": [["Staff member","Assign"]],
+    "Targets": [["Assign","Application"],["review","compliance"],
+	["subsequently approved","compliance"],["denied","compliance"]],
+    "Contains": [["Application","Detailed Review"]],
+    "US_Nr": "user_story_12"
+  },
+  {
+    "Text": "#G03# As a Plan Review Staff member, I want to Review Plans, so that I can review them for compliance and either approve, or fail or deny the plans and record any conditions, clearances, or corrections needed from the Applicant.",
+    "Persona": ["Plan Review Staff member"],
+    "Action": {"Primary Action": ["Review"],
+    "Secondary Action": ["deny","review","approve","fail","record"]},
+    "Entity": {"Primary Entity": ["Plans"],
+      "Secondary Entity":["compliance","plans","clearances","Applicant","corrections","any conditions"]},
+    "Benefit": "so that I can review them for compliance and either approve, or fail or deny the plans and record any conditions, clearances, or corrections needed from the Applicant",
+    "Triggers": [["Plan Review Staff member","Review"]],	"Targets":[["Review","Plans"],["review","compliance"],["approve","plans"],["fail","plans"],["deny","plans"],["record","clearances"],["record","corrections"],["record","any conditions"]],
+    "Contains": [["Applicant","plans"],
+      ["plans","clearances"],["plans","corrections"],["plans","any conditions"]
+    ],
+    "US_Nr": "user_story_39"
+	},
+  {
+    "Text": "#G03# As an Enforcement Staff member, I want to Issue a Notice of Violation, so that I can provide formal communication to the responsible party.",
+    "Persona": ["Enforcement Staff member"],
+    "Action": {"Primary Action": ["Issue"],
+	  "Secondary Action": ["provide"]},
+	"Entity": {"Primary Entity": ["Notice of Violation"],"Secondary Entity": ["formal communication","responsible party"]},
+    "Benefit": "I can provide formal communication to the responsible party",
+    "Triggers": [["Enforcement Staff member","Issue"]],"Targets": [["Issue","Notice of Violation"],["provide","formal communication"]],
+    "Contains": [],
+    "US_Nr": "user_story_51"
+  }
+  ]
