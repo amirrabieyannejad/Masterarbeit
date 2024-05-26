@@ -54,8 +54,8 @@ To address the first questions "Does our tool reliably determine the level of re
 Answering the first research question requires our automated system to have a reference point against which its accuracy can be measured. This reference point or "ground truth" is derived from a personal assessment and serves as a benchmark for the tool's performance.
 
 In contrast to the tool evaluation, we did not evaluate based on labels (e.g., action, entity, persona, targets, etc.) in the personal evaluation. This means that when evaluating ground truth, we evaluate partial and full redundancy based on the phrases occurring in a given part as a one-to-one comparison.
-\begin{definition}
-	The ground truth is the final assessment against which automated results are compared. It is derived from the personal judgement of a subject matter expert (in this case myself) using a combination of expertise, experience and specific evaluation criteria. The personal assessment is targeted at providing a reliable and accurate reference for redundancy between USs.\\\\
+
+The ground truth is the final assessment against which automated results are compared. It is derived from the personal judgement of a subject matter expert (in this case myself) using a combination of expertise, experience and specific evaluation criteria. The personal assessment is targeted at providing a reliable and accurate reference for redundancy between USs.\\\\
 	The following criteria were taken into account in the personal assessment:
 	\begin{itemize}
 		\item A US-pair is evaluated as fully redundant in the main part, if all phrases occurred in the main parts of both USs fully overlap with one-to-one comparison. For example, the following US-pair is assessed as fully redundant:\\
@@ -75,7 +75,6 @@ In contrast to the tool evaluation, we did not evaluate based on labels (e.g., a
 		
 		\item The criteria mentioned were also applied to the benefit part.
 	\end{itemize}
-\end{definition}
 Table \ref{tb:ground_truth} shows the aggregation of full and partial redundancies in the main and benefit parts as ground truth.
 \begin{figure}[h]
 	\begingroup
@@ -235,6 +234,8 @@ When assessing the redundancy of USs through both personal assessment (ground tr
 	\item specificity of USs: If the USs used in the study are too specific or context-dependent, the results may not be transferable to other projects. To mitigate this, we included 19 backlog datasets with different USs and different project types in the analysis.
 	
 	\item Tool Limitation: The automated tool is designed for a specific format of USs, which limits its broader applicability. Our tool depends heavily on the specific US's format (e.g. "As a \textless user\textgreater, I want to ..., so that..."), which is essential for the application of the tool. Therefore, we tested the tool in isolated contexts limited to well-formed USs and analysed its performance in a number of scenarios.
+	
+	Another limitation is that our tool is dependent on the specific type of annotation used for USs. In our case, these are annotations such as action, entity, their reference targets, triggers and contains. This means that the effectiveness of the tool depends on the accuracy and consistency of these annotations. If the annotations are incomplete or incorrect, the tool may not work as expected. In addition, the tool may not be compatible with other annotation schemes that do not use these specific labels.
 \end{itemize}
 \paragraph{Internal Validity}Internal validity is concerned with whether the observed results are attributable to the factors analysed or are influenced by other variables. Potential threats to internal validity include:
 \begin{itemize}
