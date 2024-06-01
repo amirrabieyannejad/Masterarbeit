@@ -11,14 +11,14 @@ In this section, we address two different research questions and provide a detai
 \subsubsection*{Research Questions}
 The research questions addressed in this section are as follows:
 \begin{enumerate}
-	\item Does our tool reliably determine the level of redundancy—either partial or full—between different parts of USs (main and benefit)?
+	\item Does our tool reliably determine the level of redundancy —either partial or full— between different parts of USs (main and benefit)?
 	\item How does the tool's performance scale when the number of USs in a backlog increases?
 	\end{enumerate}
 \subsubsection*{Methodology}
 To address the first questions "Does our tool reliably determine the level of redundancy—either partial or full—between different parts of USs (main and benefit)?", we recap the methodology employed to analyse redundancy between USs. We utilized a systematic approach that involved several key steps:
 \begin{itemize}
 	
-	\item Data Collection: For a comprehensive assessment, we applied our approach to 19 backlog datasets presented by Mosser et al.\footnote{https://github.com/ace-design/nlp-stories}. They applied the CRF approach to these publicly available requirements datasets\cite{requirementsdatasets}.
+	\item Data Collection: For a comprehensive assessment, we applied our approach to 19 backlog datasets presented by Mosser et al.\footnote{https://github.com/ace-design/nlp-stories}. They applied the Doccano approach to these publicly available requirements datasets\cite{requirementsdatasets}.
 	
 	It is also worth noting that some backlog datasets (g02, g13, g17, g27) did not follow the expected sentence structure, which is why we did not include them in the evaluation results to avoid unexpected behaviour. Table \ref{tb:backlogs} shows the project number of each dataset and the count of USs.
 	%	- You have to describe all that in your work, how do you define Main Partial/Full and Benefit Partial/Full, so how do you decide that. And generating this JSON_Report and filling this table is all interesting implementation information.
@@ -46,7 +46,7 @@ To address the first questions "Does our tool reliably determine the level of re
 	
 	\item Detection of overlapping clauses: Recognition of overlapping clauses between a US-pair in a specific part of the USs.
 	
-	\item redundancy analysis in main and benefit parts: Based on the redundant clauses identified, an automatic redundancy analysis was performed for the main and benefit parts of the US-pair based on certain criteria indicating the level of redundancy (partial or full) in the main and benefit parts.
+	\item Redundancy analysis in main and benefit parts: Based on the redundant clauses identified, an automatic redundancy analysis was performed for the main and benefit parts of the US-pair based on certain criteria indicating the level of redundancy (partial or full) in the main and benefit parts.
 		
 	%\item Preprocessing: \item preprocessing: We transform each data set into graph transformation rules, apply CDA and generate a textual report in which each redundancy clause between US-pairs is marked with a hash symbol. Additionally,  the number of founded redundancies in the main and benefit sections is also determined.
 \end{itemize}
@@ -95,7 +95,7 @@ The higher count of full redundancies (42 cases) compared to partial redundancie
 \subsubsection*{Evaluation of US Redundancy using Tool}
 The automated tool is designed to identify redundancy among USs based on predefined criteria. It operates by analysing the text and structure of USs to detect similarities that could indicate redundancy.
 
-In contrast to ground truth, which is based on one-to-one comparison of phrases in specific parts of USs, tool evaluation relies heavily on specified labelling (targets, triggers, contains) using the CRF tool.
+In contrast to ground truth, which is based on one-to-one comparison of phrases in specific parts of USs, tool evaluation relies heavily on specified labelling (targets, triggers, contains) using the Doccano tool.
 
 The following criteria are defined for the evaluation of US-pairs:
 \begin{itemize}
@@ -168,7 +168,7 @@ After comparing the Ground Truth result with the result provided by our tool, th
 	
 	\item Main Part Full: A high positive percentage of 326.67\% indicates that the Framework has a significantly higher count of Main Part Full compared to Ground Truth.
 	At 326.67\%, the framework has more than three times as many main part full compared to the ground truth.
-	In our investigation, we found that some phrases are not included as relationship (contains or targets) in the USs annotated with the CRF tool. Therefore, our tool categorised some USs as fully redundant when in reality they were only partially redundant.
+	In our investigation, we found that some phrases are not included as relationship (contains or targets) in the USs annotated with the Doccano tool. Therefore, our tool categorised some USs as fully redundant when in reality they were only partially redundant.
 	
 	\item Count of Benefit Partial: -26.19\% a negative percentage here indicates that the Framework has fewer "Benefit Partial" counts compared to the Ground Truth.
 	With -26.19\%, the Framework has approximately one-quarter fewer "Benefit Partial" counts.
@@ -239,12 +239,12 @@ When assessing the redundancy of USs through both personal assessment (ground tr
 \end{itemize}
 \paragraph{Internal Validity}Internal validity is concerned with whether the observed results are attributable to the factors analysed or are influenced by other variables. Potential threats to internal validity include:
 \begin{itemize}
-	\item Confounding factors: External influences or unintended variables could influence the assessment of redundancy. In particular, USs annotated with CRF are a very critical impact when evaluating full and partial redundancies between USs using tool. The more phrases are covered in the relationship(targets, contains), the better the score. Since our tool uses CRF annotated USs as primary input without any changes, these discrepancies are unavoidable. % To avoid this, I controlled the scope of the study to ensure that all user reports came from a consistent context and that consistent evaluation methods were used.
+	\item Confounding factors: External influences or unintended variables could influence the assessment of redundancy. In particular, USs annotated with Doccano are a very critical impact when evaluating full and partial redundancies between USs using tool. The more phrases are covered in the relationship(targets, contains), the better the score. Since our tool uses Doccano annotated USs as primary input without any changes, these discrepancies are unavoidable. % To avoid this, I controlled the scope of the study to ensure that all user reports came from a consistent context and that consistent evaluation methods were used.
 	
 	\item Limitation of tool: The automated tool may not capture all aspects of redundancy, especially semantically. This leads us to the next step, the semantic analysis of USs.
 \end{itemize}
 \subsection{Conclusion}\label{redundancy_conclustion}
-In this study, we developed and applied a comprehensive approach that combines the CRF tool, Henshin and the CDA tool to systematically identify and report redundancies in USs within software development projects with an evaluation.
+In this study, we developed and applied a comprehensive approach that combines the Doccano tool, Henshin and the CDA tool to systematically identify and report redundancies in USs within software development projects with an evaluation.
 
 By carefully analysing 19 different backlog datasets, our method not only separated USs into main and benefit parts for nuanced examination, but also facilitated the distinction between full and partial redundancies within these parts.
 

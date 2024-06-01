@@ -9,7 +9,7 @@ Next, we dive into the Section \emph{nlp} and introduce \emph{natural language p
 Finally, in Section \ref{gts}, some basic definitions of \emph{graphs} and \emph{graph transformation rules} are laid down for better understanding. We then look at the graph transformation tool \emph{Henshin} and its extension \emph{critical pair analysis} (CPA), which plays a central role in our methodology. We also draw a conclusion and explain why we have chosen these techniques and what their central idea is.
 
 \subsection{Extracting Domain Models from Textual Requirements}\label{dmodel}
-Automated support for extracting domain models from requirements artifacts such as USs play a central role in effectively supporting the detection of dependencies and conflicts between user stories. Domain models are a simple way to understand the relationship between artifacts and the whole system. In this subsection, we present a graph-based extraction modelling approach called CRF and conclude our review.
+Automated support for extracting domain models from requirements artifacts such as USs play a central role in effectively supporting the detection of redundancies and conflicts between user stories. Domain models are a simple way to understand the relationship between artifacts and the whole system. In this subsection, we present a graph-based extraction modelling approach called CRF and conclude our review.
 \subsection*{A Modelling Backlog as Composable Graphs} \label{composable_graph}
 Mosser et al. propose a model engineering method (and the associated tooling) to exploit a graph-based meta-modelling and compositional approach. The objective is to shorten the feedback loop between developers and POs while supporting agile development’s iterative and incremental nature. 
 
@@ -17,7 +17,7 @@ The tool can extract what is called a conceptual model of a backlog in an ontolo
 From a modelling point of view, Mosser et al. represents the concepts involved in the deﬁnition of a backlog in a metamodel, as depicted in figure \ref{fig:conceptual_metamodel}. Without surprise, the key concept is the notion of story, which brings a benefit to a \emph{Persona} thanks to an Action performed on an \emph{Entity}. A Story is associated to a readiness \emph{Status}, and might optionally contribute to one or more \emph{QualityProperty} (\emph{e.g.}, security, performance).
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.5]{Backlog_conceptual_metamodel}
+\includegraphics[scale=0.6]{Backlog_conceptual_metamodel}
 \caption{Backlog conceptual metamodel \cite{mosser2022modelling}}\label{fig:conceptual_metamodel}
 \end{figure}
 
@@ -64,6 +64,7 @@ $E_1 = \{ has\_for\_persona(s_1,faculty \ member)$,
 
 \ \ \ \ $has\_for\_entity(s_1, collection)\}$
 \end{example}
+%TODO: Intruduction of Doccano
 \subsection*{Conditional Random Fields (CRF)}
 CRFs \cite{Lafferty2001} are a particular class of \emph{Markov Random Fields}, a statistical modelling approach supporting the definition of discriminative models. They are classically used in pattern recognition tasks (labelling or parsing) when context is important identify such patterns \cite{arulmohan2023extracting}.
 
@@ -72,7 +73,7 @@ To apply CRF Mosser et al. transform a given story into a sequence of tuples. Ea
 The main limitations of CRF are that \emph{(i)} it works at the word level (model elements can spread across several words), and \emph{(ii)} it is not designed to identify relations between entities \cite{arulmohan2023extracting}.
     To address the first limitation, Mosser et al. use a glueing heuristic. Words that are consecutively associated with the same label are considered as being the same model element, \emph{e.g.}, the subsequence [\enquote{UI}, \enquote{designer}] from the previous example is considered as one single model element of type \emph{Persona}.
     
-Mooser et al. applied this heuristic to everything but verbs, as classically, two verbs following each other represent different actions. They used again heuristic approach to address the second limitation. Mooser et al. bound every \emph{Persona} to every primary \emph{Action} (as\emph{ trigger} relations), and every primary \emph{Actions} to every primary \emph{Entity} (as \emph{target} relations) \cite{arulmohan2023extracting}.
+Mosser et al. applied this heuristic to everything but verbs, as classically, two verbs following each other represent different actions. They used again heuristic approach to address the second limitation. Mosser et al. bound every \emph{Persona} to every primary \emph{Action} (as\emph{ trigger} relations), and every primary \emph{Actions} to every primary \emph{Entity} (as \emph{target} relations) \cite{arulmohan2023extracting}.
 \begin{example} Consider the following example:\\ \\
 $S=[^\prime As^\prime,^\prime a^\prime,^\prime UI^\prime,^\prime designer^\prime,^\prime,^\prime,\ .\ .\ .]$ \\
 $POS(S)=[ADP,DET,NOUN,NOUN,PUNCT,.\ .\ .]$ \\
@@ -103,12 +104,32 @@ Label	&-	&-	&-	&-	&\textcolor[rgb]{0.09, 0.45, 0.27}{S-ACT}	&\textcolor[rgb]{0.5
  \end{tabularx}
 \scriptsize \emph{POS tags are the Universal POS tags \\ 
 Labels: PER (Persona), P-ACT (Primary Action), P-ENT (Primary Entity), S-ACT (Secondary Action), S-ENT (Secondary Entity)}
-
 \captionof{table}{Minimal Feature Set, associating part-of-speech (POS) and semantic labels to each word in a given story \cite{arulmohan2023extracting}}\label{tb:feature_sets}
-
 \endgroup
 \end{figure}
+\subsection*{Doccano Tool}\label{doccano}
+Doccano\footnote{https://doccano.github.io/doccano} is an open-source annotation tool designed to facilitate the labelling and tagging of textual data for various Natural Language Processing tasks. Its user-friendly interface and versatile functionalities make it suitable for different annotation purposes, including Named Entity Recognition (NER), text classification, and sequence labelling. It supports collaborative annotation efforts, making it an ideal choice for projects requiring high-quality labelled datasets.
+
+Doccano proved to be an effective tool for Mosser et al. in annotating USs, enabling them to create a reliable dataset with high interrater agreement. Its ease of use, collaborative features, and support for complex annotation schemes make it a valuable asset for any annotation project in the field of NLP.
+\subsection*{ Annotating User Stories with Doccano}\label{annotaing_with_doccano}
+Mosser et al. used publicly available requirements, focusing on a dataset from Dalpiaz et al.\cite{Dalpiaz2018}, which includes 22 product backlogs and 1,679 USs. This dataset is a raw archive of 22 text files, each containing USs for a product, one per line. They noted the absence of publicly available expert annotations providing ground truth for the dataset's concepts.
+
+To address this, they manually annotated the dataset using the Doccano tool as a \textit{Named Entity Recognition} task. They applied labels such as persona, action, entity, and benefit part, along with two relations (triggers and contains) from their domain meta-model. Figure \ref{fig:annot_usr} shows example of annotated US using Doccano. Quality checks included:
+\begin{itemize}
+	\item Initial calibration on 75 randomly selected stories.
+	
+	\item Fortnightly validation sessions over two months.
+	
+	\item Manual review of 330 randomly selected annotated stories (19.6\%).
+	
+\end{itemize}
+They found no significant discrepancies, with only 21 elements disputed, resulting in a 94\% interrater agreement, considered excellent.
+
+
 \subsection*{Conclusion}\label{crf_conclusion}
-Conditional Random Fields (CRF) approach is graph-based and promises a high degree of precision and recall, which is particularly important in the context of domain concept extraction. CRF can cover both syntactic and semantic aspects, especially when complemented by a suitable conceptual metamodel, making them suitable for definition as a type graph in Henshin. The annotations generated by CRF can then be used for transformation into a rule-based graph transformation system, which improves support for DevOps practices.
- 
+The Conditional Random Fields (CRF) approach is graph-based and is designed to achieve a high degree of precision and recall, which is particularly important in the context of domain concept extraction. The CRF approach can encompass both syntactic and semantic aspects, particularly when complemented by a suitable conceptual meta-model. This makes it a suitable candidate for definition as a type graph in Henshin. 
+
+However, due to the aforementioned limitations of the CRF tool, specifically the exclusion of secondary actions and entities within relations such as trigger and target, we opted for annotated datasets using Doccano presented by Mosser et al. This was because it labelled a greater number of relations such contains and targets, even between secondary actions and entities, which should facilitate precise evaluation in further analysis. 
+
+The annotations generated by Doccano can then be utilised for transformation into a rule-based graph transformation system, which enhances support for DevOps practices.
 \input{Section/NLP}
