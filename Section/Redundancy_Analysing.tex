@@ -74,7 +74,7 @@ Figure \ref{fig:operational_flow} illustrates how each step in this sequence is 
 %As shown in Figure \ref{fig:operational_flow}, a thorough step-by-step representation of the workflow performed with different tools is provided, showing that each step has an input and an output and the output of the first step is used as input for the next step, creating a tool chain.
 %along with a rationale for key design decisions and an explanation.
 \paragraph{US labelling in JSON files}\label{workflow_nummerize_us}
-As the annotated USs in the JSON files do not contain identifiers, a customised Python script, \textit{nummerise\_us.py}, is used to assign an unique identifier to each US, which is stored in a JSON object named \textit{"US\_Nr"} \footnote{https://github.com/amirrabieyannejad/USs\_Annotation/tree/main/Script/numberise\_us}. This addition improves the system's ability to distinguish and process individual USs within the analytical pipeline.
+As the annotated USs in the JSON files do not contain identifiers, a customised Python script, \textit{nummerise\_us.py}, is used to assign an unique identifier to each US, which is stored in a JSON object named \textit{"US\_Nr"} \footnote{https://github.com/amirrabieyannejad/Redundancy\_Analysis/tree/main/Script/numberise\_us}. This addition improves the system's ability to distinguish and process individual USs within the analytical pipeline.
 
 \paragraph{Creation of an Ecore meta model}\label{workflow_ecore}
 The creation of an Ecore meta-model is required to generate rules in Henshin. The constructed meta-model, is based on the conceptual meta-model outlined in Figure \ref{fig:conceptual_metamodel} and ensures consistency with the JSON-structured data. This correspondence between the meta-model and the JSON representation underpins the rule generation and transformation processes of the system.
@@ -298,7 +298,7 @@ Mosser et al. have linked each \emph{Persona} to each \emph{Primary Action} as \
 
 To interact with the entries in JSON file, we need to distinguish between the entries that are defined as JSON-objects, such as: {Text, Action, Entity, Benefit} and the entries that are defined as a JSON-array, such as: {Persona, Primary/Secondary Action, Primary/Secondary Entity, Triggers, Targets, Contains}.
 \subsubsection*{Identifying USs in JSON-File}\label{desing_workflow_nummerize_us}
-Annotated USs in each JSON file have no identifier. To distinguish USs, we use a Python script called \textit{nummerise\_us.py} \footnote{https://github.com/amirrabieyannejad/USs\_Annotation/tree/main/Script/numberise\_us}, which receives JSON files as input and adds a JSON object named \enquote{US\_Nr} with an identifier as value (e.g. user\_story\_01) to each US and returns the JSON files as output.
+Annotated USs in each JSON file have no identifier. To distinguish USs, we use a Python script called \textit{nummerise\_us.py} \footnote{https://github.com/amirrabieyannejad/Redundancy\_Analysis/tree/main/Script/numberise\_us}, which receives JSON files as input and adds a JSON object named \enquote{US\_Nr} with an identifier as value (e.g. user\_story\_01) to each US and returns the JSON files as output.
 Listing \ref{list:desing_json_format_sample} illustrates the added JSON object "US\_Nr" and its value in the JSON file.
 \begin{MyListing}
 	\paragraph{}
