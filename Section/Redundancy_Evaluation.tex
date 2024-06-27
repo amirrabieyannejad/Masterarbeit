@@ -219,7 +219,7 @@ Table \ref{tb:performance_result} shows the result of tool's performance in seco
 
 However, the impact on processing time varies depending on the process in question. While rule creation using the Henshin API shows relatively consistent and lower processing times, other components such as the CDA tool and report creation processes show an exponential increase in processing time as the number of USs increases. This indicates that certain processes scale differently as the data load increases.
 
-An important observation is that with a larger number of USs, the probability of finding redundant clauses between USs increases. This has a significant impact on redundancy detection and backlog management. As the data set grows, there are more opportunities for overlaps, repetitions or similar USs that could indicate redundancy.
+An important observation is that with a larger number of USs, the probability of finding redundant clauses between USs increases. This has a significant impact on redundancy detection and backlog management specially during processing of CDA tool. As the data set grows, there are more opportunities for overlaps, repetitions or similar USs that could indicate redundancy.
 \subsubsection*{Threats to Validity}
 When assessing the redundancy of USs through both personal assessment (ground truth) and the automated tool, several potential threats to validity must be considered. This section outlines the main threats to validity and describes how they were mitigated during the study.
 \paragraph{Construct validity}It refers to the extent to which the assessment measures what it is intended to measure. The following risks were identified:
