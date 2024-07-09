@@ -1,0 +1,16 @@
+{
+ "id":...,
+ "text":"...",
+ "entities":[
+  {"id": ...,"label":"PID","start_offset": ... ,"end_offset": ...},
+  {"id": ...,"label":"Persona","start_offset": ... ,"end_offset": ...},
+  {"id": ...,"label":"Entity","start_offset": ...,"end_offset": ...},
+  {"id": ...,"label":"Action","start_offset": ...,"end_offset": ...},
+  {"id": ...,"label":"Benefit","start_offset": ...,"end_offset": ...}
+ ],	
+ "relations":[
+  {"id": ...,"from_id": ...,"to_id": ...,"type":"triggers"},
+  {"id": ...,"from_id": ...,"to_id": ...,"type":"targets"},
+  {"id": ...,"from_id": ...,"to_id": ...,"type":"contains"}
+ ]
+}

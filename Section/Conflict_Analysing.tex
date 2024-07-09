@@ -70,7 +70,7 @@ To validate the action annotations, a personal judgement is made for each verb b
 %\paragraph{Translating the JSON-Format of the Primary Input}\label{conflict_workflow_preparing_json_format}
 %Since the annotated USs in the original JSON files did not split entries such as "Entity", "Action", "Text", "Targets" and "Contains", it is not clear which element belongs to which part of the USs (main or benefit part), which leads to possible ambiguities.
 
-%Accordingly, we use a class called \textit{JSONTransformer} that separates entries based on their occurrence in both the main and benefit parts of the USs. It also specifies an identifier to assign a unique identifier to each US, which is stored in a JSON object called \textit{"US\_Nr"}. 
+%Accordingly, we use a class called \textit{USPartExtractor} that separates entries based on their occurrence in both the main and benefit parts of the USs. It also specifies an identifier to assign a unique identifier to each US, which is stored in a JSON object called \textit{"US\_Nr"}. 
 
 %These additions improve the system's ability to distinguish and process individual USs within the analytical pipeline.
 \paragraph{Conflict Analysis and Extraction of text reports} Creating a text report aims to find conflicts between USs and highlight important information, such as identifying potentially conflict pairs, the conflict reason, the resource (as noun) affected by actions (as verbs) causing the conflict, the texts of the main parts with the affected elements marked with \# and a tabulation of the potentially conflicting pairs.
@@ -92,9 +92,9 @@ In this section, we present the basic structures of our workflow and the discipl
 	
 	VerbNet is organized into verb classes extending Levin (1993) classes through refinement and addition of subclasses to achieve syntactic and semantic coherence among members of a class. Each verb class in VN is completely described by thematic roles, selectional preferences of the arguments, and frames consisting of a syntactic description and a semantic representation with subevent structure patterned on the Dynamic Event Model of Pustejovsky and Moszkowicz and Pustejovsky\cite{kipper2006extending}.
 	
-	\item JSONTransformer Class: This class is part of the \textit{org.henshin. backlogconflict.code.preparation} package and is a key component of the software architecture designed for transforming primary input datasets in JSON format. It separates entries based on their occurrence in both the main and benefit parts of the USs. It also assigns a unique identifier to each US to facilitate tracking and management. 
+	\item USPartExtractor Class: This class is part of the \textit{org.backlogconflict.code .preparation} package and is a key component of the software architecture designed for transforming primary input datasets in the specific JSON format. It separates elements based on their occurrence in both the main and benefit parts of the USs.
 	
-	This transformation simplifies subsequent tasks for editing, analysing and conflict resolution by providing a clear structure for the USs and their components. The separation of main and benefit parts and the assignment of unique identifiers improves the manageability and traceability of USs within the system.
+	This process simplifies subsequent tasks for editing, analysing and conflict resolution by providing a clear structure for the USs and their components. The separation of main and benefit parts and the assignment of unique identifiers improves the manageability and traceability of USs within the system.
 	
 	\item Action Annotation Reference Database: This database is essential for identifying conflicts between USs, especially conflicts arising from actions over common entities ( as resources). To achieve this, we categorise verbs into four different groups namely \textit{Preserve, Delete, Create, and Prohibit}.
 	
@@ -107,13 +107,13 @@ In this section, we present the basic structures of our workflow and the discipl
 		\item Personal Judgement: To validate the action annotations, three evaluators individually assess each verb. Each evaluator reviews the annotations and provides their own comments. We then gather these individual assessments and combine them to finalize the action annotation reference database for each verb.
 	\end{enumerate}
 	
-	\item VerbFinder Class: The \texttt{VerbFinder} class is an essential component within the \textit{org.henshin.backlogconflict.code.preparation} package, designed to interface with the action annotation database and facilitate the process of mapping verbs to their corresponding action annotations. 
+	\item VerbFinder Class: The \texttt{VerbFinder} class is an essential component within the \textit{org.backlogconflict.code.preparation} package, designed to interface with the action annotation database and facilitate the process of mapping verbs to their corresponding action annotations. 
 	
-	\item ActionsAnnotationsCreator class : This class is a component within the \textit{org.henshin. backlogconflict.code.preparation} package. Its primary function is to improve the JSON transformation process by incorporating action annotations into the JSON dataset. 
+	\item ActionsAnnotationsCreator class : This class is a component within the \textit{org.henshin. backlogconflict.code.preparation} package. Its primary function is to improve the extraction of Parts of US process by incorporating action annotations into the JSON dataset. 
 	
-	The class adds entries that consist of a set of triples: "action", "entity", and "action-annotations". These action-annotations are sourced from the reference database, which ensures that conflict detection and resolution are consistent and accurate. The matching process is done using the \texttt{VerbFinder} class. 
+	The class adds entries that consist of a set of triples: "action", "entity", and "action-annotations". These action-annotations are sourced from the reference database, which ensures that conflict detection and resolution are consistent and accurate. The matching process is done using the VerbFinder class. 
 	
-	\item ReportMaker Class: This class developed within the \textit{org.henshin.backlogconflict .code.report} packages, its primary function is to identify conflicting US-pairs based on specific criteria and generate comprehensive reports on these conflicts. It performs the following key tasks:%This class provides detailed information on the nature of the conflicts, making it an invaluable tool for maintaining system coherence and resolving inconsistencies. 
+	\item ReportMaker Class: This class developed within the \textit{org.backlogconflict .code.report} packages, its primary function is to identify conflicting US-pairs based on specific criteria and generate comprehensive reports on these conflicts. It performs the following key tasks:%This class provides detailed information on the nature of the conflicts, making it an invaluable tool for maintaining system coherence and resolving inconsistencies. 
 	\begin{enumerate}
 		\item Identification of Conflict US-pairs: The class analysis USs to identify pairs that conflict based on predefined criteria. These criteria including conflicting actions, or inconsistencies in the USs.
 		
@@ -136,7 +136,7 @@ Regarding conflict, some definitions are clarified:
 \begin{itemize}
 	\item The \textit{main part} is essential as it clearly and concisely summarizes the persona, the intended functionality, and the resources required to perform the action. This part usually follows the format: \textit{"As a [persona], I want [actions over entities]."}
 	
-	In this customized US, the intended functionality, which describe the action that the persona wants to perform or the function they need, will be transformed into four annotations: "create," "delete", "preserve", or "forbid". These annotations serve to standardize the actions for conflict analysis:
+	In this customized US, the intended functionality, which describe the action that the persona wants to perform or the function they need, will be translated into four annotations: "create," "delete", "preserve", or "forbid". These annotations serve to standardize the actions for conflict analysis:
 	
 	\begin{itemize}
 		\item \textbf{Create:} This action-annotation describes the introduction or addition of a new entity within the system. For example, the action "apply" in US \textit{"As a staff member, I want to apply for a hold."} is annotated with "create" action.
@@ -214,35 +214,49 @@ Regarding conflict, some definitions are clarified:
 
 \subsubsection*{Design Phases}\label{design_phases}
 To provide a comprehensive overview of the design phases, this section explains each step of the process, from initial setup to final evaluation, using practical examples.
-\subsubsection*{Step 1: Data Preparation}\label{design_step_1}
+\subsubsection*{Step 1: Data Preparation}\label{conflict_design_step_1}
 As primary input, we receive a graph-based model generated by the Doccano tool, which represents the refined and annotated dataset for the recognition of \emph{entities}, \emph{actions}, \emph{persons} and \emph{benefits} of USs \cite{arulmohan2023extracting}.
 
 The datasets have the JSON format, the structure of which is very important in the Java classes \textit{RuleCreator}, \textit{ReportExtractor}, and \textit{Evaluation}. Therefore, understanding the JSON format provided is needed for the further procedure.
 
-Each JSON file for a backlog dataset contains a JSON-array in which each US entry is defined as a JSON-object. Listing \ref{list:desing_json_format} illustrates the format used for the US entry.
+Each JSON file for a backlog dataset contains a JSON-array in which each US entry is defined as a JSON-object. Listing \ref{list:conflict_desing_json_format} illustrates the format used for the US entry.
 \begin{MyListing}
 	\paragraph{}
 	\hrule
 	\centering
-	\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/json_format.json}
-	\caption{The JSON format of each US entry in JSON file}\label{list:desing_json_format}
+	\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/conflict_json_format.json}
+	\caption{The JSON format of each US entry in JSON file}\label{list:conflict_desing_json_format}
 	\hrule
 \end{MyListing}
-Mosser et al. have linked each \emph{Persona} to each \emph{Primary Action} as \emph{Trigger} relationships, each \emph{Primary Actions} to each \emph{Primary Entity} as \emph{Target} relationships and each \emph{Primary/Secondary Entity} to each \emph{Primary/Secondary Entity} implying a \emph{Contains} relationship\cite{arulmohan2023extracting}.
-
-To interact with the entries in JSON file, we need to distinguish between the entries that are defined as JSON-objects, such as: {Text, Action, Entity, Benefit} and the entries that are defined as a JSON-array, such as: {Persona, Primary/Secondary Action, Primary/Secondary Entity, Triggers, Targets, Contains}.
-\subsubsection*{Identifying USs in JSON-File}\label{desing_workflow_nummerize_us}
-Annotated USs in each JSON file have no identifier. To distinguish USs, we use a Python script called \textit{nummerise\_us.py} \footnote{https://github.com/amirrabieyannejad/Redundancy\_Analysis/tree/main/Script/numberise\_us}, which receives JSON files as input and adds a JSON object named \enquote{US\_Nr} with an identifier as value (e.g. user\_story\_01) to each US and returns the JSON files as output.
-Listing \ref{list:desing_json_format_sample} illustrates the added JSON object "US\_Nr" and its value in the JSON file.
-\begin{MyListing}
-	\paragraph{}
-	\hrule
-	\centering
-	\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/json_format_sample.json}
-	\caption{The JSON format with the additional JSON object "US\_Nr" and its value}\label{list:desing_json_format_sample}
-	\hrule
-\end{MyListing}
-\subsubsection*{Step 2: Creation of Rules}\label{design_step_2}
+A US in this JSON format contains the following entries:
+\begin{itemize}
+	\item ID: is the actual US identifier
+	
+	\item Text: this is the text from US
+	
+	\item Entities: is an array of JSON objects with the following entries:
+	\begin{itemize}
+		\item ID: serves as a reference number for the entry
+		
+		\item Label: is the name of the entry, which can be "PID", "Persona", "Entity", "Action" or "Benefit"
+		
+		\item Start\_offset: refer to the position of the first character of the word within the entire text
+		
+		\item End\_offset: this is the position immediately after the last character of the word within the entire text
+	\end{itemize}
+	\item Relations: is an array of JSON objects with the following entries:
+	\begin{itemize}
+		\item ID: serves as a reference number for the entry
+		
+		\item From\_ID: is the entry ID of the first element that occurs in the relation
+		
+		\item To\_ID: is the entry ID of the second element that occurs in the relation
+		
+		\item Type: is the type of relation, which can be "Triggers", "Targets", or "Contains"
+	\end{itemize}
+	As relation, each \emph{Persona} is linked to each \emph{Action} as \emph{Trigger} relation, each \emph{Action} is linked to each \emph{Entity} as \emph{Target} relation and each \emph{Entity} is linked to each \emph{Entity} implying a \emph{Contains} relation.
+\end{itemize}
+\subsubsection*{Step 2: Creation of Rules}\label{conflict_design_step_2}
 Step 2 of the design involves a central process in which the US data structured in JSON files is transformed into transformation rules using the Henshin API. This involves the creation of an Ecore meta-model that represents the structure of the data we are working with, followed by the generation of Henshin transformation rules using RuleCreator class.
 \subsubsection*{Creating Ecore Meta-Model}\label{design_workflow_ecore}
 To be able to create rules in Henshin, an Ecore (meta)-model should be available. Ecore is the core (meta)-model at the heart of the EMF (Eclipse Modelling Framework). It enables the formulation of other models by utilising its constructs.
