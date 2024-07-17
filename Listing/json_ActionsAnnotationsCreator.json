@@ -1,0 +1,28 @@
+[
+	{   "US_Nr": "user_story_13", "Benefit": {...}, 
+		"US_ID": "user_story_327", "Text": "..., "PID": "#G03#",
+		"Main": {"Entity": ["Hold"], "Action": ["Apply"],
+            "Persona": ["Staff member"], "Contains": [],
+            "Text": "#G03# As a Staff member, I want to Apply a Hold",
+            "Triggers": [["Staff member","Apply"]],
+            "Targets": [["Apply","Hold"]],
+            "Action Annotations": {"Target Action Annotations": [
+			["apply", "hold", "create;preserve"]],
+                "Contain Action Annotations": []
+            }},
+        "Mix": {}
+	},
+		{"US_Nr": "user_story_14", "Benefit": {...},
+        "US_ID": "user_story_328", "Text": "...", "PID": "#G03#",
+		"Main": {"Entity": ["Hold"], "Action": ["Remove"],
+            "Persona": ["Staff member"], "Contains": [],
+            "Text": "#G03# As a Staff member, I want to Remove a Hold",
+            "Triggers": [["Staff member","Remove"]],
+            "Targets": [["Remove","Hold"]],
+            "Action Annotations": {"Target Action Annotations": [
+			["remove","hold","delete"]],
+                "Contain Action Annotations": []
+			}},
+        "Mix": {}
+    }
+]

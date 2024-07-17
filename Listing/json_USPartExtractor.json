@@ -1,0 +1,29 @@
+[
+	{
+		"US_Nr": "...",
+		"US_ID": "...",
+		"Text": "...",
+		"PID": "...",
+		"Main": {
+			"Entity": [...],
+			"Action": [...],
+			"Persona": [...],
+			"Contains": [...],
+			"Text": "...",
+			"Triggers": [...],
+			"Targets": [...],
+		},
+		"Benefit": {
+			"Entity": [...],
+			"Action": [...],
+			"Contains": [...],
+			"Text": "...",
+			"Targets": [...],
+		},
+		"Mix": {
+			"Targets" : [...],
+			"Contains": [...]	
+		}
+	},
+	...
+]
