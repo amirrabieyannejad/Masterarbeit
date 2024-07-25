@@ -29,7 +29,21 @@
 
 \newcommand{\cmark}{\ding{51}}
 \newcommand{\xmark}{\ding{55}}
-
+\lstdefinestyle{pseudocode}{
+	basicstyle=\ttfamily,
+	language=TeX,
+	keywordstyle=\bfseries\color{black},
+	commentstyle=\color{green},
+	stringstyle=\color{red},
+	morekeywords={if, then, else, while, do, end, new},
+	deletekeywords={int, float, char},
+	columns=flexible,
+	keepspaces=true,
+	numbers=left,
+	numberstyle=\tiny\color{black},
+	frame=single,
+	backgroundcolor=\color{white},
+}
 \usetikzlibrary{arrows}
 \hypersetup{
     colorlinks=true,
@@ -97,7 +111,7 @@
 \newcounter{Tablecount}
 \newcounter{mylisting}
 \newenvironment{MyListing}{
-	\lstset{language=TeX} % Set the language, adjust as needed
+	\lstset{style=pseudocode} % Set the language, adjust as needed
 	\refstepcounter{mylisting} % Increment the counter
 	\captionsetup{type=lstlisting}
 	\raggedright
@@ -142,7 +156,7 @@
         %\includegraphics[width=0.8\textwidth]{logo4}
         %\vfill{}    
         \Large
-        \textbf{Analysis of Conflicts and Dependencies between User Stories using Graph Transformation}
+        \textbf{Graph-Based Analysis of Redundancies and Conflicts between User Stories}
             
       
         \vspace{1.5cm}
@@ -187,7 +201,7 @@
 \input{Section/DModel}
 \input{Section/Redundancy_Analysing}
 \input{Section/Conflict_Analysing}
-
+\input{Section/Conclusion}
 
 
 

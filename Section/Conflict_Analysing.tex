@@ -1,4 +1,4 @@
-\section{Analysing Conflict}\label{conflict}
+\section{Analysing Conflicts}\label{conflict}
 In software development, especially in agile methods, conflict analysis is an important task to ensure the coherence and functionality of the system to be developed. A conflict is defined as a inconsistency that arises when two or more requirements, often encapsulated as USs, contradict each other. This section will introduce and define conflict analysis, focusing on the concept of \textit{content inconsistency} between USs.
 
 The main objective of this analysis is to rationalise the software development workflow by semantically identifying conflicts between the USs within the backlog of a project.
@@ -7,13 +7,38 @@ A conflict of requirements arises when two or more USs show contradictions or in
 
 \begin{example}
 	Considering following USs:\\\\
-	user\_story\_13: "\#G03\# As a Staff member, I want to Apply a Hold, so that I can prevent progression through the workflow or other actions in the system until the issue is resolved."\\\\
-	user\_story\_14: "\#G03\# As a Staff member, I want to Remove a Hold, so that I can allow progression through the workflow or other actions in the system now that the issue has been resolved."\\\\
-	In this example, user\_story\_14 deletes a resource that is used by user\_story\_13. This means that user\_story\_13 cannot be applied at all if user\_story\_14 is executed first, which leads to a conflict between these USs.
+	user\_story\_327: "\#G03\# As a Staff member, I want to Apply a Hold, so that I can prevent progression through the workflow or other actions in the system until the issue is resolved."\\\\
+	user\_story\_328: "\#G03\# As a Staff member, I want to Remove a Hold, so that I can allow progression through the workflow or other actions in the system now that the issue has been resolved."\\\\
+	In this example, user\_story\_328 deletes a resource that is used by user\_story\_327. This means that user\_story\_327 cannot be applied at all if user\_story\_328 is executed first, which leads to a conflict between these USs.
 \end{example}
 
 In section \ref{conflict_requirement}, we present the requirements and functional needs that serve as input for the design phase in order to fulfil the requirements. In section \ref{conflict_desing} we explain the design decisions of the workflow shown in figure \ref{fig:conflict_operational_flow} and explain how the architecture is structured. 
+\subsection{Related Work}\label{conflict_related_work}
+Kim et al. introduce a method for identifying and managing conflicts in software requirements. This method involves dividing requirements written in natural language and is supported by a specialized tool\cite{kim2007managing}.
 
+In addition, Kim et al. assert that there is a lack of methods to systematically identify and manage conflicts between requirements written in natural language within the product line context. To address this issue, they introduce a linguistic technique that detects conflicts in requirements by utilizing \textit{goals} and \textit{scenarios}. These goals and scenarios are expressed in natural language, specifically English.
+
+Requirements conflicts are described as interactions and dependencies between requirements that can cause the system to function in an unintended or undesired way. An example from the mobile phone domain is given: If both the ‘automatic response function’ and the ‘deny reception function’ are activated at the same time, a conflict arises. If a call comes in from a number that should not be answered, "automatic response function" would conflict with the "deny reception function" function.
+
+They used the goals and scenarios using an authoring structure that follows the format action \texttt{(verb) + object (object) + resource (resource)} as described by Kim et al. \cite{kim2004method,kim2004multi} and Rolland et al. \cite{rolland1998guiding}. Before they described the specific requirements, they created a function dictionary in which various system functions are listed. However, they did not mention how they created the dictionary.
+
+If action and object cause the conflict, this can lead to an activity conflict. On the other hand, a resource conflict can occur when different components try to use the same resources simultaneously, resulting in a conflict.
+
+Kim et al. used two methods for detecting conflicts: syntactic and semantic. The syntactic method identifies potential conflicts among requirements based on predefined conditions. The semantic method then focuses on detecting actual conflicts by analysing these candidate conflicts.
+
+Their approach is not well suited to agile development projects, as these projects usually use the US notation as a standard structure. In addition, they have not considered how elements such as objects, resources and verbs relate to each other, which makes it more difficult to recognise conflicts. They also overlook the importance of containment objects and resources when analysing conflicts.
+
+Lambers et al. present a static CDA technique for graph transformations that can identify conflicts and dependencies at multiple levels of granularity in software development. This new technique significantly improves the speed of fine-grained CDA computations and extends them with coarse-grained results, providing usability benefits in various use-cases. It is particularly useful for analysing interactions in complex and dynamic object structures, such as feature interactions in software product line development \cite{lambers2018multi}.
+
+Lambers et al. discuss the use of CDA in different areas of software development and the requirements for the granularity of these applications. They categorise the use-cases into:
+\begin{itemize}
+	\item Software System Design and Analysis: Here, behavioural models such as activity models and live sequence diagrams are checked using rule-based specifications. 
+	
+	\item Model-Driven Engineering: This involves model transformations in which the CDA helps to recognise and explain conflicts and dependencies between transformation specifications.
+	
+	\item Optimization of Rule-Based Computations: CDA is used to identify conflicting or interdependent rule pairs in order to optimise calculations and avoid or postpone backtracking.
+\end{itemize}
+However, the application of GT in USs to analyse conflicts is still unexplored.
 \subsection{Requirements}\label{conflict_requirement}
 In order to accomplish the analysis of conflicts in USs we try to address following functional requirements:
 \begin{itemize}
@@ -49,6 +74,13 @@ To judge the operation of a system, we define following non-functional requireme
 
 \subsection{Design}\label{conflict_desing}
 This section describes the operational flow and architectural considerations that underpin the framework.
+
+In our project, we initially considered using the Henshin API and CDA to implement conflict analysis between USs. The target was to show that GT can effectively analyse conflicts between USs. However, after further evaluation, we realised that using Henshin and CDA was not the most efficient approach for our needs.
+
+While graph transformations are useful and suitable for our task, they introduce additional steps into the conflict analysis process that can be time-consuming and complex. Our target was to streamline the process and get results faster, which required a simpler approach.
+
+To overcome these challenges, we have developed our own tool that works independently of Henshin and CDA but delivers the same result. Our tool focusses on the core task of conflict analysis but is designed to be faster as it does not require any further steps (e.g. creating rules, applying CDA to rules and interpreting the delivered reports). In this way, we can achieve similar results in a more straightforward and faster way.
+
 \subsubsection*{Design Overview}
 To address the requirements specified in Section \ref{conflict_requirement}, our system used the backlogs labelled with Doccano tool\footnote{https://github.com/ace-design/nlp-stories} generated by Mosser et al. as the primary input\cite{arulmohan2023extracting}.
 
@@ -212,6 +244,45 @@ Regarding conflict, some definitions are clarified:
 \end{definition}	
 \subsubsection*{Design Phases}\label{conflict_design_phases}
 To provide a comprehensive overview of the design phases, this section explains each step of the process, from initial setup to final evaluation, using practical examples.
+
+Listing \ref{list:conflict_pseudocode} is the pseudocode that describes how to analyse the conflicts in a particular abstraction and explains the logic and sequence of steps clearly and comprehensibly.
+\begin{MyListing}
+	
+		
+	
+	\paragraph{}
+	
+	\hrule
+	
+	\begin{flushleft}
+	 %\includegraphics[scale=0.8]{Listing/conflict_pseudocode}
+	 
+	 1. \texttt{funct} conflict-analysis(dataset: Dataset)\\
+	 2. \hspace{12pt}\texttt{var} ConflictPairs ← Null\\
+	 3. \hspace{12pt}\texttt{for} each US\_a \texttt{in} dataset \texttt{do}	\\
+	 4. \hspace{20pt}\texttt{var} MainPart\_a, BenefitPart\_a ← DivideIntoMainAndBenefitParts(US\_a)\\
+	 5. \hspace{20pt}\texttt{var} AN\_a ← GetActionAnnotationFromDB(MainPart\_a)\\
+	 6. \hspace{20pt}dataset  ← AddActionAnnotationIntoDataset(AN\_a)\\
+	 7. \hspace{20pt}\texttt{var} Entity\_a ← GetEntity(MainPart\_a)\\
+	 8. \hspace{20pt}\texttt{for} each US\_b \texttt{in} dataset do\\
+	 9. \hspace{32pt}\texttt{var} MainPart\_b, BenefitPart\_b ←  DivideIntoMainAndBenefitParts(US\_b)\\
+	 10. \hspace{26pt}\texttt{var} AN\_b ← GetActionAnnotationFromDB(US\_b)\\
+	 11. \hspace{28pt}dataset  ← AddActionAnnotationIntoDataset(AN\_b)\\
+	 12. \hspace{28pt}\texttt{var} Entity\_b ← GetEntity(US\_b)\\
+	 13. \hspace{28pt}\texttt{var} ContainEntity\_b ←  GetEntityFromContains(US\_b)\\
+	 14. \hspace{28pt}\texttt{if} (HasConflict(AN\_a, AN\_b) == True) \texttt{then}\\
+	 15. \hspace{45pt}\texttt{if}(Entity\_a == Entity\_b) \texttt{or} (Entity\_a == ContainEntity\_b) \texttt{then}\\
+	 16. \hspace{55pt}ConflictPairs += new AddConflictPair(US\_a,US\_b)\\
+	 17. \hspace{6pt}\texttt{Return} ReportAllConflicts(ConflictPairs)\\
+	
+
+\end{flushleft}
+
+\caption{The pseudocode describes how to analyse the conflicts in a specific abstraction}\label{list:conflict_pseudocode}
+
+	\hrule
+
+\end{MyListing}
 \subsubsection*{Data Structure}\label{conflict_design_step_0}
 As primary input, we receive a graph-based model generated by the Doccano tool, which represents the refined and annotated dataset for the recognition of \emph{entities}, \emph{actions}, \emph{persona} and \emph{benefits} of USs \cite{arulmohan2023extracting}.
 
@@ -278,13 +349,11 @@ Secondly, we use the \texttt{VerbFiner} class to search the database for the ver
 	
 	\item Contains Action Annotation:This is an array of ‘Contains’, where each element is a triple of ‘action’, ‘entity’ and additionally one or more ‘action annotation’ separated by ‘\texttt{;}’.
 \end{itemize}
-
 \begin{example}
 Listing \ref{list:json_ActionsAnnotationsCreator} illustrates an example of adding elements in two US created by the ActionsAnnotationsCreator class, which contains all the elements we need for the conflict analysis.
 
 In this example, we see that in user\_story\_13 the verb ‘apply’ in "Target Action Annotation" is translated into two action annotations, namely ‘create’ and ‘preserve’ (third elements of the array), and the verb ‘remove’ in "Target Action Annotations" of user\_story\_14 is translated into the action annotation ‘delete’.
 \end{example}
-
 \begin{MyListing}
 	\paragraph{}
 	\hrule
@@ -293,32 +362,32 @@ In this example, we see that in user\_story\_13 the verb ‘apply’ in "Target 
 	\caption{Example of adding action annotations to the individual verbs}\label{list:json_ActionsAnnotationsCreator}
 	\hrule
 \end{MyListing}
-\subsubsection*{Step 5: Report Evaluation}
-The Evaluation class, part of the \textit{org.henshin.backlog.code.evaluation} package, was developed to determine the level of redundancy in USs based on JSON reports. This class provides methods to evaluate whether two USs are either fully or partially redundant, analysing different application components of these USs.
-
-The evaluation process involves a complex logic to determine whether USs are redundant. This includes:
-\begin{itemize}
-	\item Checking whether the arrays are empty or contain similar elements.
-	\item Comparing the individual elements in the arrays for both USs to determine if they fully match (full redundancy) or if they have some common elements (partial redundancy).
-\end{itemize}
+\subsubsection*{Step 3: Analysing Conflict and Creating Report}
+After we have inserted the action annotation into the US JSON object, we can now analyse the conflict and simultaneously report the founding conflict by using the \texttt{ReportMaker} class. The steps involved in this process are as follows:
+\begin{enumerate}
+	\item Create text and JSON formats for reporting: To report a set of datasets in a single file, we create two ‘consolidated conflict reports’, one in text format and one in JSON format. We also create two types of reports for individual datasets (one in text format and one in JSON format). It is also worth noting that creating the JSON format facilitates the conflict analysis evaluation process.
+	
+	\item Iterate through each dataset and analysing conflicts: We iterate over the USs to identify conflicts by comparing the action annotations and applying defined criteria between one US and another.
+	
+	If there is a potential conflict pair, we store this pair and its information such as US\_ID, conflict reason, text of USs, affected entity, conflict actions, etc. to report them. 
+	
+	\item Create summary table(only applicable for the text report): A summary table of potential conflicts between USs is created at the top of the textual report files and marked with an ‘x’ if a conflict exists.
+	
+	\item Generate and write reports: It writes the conflict information, including US\_ID, actions, conflict reason and elements highlighted with ‘\#’ in the main parts, to the report files.
+\end{enumerate}
 \begin{example}
-	For the two US-pairs of dataset G03, we apply the evaluation class to determine whether there is redundancy in the main or benefit part, and if so, what type of redundancy is recognised(full or partially).\\\\
-	As shown in Listing \ref{list:json_evaluation}, four entries are added to the JSON report, namely "Main Partially Redundant", "Benefit Part Fully Redundant",
-	"Main Part Fully Redundant", "Benefit Partially Redundant" as "Status" which their value is whether true or false. 
-	\begin{MyListing}
-		\paragraph{}
-		
-		\centering
-		%\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/TextualReportSample.txt}
-		\includegraphics[scale=0.7]{Listing/json_evaluation.png}
-		\caption{Example of generated entries in JSON report regarding evaluation of level of redundancy in main or benefit part}\label{list:json_evaluation}
-		
-	\end{MyListing}	
-	
-	In the case of user\_story\_12 and user\_story\_39, the entry "Benefit Partially Redundant" was marked as \textit{true}, which means that US-pair in benefit parts are partially redundant.
-	
+In this example, we apply the conflict analysis to the project \texttt{G03\_loudoun}. As a result, we get the generated text report consisting of a conflict pair between user\_story\_327 and user\_story\_327 as shown in Listing \ref{list:conflict_textual_report_sample}, and the part of the report has been marked and noted.
+\begin{MyListing}
+	\paragraph{}
+	\centering
+	%\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/TextualReportSample.txt}
+	\includegraphics[scale=0.7]{Listing/conflict_textual_report_sample.png}
+	\caption{Example of generated textual report consist of one conflict pair}\label{list:conflict_textual_report_sample}
+\end{MyListing}
 \end{example}
-The class performs these checks by iterating through the JSON arrays of Triggers, Targets and Contains and comparing each element with those in the common sections to determine redundancy.
+\subsubsection*{Step 3: Evaluation}
+In this step, we collect all potential conflicts we have found in an Excel file called ‘Conflict\_Evaluation’ to compare the result provided by the tool with the ground truth. See the section \ref{conflict_evaluation} for a comprehensive explanation.
+
 
 
 \input{Section/Conflict_Implementation}

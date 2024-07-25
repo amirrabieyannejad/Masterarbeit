@@ -1,4 +1,4 @@
-\section{Analysing Redundancy}\label{redundancy}
+\section{Analysing Redundancies}\label{redundancy}
 % some explenation here about what will be explain here an why
 %(Analyse von Redundanz als title und dann im Text Schreiben, dass es ein syntaktische Analyse ist
 USs are a fundamental component of agile software development. They provide concise and clear descriptions of the software functionality from the end user's perspective. These stories guide the development process and ensure that the software meets the actual needs of the users. 
@@ -9,9 +9,17 @@ The main goal of this analysis is to streamline the software development workflo
 
  By identifying and consolidating overlapping functionalities, companies can avoid redundant work, streamline development work and optimise testing processes. This strategic approach not only shortens project timelines but also improves the clarity and coherence of project documentation, making it easier for team members to navigate and manage project requirements.
 
-In section \ref{redundancy_requirement} we present the requirements and functional needs that are used as input for the design phase to fulfil the requirements. In section \ref{desing} we explain the design decisions of the workflow shown in Figure \ref{fig:operational_flow} and explain how the architecture is structured. 
+In Section \ref{redundancy_related_work} we briefly discuss related work. In Section \ref{redundancy_requirement} we present the requirements and functional needs that are used as input for the design phase to fulfil the requirements. In Section \ref{desing} we explain the design decisions of the workflow shown in Figure \ref{fig:operational_flow} and explain how the architecture is structured. 
 
 In section \ref{redundancy_implementation} follows the implementation to show how the components and their classes look in relation to Figure \ref{fig:technical_implementation}. In Section \ref{redundancy_test} we show what and how far we tested it. Finally, we apply our approach to 19 datasets of backlogs annotated with the Doccano tool \footnote {https://github.com/ace-design/nlp-stories}. In Section \ref{redundancy_evaluation} we analyse the results and in Section \ref{redundancy_conclustion} we draw a conclusion. 
+\subsection{Related work}\label{redundancy_related_work}
+Existing methods for assessing the similarity and uniqueness of USs have largely relied on NLP techniques. These techniques have explored the concept of similarity in USs, recognizing that even when USs appear similar, they may not be redundant. For instance, consider the following examples: “As a Staff member, I want to Remove a Hold.” and “As a Staff member, I want to apply a Hold.” While these USs are similar, their actions differ, indicating that they are not redundant. Jurisch et al. utilized common NLP methods like k-means clustering and TF-IDF to group similar USs\cite{ duszkiewicz2022identifying}. These NLP techniques often misidentify US pairs as redundant when they rely solely on similarity measures\cite{duszkiewicz2022identifying,jurischsimilarity,levin1993english}.
+
+Lucassen et al. developed a conceptual model for USs that defines various measures of similarity and redundancy. They identify two main types of duplicates: full duplicates, where the USs are identical in wording, and semantic duplicates, where the USs convey the same meaning but are phrased differently. Additionally, they consider cases where two USs share the same benefit but have different main parts, or vice versa, and instances where the benefit of one US is the same as the main part of another, indicating a dependency between them. Even when the personas differ, the main parts or benefits can be the same, suggesting that a more general persona might be needed to unify these USs\cite{Lucassen2015}.
+
+Lucassen et al. demonstrated that annotating USs can help identify similarities between their parts. Their tool, AQUSA, employs the WordNet::Similarity calculation to detect potential duplicates among USs. However, only two instances of redundancies are reported in their study, without details on the nature of these violations. Additionally, the evaluation data is not published, making it challenging to assess AQUSA's effectiveness in analysing the redundancy.
+
+In our approach, we do not focus on the similarity between USs, but on the annotated USs and their individual elements. 
 \subsection{Requirements}\label{redundancy_requirement}
 In order to accomplish the analysis of redundancy in USs we try to address following functional requirements:
 \begin{itemize}
@@ -52,7 +60,7 @@ To judge the operation of a system, we define following non-functional requireme
 This section describes the workflow and architectural considerations underlying the framework.
 \subsubsection*{Design Overview}
 %To meet the redundancy detection requirements specified in \ref{redundancy_requirement}, the system uses backlogs \cite{mosser2022modelling} annotated with CRF as the first artefact in workflow is the main input in our system. At the same time, the Henshin API \cite{arendt2010henshin}, which is used in a Java environment, enables the automatic generation of transformation rules for each US in the backlog. The use of Henshin's conflict and dependency analysis tool (CDA) \cite{mens2007analysing} is central to the automated identification of potentially redundant US-pairs, which is a cornerstone of framework design.
-To address the redundancy detection requirements specified in Section \ref{redundancy_requirement}, our system initiates with backlogs annotated with Doccano tool\footnote{https://github.com/ace-design/nlp-stories} generated by Mosser et al. as the primary input\cite{arulmohan2023extracting}. These annotated USs are used to generate graph transformation rules for each US in the backlog using Henshin tool.
+To address the redundancy detection requirements specified in Section \ref{redundancy_requirement}, our system initiates with backlogs annotated with Doccano tool\footnote{\href{https://doccano.github.io/doccano}{https://doccano.github.io/doccano}}generated by Mosser et al.\footnote{\href{https://github.com/ace-design/nlp-stories}{https://github.com/ace-design/nlp-stories}} as the primary input\cite{arulmohan2023extracting}. These annotated USs are used to generate graph transformation rules for each US in the backlog using Henshin tool.
 
 Subsequently, these rules serve as inputs for the Henshin Conflict and Dependency Analysis (CDA) tool \cite{mens2007analysing}, which automates the identification of potentially redundant US pairs. The output from the CDA tool is then utilized to create a report that compiles information on these potentially redundant pairs. This report, in turn, becomes the input for the evaluation process, which outputs statistical data concerning redundancy among USs.
 
@@ -129,7 +137,7 @@ In this section, we present the basic structures of our workflow and the discipl
 Figure \ref{fig:technical_implementation} shows the architectural composition, highlighting the integral components and their user interface and artefacts.
 \begin{figure}[h]
 	\centering 
-	\includegraphics[scale=0.6]{technical_implementation}
+	\includegraphics[scale=0.5]{technical_implementation}
 	\caption{Design phases}\label{fig:technical_implementation}
 \end{figure}
 %\subsubsection*{CRF Tool}\label{workflow_crf}
@@ -280,11 +288,11 @@ The datasets have the JSON format, the structure of which is very important in t
 Each JSON file for a backlog dataset contains a JSON-array in which each US entry is defined as a JSON-object. Listing \ref{list:desing_json_format} illustrates the format used for the US entry.
 \begin{MyListing}
 	\paragraph{}
-	\hrule
+	
 	\centering
-	\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/json_format.json}
+	\lstinputlisting[basicstyle=\ttfamily\scriptsize]{Listing/json_format.json}
 	\caption{The JSON format of each US entry in JSON file}\label{list:desing_json_format}
-	\hrule
+	
 \end{MyListing}
 Mosser et al. have linked each \emph{Persona} to each \emph{Primary Action} as \emph{Trigger} relationships, each \emph{Primary Actions} to each \emph{Primary Entity} as \emph{Target} relationships and each \emph{Primary/Secondary Entity} to each \emph{Primary/Secondary Entity} implying a \emph{Contains} relationship\cite{arulmohan2023extracting}.
 

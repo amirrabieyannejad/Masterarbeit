@@ -390,11 +390,22 @@ In order to report conflict pairs such with information such as highlighting USs
 		\item fileName: A String representing the name of the dataset being processed.
 	\end{itemize}
 	The method does not return a value.
-	\end{itemize}	
+	\end{itemize}
+	
+\subsubsection*{Import Result for Evaluation}
+In this step, we collect all potential conflicts found in an Excel file called ‘Conflict\_Evaluation’ by creating a report in JSON format and using the following VBA script\footnote{https://github.com/amirrabieyannejad/conflict\_analysis\_between\_USs/blob/main/ 00\_annotated\_datasets/extractFromJSONFiles\_Version(new).xlsm} to import the required information into the Excel file:
+Listing \ref{list:conflict_vba} illustrates the implemented VBA script that uses the JSON report to import the required information into an Excel file.
+\begin{MyListing}
+	\paragraph{}
+	\centering
+	%\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/TextualReportSample.txt}
+	\includegraphics[scale=0.7]{Listing/conflict_vba.png}
+	\caption{VBA script for importing information from a JSON report into an Excel file}\label{list:conflict_vba}
+\end{MyListing}	
 \subsubsection*{Error Handling}
 There were erroneous data in the datasets forcing us to handle them correctly. Therefore, we implement/use the following exceptions to accurately distinguish and handle them.
 
-The following classes, which extend the \textit{Exception} class, are used in \textit{org.backlogconflict.code .preparation} and \textit{org.backlogconflict. code.report} packages:
+The following classes, which extend the \textit{Exception} class, are used in \textit{org.backlogconflict. code.preparation} and \textit{org.backlogconflict. code.report} packages:
 \begin{itemize}
 	\item MainPartInJsonFileNotFound: Is triggered if the JSON object "Main" could not be found in the US JSON object.
 	

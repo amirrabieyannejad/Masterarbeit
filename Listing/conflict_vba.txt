@@ -1,0 +1,43 @@
+Sub ParseJSON()
+    Dim FSO As Object
+    Dim JsonTS As Object
+    Dim JsonText As String
+    Dim JsonObj As Object
+    Dim i As Integer
+    Dim j As Integer
+    Dim lastRow As Long
+    Dim ArrayDataSets() As Variant
+    
+    'Initialize FileSystemObject
+    Set FSO = CreateObject("Scripting.FileSystemObject")
+   'Assign the absolute path to the JSON file consolidated_conflict_report
+    Set JsonTS = FSO.OpenTextFile("C:\...\org.backlogconflict\00_annotated_datasets\consolidated_conflict_report.json", 1)
+    JsonText = JsonTS.ReadAll
+    JsonTS.Close
+    'Parsing the JSON file using JSONConverter
+    Set JsonObj = JsonConverter.ParseJSON(JsonText)
+    'Read the JSON file and insert the required information into an Excel file
+    With ThisWorkbook.Sheets("Sheet2")
+     lastRow = .Cells(.Rows.Count, "A").End(xlUp).Row
+     For j = 1 To JsonObj.Count
+      .Cells(lastRow + j, 1).Value = JsonObj(j)("PID")
+      .Cells(lastRow + j, 2).Value = JsonObj(j)("Conflict Pair")
+      .Cells(lastRow + j, 3).Value = JsonObj(j)("Texts of Main Parts")("US1") & vbCrLf & vbCrLf & JsonObj(j)("Texts of Main Parts")("US2")
+      .Cells(lastRow + j, 4).Value = JsonObj(j)("Conflict-Reason")
+      .Cells(lastRow + j, 5).Value = JsonObj(j)("Entity of US1")
+      .Cells(lastRow + j, 6).Value = JsonObj(j)("Contain US2 Entity")
+      .Cells(lastRow + j, 7).Value = JsonObj(j)("Actions")("Action US1")
+      .Cells(lastRow + j, 8).Value = JsonObj(j)("Action Annotations")("US1")
+      .Cells(lastRow + j, 9).Value = JsonObj(j)("Actions")("Action US2")
+      .Cells(lastRow + j, 10).Value = JsonObj(j)("Action Annotations")("US2")
+      .Cells(lastRow + j, 11).Value = JsonObj(j)("Conflict Pair Old")
+               
+                
+            Next j
+        End With
+    ' Clean up
+    Set FSO = Nothing
+    Set JsonTS = Nothing
+    Set JsonObj = Nothing
+End Sub
+

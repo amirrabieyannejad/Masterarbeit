@@ -1,0 +1,19 @@
+funct conflict-analysis(dataset: Dataset)
+	var ConflictPairs ← ∅
+	for each US_a in dataset do	
+	 var MainPart_a, BenefitPart_a ← DivideIntoMainAndBenefitParts(US_a)
+	 var AN_a ← GetActionAnnotationFromDB(MainPart_a)
+	 dataset  ← AddActionAnnotationIntoDataset(AN_a)
+	 var Entity_a ← GetEntity(MainPart_a)
+	 for each US_b in dataset do
+		var MainPart_b, BenefitPart_b ← DivideIntoMainAndBenefitParts(US_b)
+		var AN_b ← GetActionAnnotationFromDB(US_b)
+		dataset  ← AddActionAnnotationIntoDataset(AN_b)
+		var Entity_b ← GetEntity(US_b)
+		var ContainEntity_b ← GetEntityFromContains(US_b)
+		if (HasConflict(AN_a, AN_b) == True ) then
+			if(Entity_a == Entity_b) or (Entity_a == ContainEntity_b) then
+				ConflictPairs += new AddConflictPair(US_a,US_b)
+	Return ReportAllConflicts(ConflictPairs)
+					
+	
