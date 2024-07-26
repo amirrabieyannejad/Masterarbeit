@@ -1,38 +1,38 @@
 \section{Analysing Redundancies}\label{redundancy}
 % some explenation here about what will be explain here an why
 %(Analyse von Redundanz als title und dann im Text Schreiben, dass es ein syntaktische Analyse ist
-USs are a fundamental component of agile software development. They provide concise and clear descriptions of the software functionality from the end user's perspective. These stories guide the development process and ensure that the software meets the actual needs of the users. 
+USs as a fundamental component of agile software development provide concise and clear descriptions of the software functionality from the end user's perspective. These stories guide the development process and ensure that the software meets the actual needs of the users. 
 
 However, as the project backlog grows, they often become overloaded with redundant USs that can obscure project priorities, waste resources and complicate maintenance. Analysing the redundancy within these USs is key to maintaining clarity and efficiency in the development process.
 
-The main goal of this analysis is to streamline the software development workflow by identifying redundancies in the USs within a project's backlog syntactically.
+The main goal of this analysis is to streamline the software development workflow by identifying redundancies in the USs within a project's backlog in a syntactic way.
 
  By identifying and consolidating overlapping functionalities, companies can avoid redundant work, streamline development work and optimise testing processes. This strategic approach not only shortens project timelines but also improves the clarity and coherence of project documentation, making it easier for team members to navigate and manage project requirements.
 
-In Section \ref{redundancy_related_work} we briefly discuss related work. In Section \ref{redundancy_requirement} we present the requirements and functional needs that are used as input for the design phase to fulfil the requirements. In Section \ref{desing} we explain the design decisions of the workflow shown in Figure \ref{fig:operational_flow} and explain how the architecture is structured. 
+In Section \ref{redundancy_related_work} we briefly discuss related work. In Section \ref{redundancy_requirement} we present the requirements and functional needs that are used as input for the design phase to fulfil them. In Section \ref{desing} we explain the design decisions of the workflow shown in Figure \ref{fig:operational_flow} and explain how the architecture is structured. 
 
-In section \ref{redundancy_implementation} follows the implementation to show how the components and their classes look in relation to Figure \ref{fig:technical_implementation}. In Section \ref{redundancy_test} we show what and how far we tested it. Finally, we apply our approach to 19 datasets of backlogs annotated with the Doccano tool \footnote {https://github.com/ace-design/nlp-stories}. In Section \ref{redundancy_evaluation} we analyse the results and in Section \ref{redundancy_conclustion} we draw a conclusion. 
+In Section \ref{redundancy_implementation} follows the implementation to show how the components and their classes look in relation to Figure \ref{fig:technical_implementation}. In Section \ref{redundancy_test} we show what and how far we tested it. Finally, we apply our approach to 19 datasets of backlogs annotated with the Doccano tool \footnote {\href{https://github.com/ace-design/nlp-stories}{https://github.com/ace-design/nlp-stories} }. In Section \ref{redundancy_evaluation} we analyse the results and in Section \ref{redundancy_conclustion} we draw a conclusion. 
 \subsection{Related work}\label{redundancy_related_work}
-Existing methods for assessing the similarity and uniqueness of USs have largely relied on NLP techniques. These techniques have explored the concept of similarity in USs, recognizing that even when USs appear similar, they may not be redundant. For instance, consider the following examples: “As a Staff member, I want to Remove a Hold.” and “As a Staff member, I want to apply a Hold.” While these USs are similar, their actions differ, indicating that they are not redundant. Jurisch et al. utilized common NLP methods like k-means clustering and TF-IDF to group similar USs\cite{ duszkiewicz2022identifying}. These NLP techniques often misidentify US pairs as redundant when they rely solely on similarity measures\cite{duszkiewicz2022identifying,jurischsimilarity,levin1993english}.
+Existing methods for assessing the similarity and uniqueness of USs have largely relied on NLP techniques. These techniques have explored the concept of similarity in USs, recognizing that even when USs appear similar, they may not be redundant. For instance, consider the following examples: “As a Staff member, I want to Remove a Hold.” and “As a Staff member, I want to apply a Hold.” While these USs are similar, their actions differ, indicating that they are not redundant. Jurisch et al. utilized common NLP methods like k-means clustering and TF-IDF to group similar USs\cite{ duszkiewicz2022identifying}. These NLP techniques often misidentify US pairs as redundant when they rely solely on similarity measures \cite{duszkiewicz2022identifying,jurischsimilarity,levin1993english}.
 
 Lucassen et al. developed a conceptual model for USs that defines various measures of similarity and redundancy. They identify two main types of duplicates: full duplicates, where the USs are identical in wording, and semantic duplicates, where the USs convey the same meaning but are phrased differently. Additionally, they consider cases where two USs share the same benefit but have different main parts, or vice versa, and instances where the benefit of one US is the same as the main part of another, indicating a dependency between them. Even when the personas differ, the main parts or benefits can be the same, suggesting that a more general persona might be needed to unify these USs\cite{Lucassen2015}.
 
 Lucassen et al. demonstrated that annotating USs can help identify similarities between their parts. Their tool, AQUSA, employs the WordNet::Similarity calculation to detect potential duplicates among USs. However, only two instances of redundancies are reported in their study, without details on the nature of these violations. Additionally, the evaluation data is not published, making it challenging to assess AQUSA's effectiveness in analysing the redundancy.
 
-In our approach, we do not focus on the similarity between USs, but on the annotated USs and their individual elements. 
+In our approach, we do not focus on the similarity between USs, but on the redundancies between USs using annotated USs and their individual elements. 
 \subsection{Requirements}\label{redundancy_requirement}
-In order to accomplish the analysis of redundancy in USs we try to address following functional requirements:
+In order to accomplish the analysis of redundancies in USs we try to address following functional requirements:
 \begin{itemize}
 
 \item As a user, I want to perform syntactic analysis on user stories within a specified project backlog, so that I can identify and address redundancies effectively.
 
 \item As a User, I want a report of user story pairs that contain identical syntactic clauses in both the main and benefit parts, so that I can modify them as needed.
 
-\item As a User, I want to apply a filter to the redundancy report to exclusively display US-pairs, which have at least one clauses as \textit{Targets} with the terms "Action" (as a verb) and "Entity" (as a noun), so that I can efficiently reduce the number of potential redundant pairs.
+\item As a User, I want to apply a filter to the redundancy report to exclusively display US-pairs, which have at least one clauses as \textit{Targets} relation with the terms "Action" (as a verb) and "Entity" (as a noun), so that I can efficiently reduce the number of potential redundant pairs.
 
-\item As a user, I want to mark found redundancy clauses as Triggers with a hash symbol (\#) and show those that have a redundancy in \enquote{Persona} (as a noun) and \enquote{Action} (as a verb) entries, so that I can better see if the persona in is also recognised as a redundancy.
+\item As a user, I want to mark found redundancy clauses as Triggers relation with a hash symbol (\#) and show those that have a redundancy in \enquote{Persona} (as a noun) and \enquote{Action} (as a verb) entries, so that I can better see if the persona is also recognised as a redundancy.
 
-\item As a user, I want to mark founded redundancy clauses as \textit{Contains} with a hash symbol (\#) and show those that contain two \enquote{Entity}(as a noun), so that I can better see whether the contained entity is also recognised as a redundancy.
+\item As a user, I want to mark founded redundancy clauses as Contains with a hash symbol (\#) and show those that contain two \enquote{Entity} (as a noun), so that I can better see whether the containments entities is also recognised as a redundancy.
 
 \item As a user, I would like to have a redundancy report that shows founded US texts in US-pairs and adds a hash symbol (\#) at the beginning and end of the founded words as a marker, so that I can better see which words are redundant in US-pairs.
 
@@ -48,7 +48,7 @@ To judge the operation of a system, we define following non-functional requireme
 \begin{itemize}
 	\item Testability: The system should support automated test procedures to ensure that syntactic analysis and redundancy detection work correctly. It should include comprehensive test cases covering different scenarios, including edge cases, to verify the accuracy and reliability of redundancy detection.
 	
-	\item Documentation: The system should include detailed documentation covering all aspects of functionality, setup. User manuals, API documentation and troubleshooting guides should be provided. 
+	\item Documentation: The system should include detailed documentation covering all aspects of functionality and setup.
 	
 	\item Performance: The system should perform the redundancy analysis within a reasonable time frame, even with large project backlogs. It should be optimised to process large amounts of data without significant performance degradation.
 	
@@ -60,7 +60,7 @@ To judge the operation of a system, we define following non-functional requireme
 This section describes the workflow and architectural considerations underlying the framework.
 \subsubsection*{Design Overview}
 %To meet the redundancy detection requirements specified in \ref{redundancy_requirement}, the system uses backlogs \cite{mosser2022modelling} annotated with CRF as the first artefact in workflow is the main input in our system. At the same time, the Henshin API \cite{arendt2010henshin}, which is used in a Java environment, enables the automatic generation of transformation rules for each US in the backlog. The use of Henshin's conflict and dependency analysis tool (CDA) \cite{mens2007analysing} is central to the automated identification of potentially redundant US-pairs, which is a cornerstone of framework design.
-To address the redundancy detection requirements specified in Section \ref{redundancy_requirement}, our system initiates with backlogs annotated with Doccano tool\footnote{\href{https://doccano.github.io/doccano}{https://doccano.github.io/doccano}}generated by Mosser et al.\footnote{\href{https://github.com/ace-design/nlp-stories}{https://github.com/ace-design/nlp-stories}} as the primary input\cite{arulmohan2023extracting}. These annotated USs are used to generate graph transformation rules for each US in the backlog using Henshin tool.
+To address the redundancy detection requirements specified in Section \ref{redundancy_requirement}, our system initiates with backlogs annotated with Doccano tool\footnote{\href{https://doccano.github.io/doccano}{https://doccano.github.io/doccano}}generated by Mosser et al.\footnote{\href{https://github.com/ace-design/nlp-stories}{https://github.com/ace-design/nlp-stories}} as the primary input\cite{arulmohan2023extracting}. These annotated USs are used to generate graph transformation rules for each US in the backlog using Henshin API.
 
 Subsequently, these rules serve as inputs for the Henshin Conflict and Dependency Analysis (CDA) tool \cite{mens2007analysing}, which automates the identification of potentially redundant US pairs. The output from the CDA tool is then utilized to create a report that compiles information on these potentially redundant pairs. This report, in turn, becomes the input for the evaluation process, which outputs statistical data concerning redundancy among USs.
 
@@ -68,70 +68,66 @@ Figure \ref{fig:operational_flow} illustrates how each step in this sequence is 
 \begin{figure}[h]
 	\centering 
 	\includegraphics[scale=0.4]{operational_flow}
-	\caption{Step-by-step visualisation of the tool chain and its inputs and outputs}\label{fig:operational_flow}
+	\caption{Step-by-step visualisation of the toolchain and its inputs and outputs}\label{fig:operational_flow}
 \end{figure}
 %The system ingests a graph-based model generated with the CRF tool containing a refined and annotated backlog dataset that is critical for the recognition of \textit{entities}, \textit{actions}, \textit{personas} and \textit{benefits} within the USs \cite{mosser2022modelling}. The association of each \textit{persona} with a \textit{primary action} via \textit{triggers} relationships and the association of \textit{primary/secondary actions} with \textit{primary/secondary entities} as \textit{targets} relationships, as explained by Mooser et al., form the basis for the interpretive system\cite{arulmohan2023extracting}. The output, an annotated backlog dataset as a structured JSON file, separates the annotated USs by backlog to facilitate further processing.
 %As shown in Figure \ref{fig:operational_flow}, a thorough step-by-step representation of the workflow performed with different tools is provided, showing that each step has an input and an output and the output of the first step is used as input for the next step, creating a tool chain.
 %along with a rationale for key design decisions and an explanation.
 \paragraph{US labelling in JSON files}\label{workflow_nummerize_us}
-As the annotated USs in the JSON files do not contain identifiers, a customised Python script, \textit{nummerise\_us.py}, is used to assign an unique identifier to each US, which is stored in a JSON object named \textit{"US\_Nr"} \footnote{https://github.com/amirrabieyannejad/Redundancy\_Analysis/tree/main/Script/numberise\_us}. This addition improves the system's ability to distinguish and process individual USs within the analytical pipeline.
+As the annotated USs in the JSON files do not contain identifiers, a customised Python script, \textit{nummerise\_us.py}, is used to assign an unique identifier to each US, which is stored in a JSON object named \textit{"US\_Nr"} \footnote{\href{https://github.com/amirrabieyannejad/Redundancy_Analysis/blob/main/Skript/nummerize_us/nummerize_us.py}{https://github.com/amirrabieyannejad/Redundancy\_Analysis/blob/main/Skript/nummerize}}. This addition improves the system's ability to distinguish and process individual USs within the analytical pipeline.
 
 \paragraph{Creation of an Ecore meta model}\label{workflow_ecore}
-The creation of an Ecore meta-model is required to generate rules in Henshin. The constructed meta-model, is based on the conceptual meta-model outlined in Figure \ref{fig:conceptual_metamodel} and ensures consistency with the JSON-structured data. This correspondence between the meta-model and the JSON representation underpins the rule generation and transformation processes of the system.
+The creation of an Ecore meta-model is required to generate rules in Henshin. The constructed meta-model, is based on the conceptual meta-model outlined in Figure \ref{fig:conceptual_metamodel} introduced by Mosser et al. and ensures consistency with the JSON-structured data. This correspondence between the meta-model and the JSON representation underpins the rule generation and transformation processes of the system.
 %The creation of an Ecore meta-model is required to generate rules in Henshin. The constructed meta-model, as shown in Figure \ref{fig:ecore_meta_model}, is based on the conceptual meta-model outlined in Figure \ref{fig:conceptual_metamodel} and ensures consistency with the JSON-structured data. This correspondence between the meta-model and the JSON representation underpins the rule generation and transformation processes of the system.
 
 \paragraph{Rule creation process}\label{workflow_rule_creator}
-The transition from identified USs to implementable transformation rules within Henshin is facilitated by the package \textit{org.eclipse.emf.henshin.model. compact}. The class \textit{RuleCreator} within the package \textit{org.henshin.backlog.code.rule} is important in this process as it uses different classes to instantiate transformation rules, nodes, edges and attributes. These components are annotated with actions such as \textit{Delete}, \textit{Create} or \textit{Preserve}, which are necessary  for the subsequent application of CDA tool to recognise redundant US-pairs. This methodological approach improves the system's ability to detect redundancies and thus optimises the efficiency of the residue analysis process.
+The transition from identified USs to implementable transformation rules within Henshin is facilitated by the package \textit{org.eclipse. emf.henshin.model. compact}. The class \textit{RuleCreator} within the package \textit{org.henshin.backlog.code.rule} is important in this process as it uses different classes to instantiate transformation rules, nodes, edges and attributes. These components are annotated with actions such as \textit{Delete}, \textit{Preserve},  which are necessary  for the subsequent application of CDA tool to recognise redundant US-pairs. This methodological approach improves the system's ability to detect redundancies and thus optimises the efficiency of the residue analysis process.
 
-\paragraph{Conflict and Dependency Analysis (CDA)} After the creation of transformation rules and the creation of the corresponding Henshin file by the \textit{RuleCreator} class, the system is able to perform a conflict and dependency analysis (CDA) to identify potential redundancy pairs.
+\paragraph{Conflict and Dependency Analysis (CDA)} After the creation of transformation rules and the creation of the corresponding Henshin file by the \textit{RuleCreator} class, the system is able to perform a CDA to identify potential redundancy pairs.
 
-\paragraph{Extraction of text reports} The creation of a text report is a crucial step in consolidating the results of the conflict and dependency analysis (CDA), which aims to highlight essential information such as the identification of potentially redundant US-pairs, the enumeration of redundancy clauses, the categorisation of these clauses within the main or benefit parts of the USs and a tabulation of potentially redundant pairs alongside the total number of redundancy clauses.
+\paragraph{Extraction of text reports} The creation of a text report is a crucial step in consolidating the results of the CDA, which aims to highlight essential information such as the identification of potentially redundant US-pairs, the enumeration of redundancy clauses, the categorisation of these clauses within the main or benefit parts of the USs and a tabulation of potentially redundant pairs alongside the total number of redundancy clauses.
 
-\paragraph{Evaluating the reports} After creating the reports, we are now able to evaluate the level of redundancy between US-pairs based on JSON reports.
+\paragraph{Evaluating the reports} After creating the reports for datasets, we are now able to evaluate the level of redundancy between US-pairs based on JSON reports.
 
-The evaluation process involves a detailed examination of elements such as triggers, targets, and contains within the USs, comparing them to identify exact matches or significant overlaps that could indicate redundancy.
+The evaluation process involves a detailed examination of relations such as triggers, targets, and contains within the USs, comparing them to identify exact matches or significant overlaps that could indicate redundancy.
 
 \subsubsection*{Software Architecture}\label{architectur}
 In this section, we present the basic structures of our workflow and the discipline of creating such structures. Each structure comprises software elements, relations among them, and properties of both.
 \begin{itemize}
-	\item Annotated USs with Doccano Tool\footnote{https://github.com/doccano/doccano}: Mosser et al. used publicly available requirements from Dalpiaz et al.\cite{Dalpiaz2018} consisting of 19 product backlogs and 1,458 USs. The dataset is a raw archive of 19 text files, each containing one US per line. As there were no public expert-based annotations, Mosser et al. manually annotated the dataset using the Doccano tool for \textit{Named Entity Recognition}. Labels included persona, action, entity, benefit part and relations such as triggers, targets, and contains based on their domain meta-model.% The first author did the initial labelling, followed by several quality checks:	Initial calibration with the third author on 75 randomly selected stories.
-	%Fortnightly validation sessions over two months.	Manual review of 330 randomly selected stories (19.6%) by the third author.
-	%These processes resulted in 94\% agreement, which is considered excellent.
-	%	integrated a dedicated Natural Language Processing (NLP) technique—Conditional Random Fields (CRF). CRFs represent a specialized class of Markov Random Fields, tailored for discriminative modelling in pattern recognition tasks where context plays a pivotal role\cite{arulmohan2023extracting}.
-	As artefact we receive a graph-based model with JSON format, which represents the refined and annotated dataset for the recognition of \emph{entities}, \emph{actions}, \emph{personas} and \emph{benefits} of USs \cite{mosser2022modelling}.
+	\item Annotated USs with Doccano Tool\footnote{https://github.com/doccano/doccano}: Mosser et al. used publicly available requirements from Dalpiaz et al.\cite{Dalpiaz2018} consisting of 22 product backlogs and 1,679 USs. The dataset is a raw archive of 22 text files, each containing one US per line. As there were no public expert-based annotations, Mosser et al. annotated the dataset using the Doccano tool for \textit{Named Entity Recognition} (NER). Based on their metamodel of the domain, they have labelled the elements of USs as persona, action, entity, benefit part and relationships such as triggers, targets and contains \cite{mosser2022modelling}.
 	
 	%Mooser et al. have linked each \emph{Persona} to each \emph{Primary Action} as \emph{Trigger} relationships, each \emph{Primary Actions} to each \emph{Primary Entity} as \emph{Target} relationships and each \emph{Primary/Secondary Entity} to each \emph{Primary/Secondary Entity} implying a \emph{Contains} relationship\cite{arulmohan2023extracting}.
 	
-	\item Eclipse as IDE\footnote{https://eclipseide.org/}: Eclipse is an integrated development environment (IDE) used in computer programming. It contains a base work workspace and an extensible plug-in system for customizing the environment.
+	\item Eclipse as IDE\footnote{\href{https://eclipseide.org/}{https://eclipseide.org}}: Eclipse is an integrated development environment (IDE) used in computer programming. It contains a base workspace and an extensible plug-in system for customizing the environment.
 	We chose this IDE because it offers the Henshin tool specifically for model-based development.
 	
-	\item Eclipse Modelling Project\footnote{https://eclipse.dev/modeling/}: It focuses on the evolution and promotion of model-based development technologies within the Eclipse community by providing a unified set of modelling frameworks, tooling, and standards implementations.
+	\item Eclipse Modelling Project\footnote{\href{https://eclipse.dev/modeling/}{https://eclipse.dev/modeling/}}: It focuses on the evolution and promotion of model-based development technologies within the Eclipse community by providing a unified set of modelling frameworks, tooling, and standards implementations.
 	
-	\item Eclipse Modelling Framework (EMF)\footnote{https://eclipse.dev/modeling/emf/}: The EMF project is a modeling framework and code generation facility for building tools and other applications based on a structured data model. From a model specification described in XMI, EMF provides tools and runtime support to produce a set of Java classes for the model, along with a set of adapter classes that enable viewing and command-based editing of the model, and a basic editor.
+	\item Eclipse Modelling Framework (EMF)\footnote{\href{https://eclipse.dev/modeling/emf/}{https://eclipse.dev/modeling/emf/}}: The EMF project is a modeling framework and code generation facility for building tools and other applications based on a structured data model. From a model specification described in XMI, EMF provides tools and runtime support to produce a set of Java classes for the model, along with a set of adapter classes that enable viewing and command-based editing of the model, and a basic editor.
 	
-	\item Henshin\footnote{https://wiki.eclipse.org/Henshin}: Henshin is an in-place model transformation language for the Eclipse Modelling Framework (EMF). It supports direct transformations of EMF model instances (endogenous transformations), as well as generating instances of a target language from given instances of a source language (exogenous transformations).
+	\item Henshin\footnote{\href{https://wiki.eclipse.org/Henshin}{https://wiki.eclipse.org/Henshin}}: Henshin is an in-place model transformation language for the EMF. It supports direct transformations of EMF model instances (endogenous transformations), as well as generating instances of a target language from given instances of a source language (exogenous transformations).
 	
-	Because Henshin enables the specification of restrictions and conditions within rules, we use it to enforce and verify US requirements to ensure that the restrictions are met.
+	Because Henshin enables the specification of restrictions and conditions within graph transformation rules, we use it to enforce and verify US requirements to ensure that the restrictions are met.
 		
-	\item Henshin API: It provides the specification and execution of transformation modules, units and rules. This API is beneficial due to the dynamic creation and modification of transformation modules as part of an automated tool chain\footnote{https://wiki.eclipse.org/Henshin/Compact\_API}.
+	\item Henshin API: It provides the specification and execution of transformation modules, units and rules. This API is beneficial due to the dynamic creation and modification of transformation modules as part of an automated tool chain\footnote{\href{https://wiki.eclipse.org/Henshin/Compact\_API}{https://wiki.eclipse.org/Henshin/Compact\_API}}.
 	
-	\item RuleCreator Class: This class developed within the \textit{org.henshin.backlog.code.rule} package, serves as an integral component of our software architecture, leveraging the Henshin API to automate the process of transformation rule creation based on dynamic JSON input. This class facilitates the programmable generation of graph transformation rules. It operates by reading JSON files, which specify USs and their associated actions, entities, and relationships, then systematically constructs corresponding Henshin modules, rules, nodes, and their attributes.
+	\item RuleCreator Class: This class developed within the \textit{org.henshin.backlog.code.rule} package, serves as an integral component of our software architecture, leveraging the Henshin API to facilitates the programmable generation of graph transformation rules. It operates by reading JSON files, which specify USs and their associated actions, entities, and relationships, then systematically constructs corresponding Henshin module, rules, nodes, and their attributes.
 	
-	the RuleCreator class effectively bridges the gap between high-level requirements specified in JSON and the low-level execution capabilities of the Henshin, ensuring that USs translated into executable transformation rules that reflect the specified software behaviour. This translation process is crucial for maintaining consistency and traceability across the software development lifecycle, from requirements specification to implementation.
+	the RuleCreator class effectively bridges the gap between high-level requirements specified in JSON and the low-level execution capabilities of the Henshin, ensuring that USs translated into executable transformation rules that reflect the specified software behaviour. %n process is crucial for maintaining consistency and traceability across the software development lifecycle, from requirements specification to implementation.
 	
-	\item Henshin's CDA Feature\footnote{https://wiki.eclipse.org/Henshin/Conflict\_and\_Dependency\_Analysis}: Henshin's conflict and dependency analysis (CDA) feature enables the detection of potential conflicts and dependencies of a set of rules.
+	\item Henshin's CDA Feature\footnote{\href{https://wiki.eclipse.org/Henshin/Conflict\_and\_Dependency\_Analysis}{https://wiki.eclipse.org/Henshin/Conflict\_and\_Dependency\_Analysis}}: Henshin's CDA feature can be used to analyse conflicting overlaps of rule applications,	which we will interpret as redundancies.
 	
-	After the rules and the corresponding Henshin file have been created by the RuleCreator class as artefact, we are now able to pass them to the conflict and dependency analysis (CDA) to find potential redundancy pairs.
+	After the rules and the corresponding Henshin file have been created by the RuleCreator class as artefact, we are now able to pass them to the CDA to find potential redundancy pairs.
 	
-	Since the analysis of conflicts and dependencies related to the \textit{attribute} is not yet considered in the CDA API, we decided to use the user interface (UI) of the CDA extension, which supports analysis of conflict and dependencies of rules through the interactive use of CDA.
+	Since the analysis related to the \textit{Attribute} is not yet included in the CDA API, we decided to use the user interface (UI) of the CDA extension by interactively using CDA.
 	
-	\item ReportExtractor Class: The class from the \textit{org.henshin.backlog.code.report} package is used in our software architecture to extract and format reports from the CDA-generated \textit{Minimal-Model.ECore} that contain all information about redundant US-pairs such as redundant elements with their name and type. It uses classes from the \textit{org.eclipse.emf.ecore} package to handle EMF (Eclipse Modelling Framework) resources that support the management and manipulation of \textit{Minimal-Model.ECore} data in a structured format.
+	\item ReportExtractor Class: The class from the \textit{org.henshin.backlog.code.report} package is used in our software architecture to extract and format reports from the CDA-generated \textit{Minimal-Model.ECore} that contain all information about redundant US-pairs such as redundant elements with their name and type. It uses classes from the \textit{org.eclipse.emf.ecore} package to handle EMF resources that support the management and manipulation of \textit{Minimal-Model.ECore} data in a structured format.
 	
 	In operation, the ReportExtractor class reads minimal-model.ecore files containing detailed information about redundant US-pairs. It then processes this data to generate reports in both text and JSON formats, aiding in the systematic analysis of potential redundancies within the USs. This is facilitated through methods that dynamically read and interpret the JSON data, extracting key information such as actions, entities, and their interactions.
 	
-	\item Evaluation Class: The class is part of the \textit{org.henshin.backlog.code.evaluation} package, serves a critical function within our software architecture, focusing on the analysis and determination of redundancy between USs based on specified criteria. This class utilizes JSON processing to assess the overlap and redundancy between elements of USs, such as triggers, targets, and contains, which are vital for identifying potential redundancies in the USs.
+	\item Evaluation Class: The class is part of the \textit{org.henshin.backlog.code.evaluation} package, serves a critical function within our software architecture, focusing on the analysis and determination of redundancies between USs based on specified criteria. This class utilizes JSON processing to assess the overlap and redundancy between elements of USs, such as triggers, targets, and contains, which are vital for identifying potential redundancies in the USs.
 	
-	Key functionalities of this class include reading and interpreting JSON data, where it extracts detailed elements related to USs and evaluates them against redundancy criteria defined in its methods. The class's method \textit{evaluateRedundancyCriteria} is particularly central, as it processes the JSON objects representing USs to determine if they are fully or partially redundant based on the presence and matching of various JSON array elements like triggers, targets, and contains in the main and benefit parts of the USs.
+	Key functionalities of this class include reading and interpreting reports, where it extracts detailed elements related to USs and evaluates them against redundancy criteria defined in its methods. %The class's method \textit{evaluateRedundancyCriteria} is particularly central, as it processes the JSON objects representing USs to determine if they are fully or partially redundant based on the presence and matching of various JSON array elements like triggers, targets, and contains in the main and benefit parts of the USs.
 	
 	\end{itemize}
 Figure \ref{fig:technical_implementation} shows the architectural composition, highlighting the integral components and their user interface and artefacts.
@@ -151,7 +147,7 @@ Regarding redundancy, some definitions are clarified:
 	\begin{itemize}
 		\item The \textit{main part}, which is essential as it clearly and concisely summarises the persona, the intended functionality and the resources required to perform the action. This part usually has follow the format: \textit{"As a [persona], I want [what]"}. 
 		
-		Here, the persona helps contextualise the requirement by linking it to a user type, which promotes understanding and empathy. The intended functionality describes the action that the persona wants to perform or the function they need, providing a clear statement of the requirement.
+		Here, the persona helps contextualise the requirement by linking it to a user type, which promotes understanding. The intended functionality describes the action that the persona wants to perform or the function they need, providing a clear statement of the requirement.
 		
 		Specifying the resources required to perform the action helps with planning and resource allocation and ensures that the development team is aware of the tools, technologies and time required.
 		
@@ -177,16 +173,16 @@ Regarding redundancy, some definitions are clarified:
 \end{definition}
 \begin{example}
 	When evaluating the textual similarities between two USs, consider the following pair: \\
-	user\_story\_01: \textit{"As a Staff member, I want to Manage Ordinances, so that I can maintain accurate ordinance information in the System."}\\
-	user\_story\_02: \textit{"As a Staff member, I want to Manage Affidavits, so that I can ensure compliance with the requirements prior to the hearing."} \\\\
-	Upon comparing these two user stories, we identify shared phrases: "Staff member" and "Manage." These common elements indicate that both user stories involve the same persona ("Staff member") engaged in a similar type of action ("Manage"). However, the focus of their management tasks differs significantly, with one managing "Ordinances" and the other "Affidavits."\\\\
-	This distinction in the resources being managed suggests that while there are textual overlaps and commonalities in persona and action, the user stories are not duplicates, as they address different aspects of the staff member's responsibilities and goals within the organization.
+	user\_story\_01: \textit{"As a Staff member, I want to manage ordinances, so that I can maintain accurate ordinance information in the System."}\\
+	user\_story\_02: \textit{"As a Staff member, I want to manage affidavits, so that I can ensure compliance with the requirements prior to the hearing."} \\\\
+	Upon comparing these two USs, we identify shared phrases: "Staff member" and "manage." These common elements indicate that both user stories involve the same persona ("Staff member") engaged in a similar type of action ("manage"). However, the focus of their management tasks differs significantly, with one managing "ordinances" and the other "affidavits."\\\\
+	This distinction in the resources being managed suggests that while there are textual overlaps and commonalities in persona and action, the USs are not duplicates, as they address different aspects of the staff member's responsibilities and goals within the organization.
 \end{example}
 \begin{definition}[\textbf{Redundancy}]
 	Redundancy refers to situations where all phrases of USs duplicate or largely overlap with others. This is the case when only a part (main or benefit) or entire USs are syntactically identical, meaning that some or all phrases and their orderings match perfectly between two USs. \\\\
 	$Notation$. Lowercase identifiers refer to single elements, and uppercase identifiers denote sets. A user story $us$ is a 2-tuple $us = \langle m,b\rangle $ where:
 	\begin{itemize}
-		\item A main $m$ is a 6-tuple $m = \langle p,A,E,Tr,Ta,Co\rangle $ which $p$ is the persona, $A = \{ a_1,a_2,...\} $ is a set of actions, $E = \{e_1,e_2,...\}$ is a set of entities, trigger references $Tr = \{(p_1,a_1),(p_2,a_2),...\}$ is a set of pairs of persona and action, target references $Ta = \{(a_1,e_1),(a_2,e_2),...\}$ is a set of pairs of action and entity, and contain references $Co = \{ (e_1,e_2),(e_*,e_*),... \}$ is a set of pairs of entities.
+		\item A main $m$ is a 6-tuple $m = \langle p,A,E,Tr,Ta,Co\rangle $ which $p$ is the persona, $A = \{ a_1,a_2,...\} $ is a set of actions, $E = \{e_1,e_2,...\}$ is a set of entities, triggers references $Tr = \{(p_1,a_1),(p_2,a_2),...\}$ is a set of pairs of persona and action, targets references $Ta = \{(a_1,e_1),(a_2,e_2),...\}$ is a set of pairs of action and entity, and contains references $Co = \{ (e_1,e_2),(e_*,e_*),... \}$ is a set of pairs of entities.
 		
 		\item A benefit $b$ is a 4-tuple $b = \langle A,E,Ta,Co\rangle $ where $A = \{ a_1,a_2,...\} $ is a set of actions, $E = \{e_1,e_2,...\}$ is a set of entities,  $Ta = \{(a_1,e_1),(a_2,e_2),...\}$ is a set of pairs of action and entity, $Co = \{ (e_1,e_2),(e_*,e_*),... \}$ is a set of pairs of entities.
 	\end{itemize}
@@ -197,123 +193,120 @@ Regarding redundancy, some definitions are clarified:
 	$isRedundant(e_1,e_2) \leftrightarrow e_1 =_{syn} e_2$\\\\
 	The action $a_1$ is an exact redundant of action $a_2$, when the actions are identical. Formally,\\
 	$isRedundant(a_1,a_2) \leftrightarrow a_1 =_{syn} a_2$\\\\
-	The trigger reference $tr_1$ is an exact redundant of trigger $tr_2$, if they run between redundant personas $p_1$ and $p_2$ and redundant actions $a_1$ and $a_2$. Formally,\\
+	The triggers reference $tr_1$ is an exact redundant of trigger $tr_2$, if they run between redundant personas $p_1$ and $p_2$ and redundant actions $a_1$ and $a_2$. Formally,\\
 	$isRedundant((p_1,a_1),(p_2,a_2)) \leftrightarrow tr_1 =_{syn} tr_2$\\\\
-	The target reference $ta_1$ is an exact redundant of target $ta_2$, if they run between redundant actions $a_1$ and $a_2$ and redundant entities $e_1$ and $e_2$. Formally,\\
+	The targets reference $ta_1$ is an exact redundant of target $ta_2$, if they run between redundant actions $a_1$ and $a_2$ and redundant entities $e_1$ and $e_2$. Formally,\\
 	$isRedundant((a_1,e_1),(a_2,e_2)) \leftrightarrow ta_1 =_{syn} ta_2$\\\\
-	The contain reference $co_1$ is an exact redundant of contain $co_2$, if they start at redundant entities $e_1$ and $e_2$ and end in redundant entities $e_3$ and $e_4$. Formally,\\
+	The contains reference $co_1$ is an exact redundant of contain $co_2$, if they start at redundant entities $e_1$ and $e_2$ and end in redundant entities $e_3$ and $e_4$. Formally,\\
 	$isRedundant((e_1,e_3),(e_2,e_4)) \leftrightarrow co_1 =_{syn} co_2$\\\\
 	To comprehensively assess redundancy, it is important to consider not only the textual content, but also the functional and contextual relevance of each phrase within the USs. By analysing triggers, targets and contains relationships, we can uncover redundancies that may not be immediately apparent through a simple text comparison.
 \end{definition}	
 \begin{definition}[\textbf{Full Redundancy}]
 	A US-pair are fully redundant in their main parts if
 	\begin{itemize}
-		\item there are redundant target references $Ta_2$ in $m_2$ for all target references $Ta_1$ in $m_1$, so that $Ta_1$ and $Ta_2$ are redundant, and vice versa, and
+		\item there are redundant targets references $Ta_2$ in $m_2$ for all targets references $Ta_1$ in $m_1$, so that $Ta_1$ and $Ta_2$ are redundant, and vice versa, and
 		
-		\item there are redundant trigger references $Tr_2$ in $m_2$ for all trigger references $Tr_1$ in $m_1$, so that $Tr_1$ and $Tr_2$ are redundant, and vice versa, and
+		\item there are redundant triggers references $Tr_2$ in $m_2$ for all triggers references $Tr_1$ in $m_1$, so that $Tr_1$ and $Tr_2$ are redundant, and vice versa, and
 		
-		\item there are redundant contain references $Co_2$ in $m_2$ for all contain references $Co_1$ in $m_1$, so that $Co_1$ and $Co_2$ are redundant, and vice versa.
+		\item there are redundant contains references $Co_2$ in $m_2$ for all contains references $Co_1$ in $m_1$, so that $Co_1$ and $Co_2$ are redundant, and vice versa.
 		
 	\end{itemize}
 	A US-pair are fully redundant in their benefit parts if
 	\begin{itemize}
-		\item there are redundant target references $Ta_2$ in $b_2$ for all target references $Ta_1$ in $b_1$, so that $Ta_1$ and $Ta_2$ are redundant, and vice versa, and
+		\item there are redundant targets references $Ta_2$ in $b_2$ for all target references $Ta_1$ in $b_1$, so that $Ta_1$ and $Ta_2$ are redundant, and vice versa, and
 		
-		\item there are redundant contain references $Co_2$ in $b_2$ for all contain references $Co_1$ in $b_1$, so that $Co_1$ and $Co_2$ are redundant, and vice versa.
+		\item there are redundant contains references $Co_2$ in $b_2$ for all contain references $Co_1$ in $b_1$, so that $Co_1$ and $Co_2$ are redundant, and vice versa.
 		
 	\end{itemize}
 	A US-pair was categorised as "full redundancy" in the main/benefit part if all occurring clauses in the main/benefit part consisting of triggers (for the main part only), targets and contains were syntactically identical.\\\\
 	This means that in each pair, the wording, order and structure of the clauses relating to the triggers and targets must be identical to fall into this category. The check also extends to the "contain" elements, if these are present, to ensure that these also match perfectly and without deviations.\\\\
 	Full redundancy in the main part means that the redundant stories do not provide additional information and can be consolidated or eliminated without compromising the completeness or operational integrity of the system specifications.\\\\
-	On the other hand, having this level of redundancy in the benefit part means that USs achieve the same goal; they can be categorised in the same group. This means that if the end results or benefits described by the USs are identical, regardless of the different actions/entities or triggers that lead to these results, the USs effectively serve the same purpose within the system.
+	On the other hand, having this level of redundancy in the benefit parts means that USs achieve the same goal; they can be categorised in the same group. This means that if the end results or benefits described by the USs are identical, regardless of the different actions/entities or triggers that lead to these results, the USs effectively serve the same purpose within the system.
 \end{definition}
 \begin{example}
 	For example, the following US-pair is identified as \enquote{Full Redundancy} in the main part:
 	
-	\textit{user\_story\_01:} \enquote{\#g14\# as a \#publisher\#, i want to \#publish\# a \#dataset\#, so that i can view just the dataset with a few people.}
+	\textit{user\_story\_01:} \enquote{\#g14\# as a \#publisher\#, i want to \#publish\# a \#dataset\#, so that I can view just the dataset with a few people.}
 	
-	\textit{user\_story\_02:} \enquote{\#g14\# as a \#publisher\#, i want to \#publish\# a \#dataset\#, so that i can share the dataset publicly with everyone.}\\\\
-	All existing clauses associated with the main elements in this scenario - in particular the trigger (where "Publisher" is the persona and "Publish" is the action) and the targets (where "Publish" is the action and "Dataset" is the entity) - are exactly the same in the main parts of the USs. This complete similarity shows that there is "full redundancy" in the main parts of these USs.
+	\textit{user\_story\_02:} \enquote{\#g14\# as a \#publisher\#, i want to \#publish\# a \#dataset\#, so that I can share the dataset publicly with everyone.}\\\\
+	All existing clauses associated with the main elements in this scenario - in particular the triggers (where "Publisher" is the persona and "Publish" is the action) and the targets (where "publish" is the action and "Dataset" is the entity) - are exactly the same in the main parts of the USs. This complete similarity shows that there is "full redundancy" in the main parts of these USs.
 \end{example}
 \begin{example}
 	Following US-pair is identified as \enquote{Full Redundancy} in \enquote{Benefit} part:
 	
 	\textit{user\_story\_02:} \#g05\# as a data publishing user, I want to be able to edit the model of data I have already imported, so that I can \#fix\# \#bugs\# or \#make\# \#enhancements\# in the \#API\# built for my \#data\#.
 	
-	\textit{user\_story\_07:} \#g05\# as a data publishing user, I want to be able to edit the data source of data I have already imported, so that i can \#fix\# \#bugs\# or \#make\# \#enhancements\# in the \#API\# built for my \#data\#.
+	\textit{user\_story\_07:} \#g05\# as a data publishing user, I want to be able to edit the data source of data I have already imported, so that I can \#fix\# \#bugs\# or \#make\# \#enhancements\# in the \#API\# built for my \#data\#.
 	
-	As we can see, targets(["fix", "bugs"], ["make", enhancements"]) and contains (["API", "enhancements"], ["data","API"]) in the benefit part are identical between USs, therefore, we have \enquote{Full Redundancy} in the \enquote{Benefit} parts.
+	As we can see, targets(["fix", "bugs"], ["make", enhancements"]) and contains (["API", "enhancements"], ["data","API"]) in the benefit part are identical between USs, therefore, we have \enquote{Full Redundancy} in the benefit parts.
 \end{example}
-Last but not least, sometime there are words in the annotated USs that are not labelled as a reference (trigger, target or contain) by the Doccano tool at all, which leads to a full redundancy being incorrectly recognised instead of a partial.
+Last but not least, sometime there are words in the annotated USs that are not labelled as a reference (triggers, targets, or contains) by the Doccano tool at all, which leads to a full redundancy being incorrectly recognised instead of a partial.
 \begin{example}
 	Considering following US-pair:
 	
- 	user\_story\_26: \#g05\# as an \#api user\#, i want to be able to \#understand\# if a \#user\# is an administrator, so that [...].
+ 	user\_story\_26: \#g05\# as an \#api user\#, I want to be able to \#understand\# if a \#user\# is an administrator, so that [...].
  	
- 	user\_story\_25: \#g05\# as an \#api user\#, i want to be able to \#understand\# if a \#user\# is a publisher, so that [...].\\\\
-	In this example, full redundancy is found due to the redundant targets and triggers in the main part, which is not entirely correct. This is because there are some phrases that do not appear as contain or target in any reference, such as: "administrator" (user\_story\_26) and "publisher" (user\_story\_25).
+ 	user\_story\_25: \#g05\# as an \#api user\#, I want to be able to \#understand\# if a \#user\# is a publisher, so that [...].\\\\
+	In this example, full redundancy is found due to the redundant targets and triggers in the main part, which is not entirely correct. This is because there are some phrases that do not labelled as contains or targets in any relations, especially: "administrator" (user\_story\_26) and "publisher" (user\_story\_25).
 \end{example}
 \begin{definition}[\textbf{Partial Redundancy}]
 	A US-pair are partially redundant in their main parts if there is a target reference $ta_1$ in $m_1$ and a target reference $ta_2$ in $m_2$, so that $ta_1$ and $ta_2$ are redundant.\\\\
 	A US-pair are partially redundant in their benefit parts if there is a target reference $ta_1$ in $b_1$ and a target reference $ta_2$ in $b_2$, so that $ta_1$ and $ta_2$ are redundant.\\\\
-	Note that in this definition, a US-pair that is fully redundant in the main part (or in the benefit part) is also partially redundant in the main part (or in the benefit part).\\\\
-	Partial redundancy in USs occurs when only certain clauses, such as targets, have significant overlap but are not completely identical. This means that while there are shared aspects such as targets between USs, other clauses such as triggers or contains may not overlap, indicating an incomplete match. Such a scenario indicates that there is substantial, but not fully, a match between the USs.
+	Note that in this definition, a US-pair that is fully redundant in the main part (or in the benefit parts) is also partially redundant in the main part (or in the benefit parts).\\\\
+	Partial redundancy in USs occurs when only certain clauses, such as targets, have significant overlap but are not completely identical. This means that while there are shared aspects such as targets between USs, other clauses such as triggers or contains may not overlap, indicating an incomplete match. Such a scenario indicates that there is substantial, but not fully a match between the USs.
 	%	Was found when only some clauses were redundant in either the Main or Benefit parts, while others were unique. This indicates overlapping clauses, but not full redundancy.
 \end{definition}
 \begin{example}
-	Following US-pair is identified as \enquote{Partial Redundancy} in main part:
+	Following US-pair is identified as \enquote{Partial Redundancy} in the main parts:
 	
 	\textit{user\_story\_09:} \#g04\# as a \#user\#, I want to be able to \#view\# a \#map display\# of the public recycling bins around my \#area\#.
 	
 	\textit{user\_story\_10:} \#g04\# as a \#user\#, I want to be able to \#view\# a \#map display\# of the special waste drop off sites around my \#area\#.
 	
-	As we can see, there are some redundancy clauses such as Triggers (["user", "view"]), Targets (["view", "map display"]) and Contains(["map display", "area"]) between the USs. There are also clauses such as Contains (["public recycling bins"] vs. ["hazardous waste collection points"]) that are distinct elements justifying the maintaining of separate USs. We therefore assess this as "Partial redundancy" in the "Main part".
+	As we can see, there are some redundancy clauses such as triggers (["user", "view"]), targets (["view", "map display"]) and contains (["map display", "area"]) between the USs. There are also clauses such as contains (["public recycling bins"] vs. ["hazardous waste collection points"]) that are distinct elements justifying the maintaining of separate USs. Therefore, we assess this as "Partial redundancy" in the "Main parts".
 \end{example}
 \begin{example}
-	Following US-pair is identified as \enquote{Partial Redundancy} in benefit part:
+	Following US-pair is identified as \enquote{Partial Redundancy} in benefit parts:
 	
 	\textit{user\_story\_17:} \#g03\# as a staff member, I want to manage approved proffers, so that I can \#ensure\# \#compliance\# with and satisfaction of the proffer in the future.
 	
 	\textit{user\_story\_30:} \#g03\# as a staff member, I want to manage affidavits, so that I can \#ensure\# \#compliance\# with the requirements prior to the hearing.
 	
-	As we can see, there is a redundancy clause as targets (["ensure", "compliance"]) between the USs in the benefit part, but there is also a clause as contains (["proffer", "satisfaction"] vs ["requirements", "hearing"]), which leads us to evaluate this as \enquote{Partial Redundancy} in the \enquote{Benefit} part.
+	As we can see, there is a redundancy clause as targets (["ensure", "compliance"]) between the USs in the benefit parts, but there is also a clause as contains (["proffer", "satisfaction"] vs ["requirements", "hearing"]), which leads us to evaluate this as \enquote{Partial Redundancy} in the \enquote{Benefit} part.
 \end{example}
 \subsubsection*{Design Phases}\label{design_phases}
 To provide a comprehensive overview of the design phases, this section explains each step of the process, from initial setup to final evaluation, using practical examples.
 \subsubsection*{Step 1: Data Preparation}\label{design_step_1}
-As primary input, we receive a graph-based model generated by the Doccano tool, which represents the refined and annotated dataset for the recognition of \emph{entities}, \emph{actions}, \emph{persons} and \emph{benefits} of USs \cite{arulmohan2023extracting}.
+As primary input, we receive a graph-based model generated by the Doccano tool, which represents the refined and annotated dataset for the recognition of \emph{entities}, \emph{actions}, \emph{personas}, and \emph{benefits} of USs \cite{arulmohan2023extracting}.
 
-The datasets have the JSON format, the structure of which is very important in the Java classes \textit{RuleCreator}, \textit{ReportExtractor}, and \textit{Evaluation}. Therefore, understanding the JSON format provided is needed for the further procedure.
+The datasets have the JSON format, the structure of which is very important in the Java classes, namely \textit{RuleCreator}, \textit{ReportExtractor}, and \textit{Evaluation}. Therefore, understanding the JSON format provided is needed for the further procedure.
 
 Each JSON file for a backlog dataset contains a JSON-array in which each US entry is defined as a JSON-object. Listing \ref{list:desing_json_format} illustrates the format used for the US entry.
 \begin{MyListing}
-	\paragraph{}
-	
-	\centering
+	%\paragraph{}
+	%\centering
 	\lstinputlisting[basicstyle=\ttfamily\scriptsize]{Listing/json_format.json}
 	\caption{The JSON format of each US entry in JSON file}\label{list:desing_json_format}
 	
 \end{MyListing}
 Mosser et al. have linked each \emph{Persona} to each \emph{Primary Action} as \emph{Trigger} relationships, each \emph{Primary Actions} to each \emph{Primary Entity} as \emph{Target} relationships and each \emph{Primary/Secondary Entity} to each \emph{Primary/Secondary Entity} implying a \emph{Contains} relationship\cite{arulmohan2023extracting}.
-
-To interact with the entries in JSON file, we need to distinguish between the entries that are defined as JSON-objects, such as: {Text, Action, Entity, Benefit} and the entries that are defined as a JSON-array, such as: {Persona, Primary/Secondary Action, Primary/Secondary Entity, Triggers, Targets, Contains}.
+To interact with the entries in JSON file, we need to distinguish between the entries that are defined as JSON-objects, such as: {Text, Action, Entity, Benefit} and the entries that are defined as a JSON-array, such as: {Persona, Primary/Secondary Action, Primary/Secondary Entity, Triggers, Targets, and Contains}.
 \subsubsection*{Identifying USs in JSON-File}\label{desing_workflow_nummerize_us}
-Annotated USs in each JSON file have no identifier. To distinguish USs, we use a Python script called \textit{nummerise\_us.py} \footnote{https://github.com/amirrabieyannejad/Redundancy\_Analysis/tree/main/Script/numberise\_us}, which receives JSON files as input and adds a JSON object named \enquote{US\_Nr} with an identifier as value (e.g. user\_story\_01) to each US and returns the JSON files as output.
+Annotated USs in each JSON file have no identifier. To distinguish USs, we use a Python script called \textit{nummerise\_us.py} \footnote{\href{https://github.com/amirrabieyannejad/Redundancy_Analysis/tree/main/Skript/nummerize_us}{https://github.com/amirrabieyannejad/Redundancy\_Analysis/tree/main/Skript/nummerize\_us}}, which receives JSON files as input and adds a JSON object named \enquote{US\_Nr} with an identifier as value (e.g. user\_story\_01) to each US and returns the JSON files as output.
 Listing \ref{list:desing_json_format_sample} illustrates the added JSON object "US\_Nr" and its value in the JSON file.
 \begin{MyListing}
-	\paragraph{}
-	\hrule
+	%\paragraph{}
+	
 	\centering
 	\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/json_format_sample.json}
 	\caption{The JSON format with the additional JSON object "US\_Nr" and its value}\label{list:desing_json_format_sample}
-	\hrule
 \end{MyListing}
 \subsubsection*{Step 2: Creation of Rules}\label{design_step_2}
 Step 2 of the design involves a central process in which the US data structured in JSON files is transformed into transformation rules using the Henshin API. This involves the creation of an Ecore meta-model that represents the structure of the data we are working with, followed by the generation of Henshin transformation rules using RuleCreator class.
 \subsubsection*{Creating Ecore Meta-Model}\label{design_workflow_ecore}
-To be able to create rules in Henshin, an Ecore (meta)-model should be available. Ecore is the core (meta)-model at the heart of the EMF (Eclipse Modelling Framework). It enables the formulation of other models by utilising its constructs.
+To be able to create rules in Henshin, an Ecore (meta)-model should be available. Ecore is the core (meta)-model at the heart of the EMF. It enables the formulation of other models by utilising its constructs.
 
-Accordingly, we create an Ecore meta-model as shown in Figure \ref{fig:design_ecore_meta_model}, which is inspired by the meta-model shown in Figure \ref{fig:conceptual_metamodel} and corresponds to the JSON-objects in the JSON-file as follows:
+Accordingly, we create an Ecore meta-model as shown in Figure \ref{fig:design_ecore_meta_model}, which is inspired by the meta-model shown in Figure \ref{fig:conceptual_metamodel} represented by Mosser et al. and corresponds to the JSON-objects in the JSON-file as follows:
 \begin{itemize}
 	\item \textit{Persona} as a class in the meta-model corresponds to the JSON-object \enquote{Persona} in the JSON-file.
 	\item \textit{Entity} as an abstract class, from which \textit{Primary/Secondary Entity} inherits as a class in the meta-model, corresponds to the JSON-object \enquote{Entity}, which contains two JSON-arrays, namely \enquote{Secondary/Primary Entity} in the JSON-file.
@@ -331,31 +324,29 @@ Accordingly, we create an Ecore meta-model as shown in Figure \ref{fig:design_ec
 	\caption{Ecore meta-model inspired by Mosser et al. \cite{mosser2022modelling}}\label{fig:design_ecore_meta_model}
 \end{figure}
 \subsubsection*{Creating Rules}\label{design_workflow_rule_creator}
-With the identified USs in the the JSON-file, we generate rules with the Henshin package \textit{org.eclipse.emf.henshin.model.compact}, which is responsible for the creation of \textit{transformation rules} and their \textit{classes}, \textit{attributes}, \textit{edges} and annotates them with \textless\emph{Delete}\textgreater, \textless\textit{Create}\textgreater or\textless\textit{Preserve}\textgreater, which are vital for the CDA tool to recognise the redundant pairs.
+With the identified USs in the the JSON-file, we generate rules with the Henshin package \textit{org.eclipse.emf.henshin.model.compact}, which is responsible for the creation of \textit{transformation rules} and their \textit{classes}, \textit{attributes}, and \textit{edges} and annotates them with \textless\emph{Delete}\textgreater, or\textless\textit{Preserve}\textgreater, which are vital for the CDA tool to recognise the redundant pairs.
 
 To generating rules we create a package named \textit{org.henshin.backlog.code.rule} and specially the class \textit{RuleCreator} which used following classes\footnote{https://wiki.eclipse.org/Henshin/Compact\_API}:
 \begin{itemize}
 	\item \textit{org.eclipse.emf.henshin.model.compact.CModule}: CModule class can import elements from an Ecore file to use them in the transformation process responsible for linking the Ecore meta-model to the Henshin-file to be created.
 	\item \textit{org.eclipse.emf.henshin.model.compact.CRule}: Once we have a CModule, we can specify transformation rules with the CRule class and create them.
-	\item \textit{org.eclipse.emf.henshin.model.compact.CNode}: Now that we have a transformation rule, we want to fill this rule with nodes, edges and attributes. To create a node within a transformation rule, we need the CRule class. To create an edge we need to reference two nodes together. The default action when specifying a node, edge or an attributes is the \textless\emph{preserve}\textgreater action. We can also specify a different action when we create a node or an edge, for example \textless\emph{delete}\textgreater or\textless\emph{create}\textgreater.
-	\item org.henshin.backlog.code.rule.RuleCreator: We implement \textit{RuleCreator} class that creates a rule with annotated nodes, edges and attributes based on a JSON-file as input and a Henshin-file containing all rules as output, where each rule and its members(nodes, attributes, edges) correspond to the individual US and their JSON-objects/arrays in the JSON-file. 
+	\item \textit{org.eclipse.emf.henshin.model.compact.CNode}: Now that we have a transformation rule, we want to fill this rule with nodes, edges and attributes. To create a node within a transformation rule, we need the CRule class. To create an edge we need to reference two nodes together. The default action when specifying a node, edge or an attributes is the \textless\emph{preserve}\textgreater action. We can also specify a different action when we create a node or an edge, specially \textless\emph{delete}\textgreater.
+	\item org.henshin.backlog.code.rule.RuleCreator: We implement \textit{RuleCreator} class that creates a rule with annotated nodes, edges and attributes based on a JSON-file as input and a Henshin-file containing all rules as output, where each rule and its members (nodes, attributes, edges) correspond to the individual US and their JSON-objects/arrays in the JSON-file. 
 	
-	The most important design decision of this class is the way nodes, attributes and edges are annotated in order to be able to apply conflict and dependency analysis (CDA) for rules stored as a Henshin file.
+	The most important design decision of this class is the way nodes, attributes and edges are annotated in order to be able to apply CDA in rules stored as a Henshin file.
 	
-	We decided to annotate the \enquote{name} attribute of all Primary/Secondary Actions/Entities and their associated edges including \enquote{targets}, \enquote{triggers} and \enquote{contains} as \textless delete\textgreater  action. 
-	
-	The main goal is to increase the probability of identifying US-pairs characterised by matching names of \textit{action} nodes and \textit{entity} nodes in conjunction with an edge called \textit{targets}. This congruence serves as a basic criterion for identifying potentially redundant US-pairs and simplifies the process of redundancy detection in the context of US analysis.
+	We decided to annotate the \enquote{name} attribute of all Primary/Secondary Actions/Entities and their associated edges including \enquote{targets}, \enquote{triggers} and \enquote{contains} as \textless \texttt{delete}\textgreater  action.	The main goal is to increase the probability of identifying US-pairs characterised by matching names of \textit{action} nodes and \textit{entity} nodes in conjunction with an edge called \textit{targets}. This congruence serves as a basic criterion for identifying potentially redundant US-pairs and simplifies the process of redundancy detection in the context of US analysis.
 \end{itemize}
 \begin{example}
-	Listing \ref{list:design_json_user_story_12} shows the JSON format in relation to user\_story\_12 and Figure \ref{fig:desing_rule_user_story_12} shows the application of the RuleCreator class in this US, which is a transformation rule where the targets and the associated contains relationships are annotated as a \textless Delete\textgreater action and the rest of the nodes and edges are annotated as a \textless Preserve\textgreater action.\\\\
+	Listing \ref{list:design_json_user_story_12} shows the JSON format in relation to user\_story\_12 and Figure \ref{fig:desing_rule_user_story_12} shows the application of the RuleCreator class in this US, which is a transformation rule where the targets and the associated contains relationships are annotated as a \textless delete\textgreater action and the rest of the nodes and edges are annotated as a \textless preserve\textgreater action.\\\\
 	Text of US is:
-	user\_story\_12: "\#G03\# As a Staff member, I want to Assign an Application for Detailed Review, so that I can review the for compliance and subsequently approved or denied."
+	user\_story\_12: "\#G03\# As a Staff member, I want to assign an application for detailed review, so that I can review the for compliance and subsequently approved or denied."
 	%Considering the backlog dataset as shown in Listing \ref{list:backlog_g03}:
 	\begin{MyListing}
 		\paragraph{}
 		\centering
 		\includegraphics[scale=0.8]{Listing/json_user_story_12.png}
-		\caption{JSON entities Related to user\_story\_12}\label{list:design_json_user_story_12}
+		\caption{JSON object related to user\_story\_12}\label{list:design_json_user_story_12}
 	\end{MyListing}
 	\begin{figure}[h]
 		\centering
@@ -365,31 +356,31 @@ To generating rules we create a package named \textit{org.henshin.backlog.code.r
 	As we can see, the "targets" edges and their direct relationships ("triggers" and "contain", if any) are also annotated as \textless delete\textgreater, which is very important to find redundant elements with the CDA tool.
 \end{example}
 \begin{example}
-	Listing \ref{list:design_json_user_story_39} shows the JSON entities related to user\_story\_39 and Figure \ref{fig:design_rule_user_story_39} shows transformation rule generated by RuleCreator class.\\\\
+	Listing \ref{list:design_json_user_story_39} shows the JSON object related to user\_story\_39 and Figure \ref{fig:design_rule_user_story_39} shows transformation rule generated by RuleCreator class.\\\\
 	Text of US is:
-	user\_story\_39: "\#G03\# As a Plan Review Staff member, I want to Review Plans, so that I can review them for compliance and either approve, or fail or deny the plans and record any conditions, clearances, or corrections needed from the Applicant."
+	user\_story\_39: "\#G03\# As a plan Review Staff member, I want to review plans, so that I can review them for compliance and either approve, or fail or deny the plans and record any conditions, clearances, or corrections needed from the applicant."
 	\begin{MyListing}
 		\paragraph{}
 		\centering
 		\includegraphics[scale=0.8]{Listing/json_user_story_39.png}
-		\caption{JSON entities Related to user\_story\_39}\label{list:design_json_user_story_39}
+		\caption{JSON object related to user\_story\_39}\label{list:design_json_user_story_39}
 	\end{MyListing}
 	\begin{figure}[h]
 		\centering
 		\includegraphics[scale=0.43]{rule_user_story_39}
 		\caption{Generated transformation rule related to user\_story\_39 using RuleCreator class}\label{fig:design_rule_user_story_39}
 	\end{figure}
-	Attribute "Plan", as we can see, it appears both in the main part as a primary entity and in the benefit part as a secondary entity, forming the various relationships as targets and contains.
+	Attribute "plan", as we can see, it appears both in the main part as a primary entity and in the benefit part as a secondary entity, forming the various relationships as targets and contains.
 \end{example}
 \begin{example}
-	Listing \ref{list:desing_json_user_story_51} shows the JSON entities related to user\_story\_51 and Figure \ref{fig:desing_rule_user_story_51} shows transformation rule generated by RuleCreator class.\\\\
+	Listing \ref{list:desing_json_user_story_51} shows the JSON object related to user\_story\_51 and Figure \ref{fig:desing_rule_user_story_51} shows transformation rule generated by RuleCreator class.\\\\
 	Text of US is:
-	user\_story\_51: "\#G03\# As an Enforcement Staff member, I want to Issue a Notice of Violation, so that I can provide formal communication to the responsible party."
+	user\_story\_51: "\#G03\# As an Enforcement Staff member, I want to issue a notice of violation, so that I can provide formal communication to the responsible party."
 	\begin{MyListing}
 		\paragraph{}
 		\centering
 		\includegraphics[scale=0.8]{Listing/json_user_story_51.png}
-		\caption{JSON entities Related to user\_story\_51}\label{list:desing_json_user_story_51}
+		\caption{JSON object related to user\_story\_51}\label{list:desing_json_user_story_51}
 	\end{MyListing}
 	\begin{figure}[h]
 		\centering
@@ -398,10 +389,10 @@ To generating rules we create a package named \textit{org.henshin.backlog.code.r
 	\end{figure}
 	Last but not least, we have determined that the secondary entity "responsible party" has neither a target nor a contains relationship. Therefore, it is not annotated as \textless delete\textgreater, but as \textless preserve\textgreater. This is due to the fact that some phrases have been identified as entities in the Doccano tool, but their relationship is not annotated at all, which is problematic for analysing redundancy.
 \end{example}
-\subsubsection*{Step 3: Conflict and Dependency Analysis}\label{step_3}
-After the rules and the corresponding henshin file have been created by the RuleCreator class, we are now able to pass them to the conflict and dependency analysis (CDA) to find potential redundancy pairs.
+\subsubsection*{Step 3: Applying CDA}\label{step_3}
+Now that the rules and the corresponding Henshin file have been created by the RuleCreator class, we can pass them to the CDA to find conflicting rule application overlaps, which we will interpret as potential redundancies.
 
-Since the analysis of conflicts and dependencies related to the \textit{attribute} is not yet considered in the CDA API \footnote{https://wiki.eclipse.org/Henshin/conflict\_and\_Dependency\_Analysis}, we decided to use the user interface (UI) of the CDA extension of Henshin, which supports analysis of conflict and dependencies of rules through the interactive use of CDA.
+Since the analysis related to the \textit{attribute} is not yet considered in the CDA API\footnote{\href[]{https://wiki.eclipse.org/Henshin/conflict\_and\_Dependency\_Analysis}{https://wiki.eclipse.org/Henshin/conflict\_and\_Dependency\_Analysis}}, we decided to use the user interface (UI) of the CDA extension of Henshin, which supports analysis of conflict of rules through the interactive use of CDA.
 
 To apply CDA to Henshin files, we just need to right-click on the Henshin file and select \textit{Henshin} -\textgreater\textit{ conflict and Dependency Analysis} from the context menu as shown in Figure \ref{fig:henshin_context_menu}.
 \begin{figure}[h]
@@ -440,7 +431,7 @@ Figure \ref{fig:cda_report_in_project_dir} shows how the data is saved in the pr
 \end{figure}
 For each conflict reason, there is a \enquote{\textit{minimal-model.ecore}} file, that contains packages in which various conflict elements such as \enquote{attributes} and \enquote{references} (edges) are mapped together and displayed in different packages.
 
-Figure \ref{fig:minimal_model_packages} shows the representation of the conflicting attributes and references. An attribute has the property of changing the value and is represented by an arrow \enquote{-\textgreater}. The attribute from the first rule is separated from the second rule by an underscore, just as with the nodes.
+Figure \ref{fig:minimal_model_packages} shows the representation of the redundant attributes and references. An attribute has the property of changing the value and is represented by an arrow \enquote{-\textgreater}. The attribute from the first rule is separated from the second rule by an underscore, just as with the nodes.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{minimal_model_packages}
@@ -467,7 +458,7 @@ Figure \ref{fig:minimal_model_packages} shows the representation of the conflict
 		\includegraphics[scale=0.5]{minimal_model_packages}
 		\caption{Representation of the redundant elements in each package within \textit{minimal-model.ecore} file}\label{fig:step3_cda_package}
 	\end{figure}
-	For example, the attribute "name" with the value "review" in "Secondary Action" and the attribute "targets" with the value "compliance" in "Secondary Entity" are labelled as redundant (both with a hash symbol). The reference to "targets" is also marked as redundant (with a hash symbol), which means that the reference (targets) from "Secondary Action" to "Secondary Entity" is also redundant between USs, which is a very important criterion for finding redundancy correctly.
+	For example, the attribute "name" with the value "review" in "Secondary Action" and the attribute "targets" with the value "compliance" in "Secondary Entity" are labelled as redundant (both with a hash symbol). The reference to "targets" is also marked as redundant (with a hash symbol), which means that the reference (targets) from "Secondary Action" to "Secondary Entity" is also redundant between USs, which is a very important criterion for finding valid redundant elements.
 \end{example}
 \subsubsection*{Step 4: Report Extraction}\label{step_4}
 To create a lightweight report for the group or individual in question, we need to extract the key information from the CDA report, e.g. redundancy US-pair, redundancy clauses, count of redundancy clauses in each part of the US (main or benefit part), and create a report as a text file with the following information:
@@ -495,7 +486,7 @@ The delineation and checking of redundancy clauses within USs requires a methodi
 \end{itemize}
 This structured and segmented approach ensures precise and efficient identification of redundancy clauses within the USs, optimising the clarity and effectiveness of textual report.
 \begin{example}
-	After the CDA directory for user\_story\_12 and user\_story\_39 is created by CDA tool graphic interface (UI), we pass the location of directory into ReportExtractor class and in order to extracting the important information and save it into the texual report as well as JSON report.
+	After the CDA directory for user\_story\_12 and user\_story\_39 has been created by the CDA tool using the UI, we pass the location of the directory to the ReportExtractor class to extract the important information and store it in the text report and the JSON report.
 	Listing \ref{list:textual_report_sample} illustrates the example of the textual report. In this case, the report only contains one US-pair.
 	\begin{MyListing}
 		\paragraph{}
@@ -518,7 +509,7 @@ For further evaluation purposes and easy export of the report to another platfor
 	
 	\item Text: consisting of two entries, namely "First UserStory" and "Second UserStory", in which the text of the US-pair whose hash symbol has already been applied in redundant phrases is stored.
 	
-	\item Project Number: stores the number of the Project(e.g. "G03").
+	\item Project Number: stores the the Project identifier (e.g. "G03").
 	
 	\item Part of Sentence: consists of the entries "First UserStory" and "Second UserStory", in which the part of the US sentences containing redundant clauses is stored.
 	
@@ -546,7 +537,7 @@ The evaluation process involves a complex logic to determine whether USs are red
 	\item Comparing the individual elements in the arrays for both USs to determine if they fully match (full redundancy) or if they have some common elements (partial redundancy).
 \end{itemize}
 \begin{example}
-	For the two US-pairs of dataset G03, we apply the evaluation class to determine whether there is redundancy in the main or benefit part, and if so, what type of redundancy is recognised(full or partially).\\\\
+	For the two US-pairs of dataset G03, we apply the Evaluation class to determine whether there is redundancy in the main or benefit part, and if so, what type of redundancy is recognised (full or partial).\\\\
 	As shown in Listing \ref{list:json_evaluation}, four entries are added to the JSON report, namely "Main Partially Redundant", "Benefit Part Fully Redundant",
 	"Main Part Fully Redundant", "Benefit Partially Redundant" as "Status" which their value is whether true or false. 
 	\begin{MyListing}
@@ -559,7 +550,7 @@ The evaluation process involves a complex logic to determine whether USs are red
 		
 	\end{MyListing}	
 	
-	In the case of user\_story\_12 and user\_story\_39, the entry "Benefit Partially Redundant" was marked as \textit{true}, which means that US-pair in benefit parts are partially redundant.
+	In the case of user\_story\_12 and user\_story\_39, the entry "Benefit Partially Redundant" was marked as \texttt{true}, which means that US-pair in benefit parts are partially redundant.
 	
 \end{example}
 The class performs these checks by iterating through the JSON arrays of Triggers, Targets and Contains and comparing each element with those in the common sections to determine redundancy.

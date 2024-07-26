@@ -107,7 +107,7 @@ Figure \ref{fig:conflict_cda} shows the conflicts between two rules reported by 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.5]{henshin_conflict_cda_result}
-\caption{Henshin CDA result visualises conflicts and dependencies between user stories}\label{fig:conflict_cda}
+\caption{Henshin CDA result visualises conflicts between USs}\label{fig:conflict_cda}
 \end{figure}
 \end{example}
 
@@ -147,10 +147,13 @@ After invoking the analysis, the rule set and the kind of critical pairs to be a
 %\end{figure}
 
 \subsection*{Conclusion}\label{henshin_groove_conclusion}
-It is notable that Henshin's CDA tool remains agnostic to the specifics of instance graphs. Consequently, model checking in Henshin merely requires the set of rules. In the Henshin approach, instance graphs are not explicitly selected; instead, only rule pairs are analysed.
+%It is notable that Henshin's CDA tool remains agnostic to the specifics of instance graphs. Consequently, model checking in Henshin merely requires the set of rules. In the Henshin approach, instance graphs are not explicitly selected; instead, only rule pairs are analysed.
 
+In our study, Henshin and the CDA tools play an important role in redundancy (and possibly conflict) analysis. They are the only graph transformation based techniques that provide us with comprehensive information about possible redundancies (and conflicts) between the elements of US-pairs.
+
+%It is notable that Henshin's CDA tool remains agnostic to the specifics of instance graphs. Consequently, model checking in Henshin merely requires the set of rules. In the Henshin approach, instance graphs are not explicitly selected; instead, only rule pairs are analysed.
 Since Henshin enables the specification of constraints and conditions within rules, which can be useful for enforcing and verifying US requirements to ensure that constraints are met.
 
-Moreover, a compelling factor in favor of Henshin is the inherent support of a versatile \emph{application programming interface} (API) by the CPA extension, facilitating seamless integration of CPA functionality into various tools, including Java-based platforms.
+Moreover, a compelling factor in favour of Henshin is the inherent support of a versatile \emph{application programming interface} (API), facilitating seamless integration of Henshin functionality into various tools, including Java-based platforms.
 
 
