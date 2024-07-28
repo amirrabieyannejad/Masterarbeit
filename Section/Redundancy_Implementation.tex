@@ -1,7 +1,7 @@
 \subsection{Implementation}\label{redundancy_implementation}
 In this section, we explain the objective and scope of the implementation, the functionality and the programming languages used.
 
-The entire implementation is available in the GitHub repository \footnote{https://github.com/amirrabieyannejad/Redundancy\_Analysis/tree/main}.
+The entire implementation is available in the GitHub repository \footnote{\href{https://github.com/amirrabieyannejad/Redundancy_Analysis/tree/main}{https://github.com/amirrabieyannejad/Redundancy\_Analysis/tree/main}}.
 %\subsubsection*{Objective and Scope}
 %The goal and scope of the work is divided into four phases. Firstly, converting the USs annotated by the CRF tool into graph transformation rules; secondly, using the CDA tool of the Henshin to automatically report redundancies between USs pairwise; thirdly, extracting important information from the CDA report into a text report; fifthly, evaluation of reports. %For further analysis, we stored the information in a JSON file to be able to import the data into another platform such as Excel.
 %Figure \ref{fig:implementation_phases} illustrates the mentioned implementation phases.
@@ -16,9 +16,9 @@ This section explains and introduces tools that are required during the developm
 
 Following approach and tools are necessary in order to develop our workflow:
 \begin{itemize}	
-	\item Java as programming language\footnote{https://www.java.com/de/}: Java is a widely used object-oriented programming language and software platform that is used to implement the Henshin and EMF APIs, which are critical to our approach to utilising them. Therefore, we use Java as our programming language.
+	\item Java as programming language\footnote{\href{https://www.java.com/de/}{https://www.java.com/de/}}: Java is a widely used object-oriented programming language and software platform that is used to implement the Henshin and EMF APIs, which are critical to our approach to utilising them. Therefore, we use Java as our programming language.
 	
-	\item GitHub as version control\footnote{https://github.com/}: GitHub is a developer platform that allows developers to create, store, manage and share their code. It uses Git software, providing the distributed version control of Git plus access control, bug tracking, software feature requests, task management, continuous integration, and wikis for every project.
+	\item GitHub as version control\footnote{\href{https://github.com/}{https://github.com/}}: GitHub is a developer platform that allows developers to create, store, manage and share their code. It uses Git software, providing the distributed version control of Git plus access control, bug tracking, software feature requests, task management, continuous integration, and wikis for every project.
 \end{itemize} 
 \subsubsection*{Implementation Phases}\label{implementation_phases}
 This section contains a step-by-step guide to implementation, starting with the set-up and ending with the final evaluation.
@@ -54,7 +54,7 @@ This section contains a step-by-step guide to implementation, starting with the 
 %	\hrule
 %\end{MyListing}
 \subsubsection*{Creation of Rules}\label{step_creation_of_ruels}
-In this section, we explain the methods we used to convert the US data structured in JSON files into transformation rules using the Henshin API. The process starts with the creation of an Ecore meta model, as explained in Section \ref{design_step_2}, which reflects the structure of the data. The henshin transformation rules are then generated using the RuleCreator class and its methods.
+In this section, we explain the methods we used to convert the US data structured in JSON files into transformation rules using the Henshin API. The process starts with the creation of an Ecore meta model, as explained in Section \ref{design_step_2}, which reflects the structure of the data. The Henshin transformation rules are then generated using the RuleCreator class and its methods.
 %\subsubsection*{Data Structures}
 %The datasets of the backlogs annotated with the CRF tool have the JSON format, the structure of which is very important in the Java classes \textit{RuleCreator} and \textit{ReportExtractor}. Therefore, understanding the JSON format provided is crucial for the further procedure.
 
@@ -91,11 +91,11 @@ In this section, the methods of the RuleCreator class is described as follows:
 	
 	\item processActions: The processActions method is responsible for creating CNode objects that represent actions within the CModule. As parameters, it receives the JSON-object of the actions, the CNode-object representing the persona associated with the actions and the unique identifier of the US. Since the edge triggers only refer to the persona and the primary action, a new CNode is created for each primary action that represents the primary action within the provided CRule, an attribute \enquote{name} is added and an edge is created from the persona node to the primary action with the label \enquote{triggers}. For each secondary action, a new CNode is created to represent the action within the provided CRule and an attribute \enquote{name} is added to the action node.
 	
-	\item checkEntityIsTarget: It receives the name of the entity and the JSON-array with information about target edges. The method iterates through the JSON-array targets, which contains arrays that represent targets edges between actions and entities. It compares the targets entity with the specified entity. If there is a match, it returns true to indicate that the entity is a target.
+	\item checkEntityIsTarget: It receives the name of the entity and the JSON-array with information about targets edges. The method iterates through the JSON-array targets, which contains arrays that represent targets edges between actions and entities. It compares the targets entity with the specified entity. If there is a match, true is returned to indicate that the entity belongs to a targets relation.
 	
-	\item processEntities: It receives as parameters the JSON-object with information about the entities, the CRule object representing the US to which the entities belong and the JSON-array with information about the targets associated with the entities. The method checks whether primary/secondary entities are present, then creates a CNode for each primary/secondary entity and checks whether the entity is present in the target array. If this is the case, its attribute \enquote{name} is annotated for deletion. This method is used within the processContainsEdges method to determine whether an entity involved in a contains relationship is also a target of another entity.
+	\item processEntities: It receives as parameters the JSON-object with information about the entities, the CRule object representing the US to which the entities belong and the JSON-array with information about the targets associated with the entities. The method checks whether primary/secondary entities are present, then creates a CNode for each primary/secondary entity and checks whether the entity is present in the targets array. If this is the case, its attribute \enquote{name} is annotated for deletion. This method is used within the \textit{processContainsEdges} method to determine whether an entity involved in a contains relation is also a targets of another entity.
 	
-	\item processContainsEdges: It receives the JSON-object to be processed, the JSON array with information about contains/target edges and the US identifier as parameters. It first checks whether both entities belong to contains edges. If both entities exist, an edge is created between them in CRule with the name \enquote{contains}. If one of the entities is a target of another entity (as specified in the targets array), the edge is annotated for deletion. If none of the entities is a target, the edge is annotated as \enquote{preserve}.
+	\item processContainsEdges: It receives the JSON-object to be processed, the JSON array with information about contains/targets edges and the US identifier as parameters. It first checks whether both entities belong to contains edges. If both entities exist, an edge is created between them in CRule with the label \enquote{contains}. If one of the entities is a targets of another entity (as specified in the targets array), the edge is annotated as \textit{delete}. If none of the entities is a targets, the edge is annotated as \textit{preserve}.
 	
 \end{itemize}
 Figure \ref{fig:rule_creator_class_diagram} is a class diagram that illustrates the attributes, operations and relationships related to the RuleCreator class.
@@ -159,7 +159,7 @@ Figure \ref{fig:rule_creator_class_diagram} is a class diagram that illustrates 
 %Last but not least, we have determined that the secondary entity "responsible party" has neither a target nor a contains relationship. Therefore, it is not annotated as \textless delete\textgreater, but as \textless preserve\textgreater. This is due to the fact that some phrases have been identified as entities in the CRF tool, but their relationship is not annotated at all, which is problematic for analysing redundancy.
 %\end{example}
 \subsubsection*{Report Extraction}\label{step_report_extraction}
-In order to extracting a textual report associated with a specific backlog, we implement a class called \textit{ReportExtractor} within the package \textit{org.henshin.backlog.code.report}, which include the following classes form the package \textit{org.eclipse.emf.ecore}\footnote{https://download.eclipse.org/modeling/emf/emf/javadoc/2.7.0/org/eclipse/emf/ecore/}. These classes are important for reading the content of minimal-model.ecore:
+In order to extracting a textual report associated with a specific backlog, we implement a class called \textit{ReportExtractor} within the package \textit{org.henshin.backlog.code.report}, which include the following classes from the package \textit{org.eclipse.emf.ecore}\footnote{\href{https://download.eclipse.org/modeling/emf/emf/javadoc/2.7.0/org/eclipse/emf/ecore/}{https://download.eclipse.org/modeling/emf/emf/javadoc/2.7.0/org/eclipse/emf/ecore/}}. These classes are important for reading the content of \textit{minimal-model.ecore}:
 \begin{itemize}
 	
 	\item org.eclipse.emf.ecore.resource.Resource: A resource of an appropriate type is created by a resource factory; a resource set indirectly creates a resource using such a factory. A resource is typically contained by a resource set, along with related resources.
@@ -201,7 +201,7 @@ The following classes were created to represent the extracted model object accor
 	
 	\item Triggers: The EClass specified by \enquote{Persona} as \textit{outgoing edge} and an EAttribute model object as \textit{incoming edge} with \enquote{Primary Action}. The method \textit{getType} retrieve the stored EClass and method \textit{getName} retrieve the stored EAttribute.
 	
-	\item RedundantPair: Stores the identifier of the two USs that were founded as a redundant pair. It also stored the total count of redundancy clauses within the US-pair.
+	\item RedundantPair: Stores the identifier of the two USs that were founded as a redundant pair. It also stored the total count of redundancy clauses of US-pair.
 	
 	\item TargetsPair: Stores effective value of \enquote{\textit{Primary/Secondary Action}} and \enquote{\textit{Primary/Secondary Entity}} in action and entity fields accordingly.
 	
@@ -222,10 +222,10 @@ The class RedundancyItems contains following methods which are important for cla
 	For each pair, it checks whether the specified names and types match either the action or entity in the pair. If a match is found, the method returns \textit{true}, which means that the specified elements are part of a redundant pair.
 	\item printRedundantItems: This method is responsible for creating a report on redundancy items based on the data stored in the class instance. 
 	
-	As input, it takes several parameters, including a "FileWriter" to write to the textual report's file, lists of different pairs of "Targets", "Contains" and "Triggers", and a JSON-object to store the report data in JSON format, which is vital for evaluation.
+	As input, it takes several parameters, including a "FileWriter" to write to the textual report's file, lists of different pairs of "Targets", "Contains" and "Triggers", and a JSON-object to store the report data in JSON format, which is vital for evaluation process.
 \end{itemize}
 \subsubsection*{ReportExtractor Class: Methods related to Extracting Redundancy Items}
-To extract the redundant elements and save them in a redundancyItems object, we must first iterate through all existing \textit{minimal-mode.ecore} files and extract the redundant reduandcy item from each EPackage.
+To extract the redundant elements and save them in a redundancyItems object, we must first iterate through all existing \textit{minimal-mode.ecore} files and extract the redundant item from each EPackage.
 
 Figure \ref{fig:report_extractor_class_diagram} is a class diagram that illustrates the attributes, operations and relationship related to the extraction of redundancy items founded by the CDA tool and their storage in a RedundancyItems object.
 \begin{figure}[h]
@@ -238,13 +238,13 @@ The following methods in the ReprortExtractor class are responsible for extracti
 \begin{itemize}
 	\item extractReports: This method orchestrates the extraction and analysis of created CDA report from a directory containing conflicted US-pairs and their associated reasons(conflict reason), and generates both text and JSON reports for further investigation and processing.
 	
-	It receives two FileWriter objects as input, one for writing textual and one for JSON reports.
+	It receives two fileWriter objects as input, one for writing textual and one for JSON reports.
 	
-	It iterates through each directory in the main directory that represents a conflict pair and uses the \textit{checkIfReportExist} method to make sure that the current US-pair are not already proceeded and the \textit{containsAnd} method to check whether it contains the conjunction \enquote{AND} to make sure that it is the valid US-pair name(\textit{e.g.} "user\_stroy\_12\_AND\_user\_stroy\_39" is a valid directory name).
+	It iterates through each directory in the main directory that represents a conflict pair and uses the \textit{checkIfReportExist} method to make sure that the current US-pair are not already proceeded and the \textit{containsAnd} method to check whether it contains the conjunction \enquote{AND} to make sure that it is the valid US-pair name (\textit{e.g.} "user\_stroy\_12\_AND\_user\_stroy\_39" is a valid directory name).
 	
 	For each valid conflict pair directory, it iterates through the conflict reason directories within the current conflict pair directory and uses the \textit{minimalEcoreExist} method to check whether a \textit{minimal-model.ecore} file exists with reference to a conflict reason.
 	
-	To identify redundancy items, it uses the method \textit{processMinimalModels} and reads the "minimal-model.ecore" file, processes its content and iterates over the contained EPackages in order to process them further with the method \textit{iteratePackages}, which saves all redundancy items in RedundacyItems object.
+	To identify redundancy items, it uses the method \textit{processMinimalModels} and reads the "minimal-model.ecore" file, processes its content and iterates over the contained EPackages in order to process them further with the method \textit{iteratePackages}, which saves all redundancy items in a RedundacyItems object.
 	
 	In addition, the methods \textit{hasEntitys}, \textit{hasActions} and \textit{hasTargets} are used to check whether the identified elements contain "Primary/Secondary actions" and "Primary/Secondary Entities" with common "Targets" reference. If the identified elements fulfil the criteria, the redundancy pair is included in the report.
 	
@@ -264,9 +264,9 @@ The following methods in the ReprortExtractor class are responsible for extracti
 	
 	\item containsAnd: This method ensures that the folder name is identified with "\textit{\_AND\_}", as the report generated by CDA tool is formatted like \enquote{user\_story\_\textless digit \textgreater \_AND\_ user\_story\textless digit \textgreater}. It returns \textit{true} if the examined directory contains \enquote{AND}, otherwise \textit{false} is returned.
 	
-	\item processMinimalModels: This method reads a Minimal Model Ecore file, processes its content and iterates over the contained EPackages in order to process them further with the \textit{iteratePackages} method. 
+	\item processMinimalModels: This method reads a minimal model Ecore file, processes its content and iterates over the contained EPackages in order to process them further with the \textit{iteratePackages} method. 
 	
-	As parameters, it receives a File object that represents examined minimal model ecore file, an array list in which the names of the redundant elements are stored, and a RedundancyItems object that is used to handle redundant elements. 
+	As parameters, it receives a File object that represents examined minimal model Ecore file, an array list in which the names of the redundant elements are stored, and a RedundancyItems object that is used to handle redundant elements. 
 	
 	First, a ResourceSet and a ResourceFactoryRegistry corresponding to the minimal model Ecore file are set up and a Resource object is created from the Ecore file; the \textit{iteratePackages} method is called for each EPackage.
 	
@@ -278,9 +278,9 @@ The following methods in the ReprortExtractor class are responsible for extracti
 	
 	If an attribute is found, the class of the conflicting attribute is determined and added to the corresponding element within RedundancyItems (e.g. Primary/Secondary Action/Entity). 
 	
-	Each EReference is then iterate through in the EClass. Depending on the reference name, the reference is added to the corresponding element within RedundancyItems (e.g. Triggers, Targets, Contains). The method is completed once all EClassifiers within the specified EPackage have been processed.
+	Each EReference is then iterate through the EClass. Depending on the reference name, the reference is added to the corresponding element within RedundancyItems (e.g. Triggers, Targets, Contains). The method is completed once all EClassifiers within the specified EPackage have been processed.
 	
-	\item hasActions: This method is useful for using the data stored in RedundancyItem to determine whether certain actions are present in a list of redundant entries, in order to later check whether the identified elements fulfil the criteria and the redundancy pair is included in the report.
+	\item hasActions: This method is useful for using the data stored in RedundancyItem to determine whether certain actions are present in a list of redundant items, in order to later check whether the identified elements fulfil the criteria and the redundancy pair is included in the report.
 	
 	It checks if there's a match with name of any primary/secondary action stored in the RedundancyItems object. If match is found, it immediately returns \textit{true}.
 	
@@ -296,15 +296,15 @@ The following methods in the ReprortExtractor class are responsible for extracti
 	
 	If a match is found between the elements, the method immediately returns \textit{true}, which means that at least one targets reference is present, in order to later check whether the identified elements fulfil the criteria and the redundancy pair is included in the report.
 	
-	\item readJsonArrayFromFile: This method provides the ability to read JSON data from a file and convert it into a JSONArray object, handling cases where the file is empty or does not exist.
+	\item readJsonArrayFromFile: This method provides the ability to read JSON data from a file and convert it into a JSON array object, handling cases where the file is empty or does not exist.
 	
 	It receives the file path of the JSON file to be read as input. An attempt is made to open the specified file and check whether the file is empty or does not exist. If the file exists and is not empty, it reads the JSON data from the file and creates a JSON array object from the JSON data read from the file and returns the JSON array object with the JSON data.
 	
 	
-	\item getRedundancyStatus: This method add statistics like count of main/benefit/total redundancies into JSON report. It receive as input redundancyItems and as output write the count of main/benefit/total redundancies into JSON report already defined in method highlightRedundancies.
+	\item getRedundancyStatus: This method add statistics like count of main/benefit/total redundancies into JSON report. It receive as input redundancyItems and as output write the count of main/benefit/total redundancies into JSON report already defined in method \textit{highlightRedundancies}.
 \end{itemize}
 \subsubsection*{Methods for Extracting Data from Dataset of Backlog}
-To get information about USs such as text, redundant clauses in targets/contains/triggers references between US-pairs, we need to extract data from the dataset stored in the JSON file.
+To get information about USs such as text, redundant clauses in targets/contains/triggers references between US-pairs, we need to extract data from the primary input dataset.
 %Figure \ref{fig:json_data_extractor_diagram} illustrate the communication between three processes.
 %\begin{figure}[h]
 %\centering 
@@ -316,7 +316,7 @@ The following methods in the ReprortExtractor class are responsible for extracti
 \begin{itemize}
 	\item readJsonArrayFromFile: This method receives a JSON file as input. After reading, the JSON content is tokenised, parsed into a JSON array and the parsed JSON array is returned.
 	
-	\item getUssTexts: This method ensures that the text of the specified US-pair is retrieved from the JSON file and properly assigned to the RedundancyItems object for further processing. It receives a US-pair and RedundancyItems as input. 
+	\item getUSsTexts: This method ensures that the text of the specified US-pair is retrieved from the JSON file and properly assigned to the RedundancyItems object for further processing. It receives a US-pair and RedundancyItems as input. 
 	
 	It reads a JSON array from a file using the \textit{readJsonArrayFromFile} method, iterates over each JSON object in the array and compares the extracted US identifier with the US identifier extracted from the input US-pair. If a match is found, the text of the first and second USs is set in the redundancyItems object.
 	
@@ -351,7 +351,7 @@ The following methods in the ReprortExtractor class are responsible for highligh
 \begin{itemize}
 	\item writeUsText: This method reads the text of examined US-pair, highlights redundant element between them using \textit{highlightRedundancies} method, writes the highlighted text to a file, and records information about the redundant elements. 
 	
-	As input it receive a US-pair, a list of redundant pairs to store redundant pairs in it, an object RedundancyItems containing stored redundancy elements and a FileWriter object used for writing output.
+	As input it receive a US-pair, a list of redundant pairs to store redundant pairs in it, an object redundancyItems containing stored redundancy elements and a fileWriter object used for writing output.
 	
 	It extract the identifier of the two USs from US-pair, retrieves the text of the USs from JSON file and add them to RedundancyItems, invoke the \textit{highlightRedundancies} method to identify and highlight redundants between the USs, it writes the highlighted text of each US to the FileWriter. Finally, sets the redundant pair and count of redundancy clauses.
 	\item highlightRedundancies: This method identifies redundancies between US-pair, applies hash symbols using \textit{applyHashSymbols} method to highlight common items and updates the redundancy counts in the redundancyItems object. 
@@ -373,9 +373,9 @@ The following methods in the ReprortExtractor class are responsible for highligh
 	
 	\item applyHashSymbolPersona: This method identifies common "Triggers" references, marks them with hash symbols and returns the changed text parts together with the count of redundant triggers references. 
 	
-	As input, it receives a list of common triggers between US-pair, RedundancyItems and the parts of the USs. It iterates through the list of common triggers and checks whether both elements(persona and primary action) of the triggers are present in both parts. 
+	As input, it receives a list of common triggers between US-pair, RedundancyItems and the parts of the USs. It iterates through the list of common triggers and checks whether both elements (persona and primary action) of the triggers are present in both parts. 
 	
-	It then increments the redundancy count to keep track of the count of redundant triggers. The output returned, is the text of USs containing the manipulated text parts with hash symbols and the redundancy count in main part.
+	It then increments the redundancy count to keep track of the count of redundant triggers. The output returned, is the text of USs containing the manipulated text parts with hash symbols and the redundancy count the in main parts.
 	
 	\item applyHashSymbolTargets: This method identifies common targets references between two parts of USs, marks them with hash symbols and returns the changed text parts together with the count of redundant targets references.
 	
@@ -383,13 +383,13 @@ The following methods in the ReprortExtractor class are responsible for highligh
 	
 	It iterates through the list of common targets and checks whether both elements (primary/secondary action and primary/secondary entity) of the targets are present. It then increments the redundancy count in examined part of USs to keep track of the count of redundant targets. 
 	
-	The output returned is the text of USs containing the manipulated text parts with hash symbols and the redundancy count in examined part(main or benefit).
+	The output returned is the text of USs containing the manipulated text parts with hash symbols and the redundancy count in examined parts (mains or benefits).
 	
-	\item applyHashSymbolContaians: This method identifies common contains references between two parts of USs, marks them with hash symbols and returns the changed text parts together with the count of redundant contains references. 
+	\item applyHashSymbolContains: This method identifies common contains references between two parts of USs, marks them with hash symbols and returns the changed text parts together with the count of redundant contains references. 
 	
 	As input, it receives a list of common contains between the US-pair, RedundancyItems and the parts of the USs. It iterates through the list of common contains and checks whether both elements of the contains are present in both parts. It then increments the redundancy count to keep track of the count of redundant contains.
 	
-	The output returned is the text of USs containing the manipulated text parts with hash symbols and the redundancy count in examined part(main or benefit).
+	The output returned is the text of USs containing the manipulated text parts with hash symbols and the redundancy count in examined parts (mains or benefits).
 	
 \end{itemize}
 \subsubsection*{Methods related to Report Divided Parts of USs}
@@ -403,15 +403,15 @@ To show which part of the USs with redundancy words occur between a US-pair, we 
 The following methods in the ReprortExtractor class are responsible for splitting and reporting the parts of the USs :
 \begin{itemize}
 	
-	\item splitUsText: This method is used to split the text of two USs into separate sections based on the occurrence of redundancy clauses. 
+	\item splitUSsText: This method is used to split the text of two USs into separate sections based on the occurrence of redundancy clauses. 
 	
 	The input is the text of the first and second US and their corresponding identifiers, a FileWriter for writing to a file and a JSON object for processing JSON data. 
 	
 	It splits each US text into three parts using commas and saves the result in arrays. It iterates over parts of the first and second USs and searches for occurrences of hash symbol pairs. For each part, the number of hash symbol pairs found is counted. Finally, all parts of the records that contain hash symbols are written to a text file and a JSON file as well.
 	
-	\item writeUsSentencePart: This method facilitates the extraction and storage of highlighted USs parts from US-pair in a textual report file for further analysis.
+	\item writeUSsSentenceParts: This method facilitates the extraction and storage of highlighted USs parts from US-pair in a textual report file for further analysis.
 	
-	As input, it receives the US-pair, RedundancyItems and a FileWriter allowing the extracted USs parts to be written. It receives the text of the USs from the reundancyItems object and calls the \textit{splitUsText} method to split the US-pair texts into USs parts with highlighted elements.
+	As input, it receives the US-pair, RedundancyItems and a FileWriter allowing the extracted USs parts to be written. It receives the text of the USs from the redundancyItems object and calls the \textit{splitUsText} method to split the US-pair texts into USs parts with highlighted elements.
 	
 	The extracted USs parts are also written to the text and JSON report files, using the FileWriter for further processing and analysis.
 	
@@ -420,13 +420,13 @@ The following methods in the ReprortExtractor class are responsible for splittin
 		
 		\textit{user\_story\_60:} \#g22\# as an it staff member, I want to \#know\# \#how\# the \#data\# is \#used\#, so that I can determine what kind of basic services and functionalities are required.\\\\
 		\textit{user\_story\_04:} \#g22\# as a data manager, I want to \#know\# \#how\# the \#data\# is \#used\#, so that I can develop more detailed usage and support scenarios with researchers.\\\\
-		The following sentence parts are candidates for possible redundancies between user stories:\\\\
+		The following sentence parts are candidates for possible redundancies between USs:\\\\
 		user\_story\_04:  I want to \#know\# \#how\# the \#data\# is \#used\#\\\\
 		user\_story\_60:  I want to \#know\# \#how\# the \#data\# is \#used\#	
 	\end{example}
 \end{itemize}
 \subsubsection*{Methods related to Creating Table}
-The summary of potential redundancy between US-pairs is presented in a table, which makes it easy to find out which US-pairs have been identified as potentially redundant US-pairs and how many redundancy elements there are in total.
+The summary of potential redundancies between US-pairs is presented in a table, which makes it easy to find out which US-pairs have been identified as potentially redundant US-pairs and how many redundancy elements there are in total.
 %Figure \ref{fig:writeTable_diagram} is a sequence diagram that illustrates the communication between the processes related to creating tables and addition to text reports.
 %\begin{figure}[h]
 %\centering 
@@ -435,9 +435,9 @@ The summary of potential redundancy between US-pairs is presented in a table, wh
 %\end{figure} 
 The following methods in the ReprortExtractor class are responsible for creating a table at the beginning of the text report:
 \begin{itemize}
-	\item writeTable: This method is used to write a table of potential redundancies between USs and the count of their total redundant clauses \textit{createTable} method.%, including the addition of the count of main and benefit redundancy clauses using \textit{createTable} method.
+	\item writeTable: This method is used to write a table of potential redundancies between USs and the count of their total redundant clauses using \textit{createTable} method.%, including the addition of the count of main and benefit redundancy clauses using \textit{createTable} method.
 	
-	As input, it receives a File object into which the table is inserted and a list of redundancy pairs containing information about redundant clauses in US-pars.
+	As input, it receives a File object into which the table is inserted and a list of redundancy pairs containing information about redundant clauses in US-pairs.
 	
 	It reads the existing content of the textual report file into a StringBuilder. It creates a table to display the potential redundancies between USs and the count of total redundancy clauses.
 	
@@ -464,7 +464,7 @@ The following methods in the ReprortExtractor class are responsible for creating
 	If a matching pair is found, the maximum redundancy number stored in this RedundantPair object is returned. If no matching pair is found, \textit{zero} is returned, indicating that there are no redundancies between the examined US-pair.
 \end{itemize}
 \subsubsection*{Report Evaluation}\label{step_report_evaluation}
-The Evaluation class, found in the \textit{org.henshin.backlog.code.evaluation} package, was created to assess redundancy levels in USs based on JSON reports. This class includes methods that evaluate whether two USs are fully or partially redundant, focusing on various application components within these USs.
+The Evaluation class, found in the \textit{org.henshin.backlog.code.evaluation} package, was created to assess redundancy levels in USs based on extracted JSON reports. This class includes methods that evaluate whether two USs are fully or partially redundant, focusing on various application components within these USs.
 
 Figure \ref{fig:evaluation_class_diagram} is a class diagram that illustrates the attributes, operations of the Evaluation class and its relationship to other classes.
 \begin{figure}[h]
@@ -472,7 +472,7 @@ Figure \ref{fig:evaluation_class_diagram} is a class diagram that illustrates th
 	\includegraphics[scale=0.4]{evaluation_class_diagram}
 	\caption{Class diagram related to Evaluation class}\label{fig:evaluation_class_diagram}
 \end{figure} 
-The class offers a detailed mechanism to evaluate redundancy through following methods:
+The class offers a detailed mechanism to evaluate redundancies through following methods:
 \begin{itemize}
 	\item\textit{evaluateRedundancyCriteria}: This method compares elements such as "Triggers", "Targets" and "Contains" in the "Main" and "Benefit" parts of USs. The method checks whether these clauses are fully redundant (i.e. they are identical between USs) or partially redundant (i.e. they share some clauses but are not fully identical).
 	
@@ -490,13 +490,13 @@ The class offers a detailed mechanism to evaluate redundancy through following m
 	
 	Benefit Partially Redundant: A Boolean value that indicates whether the "benefit part" of the USs is partially redundant.
 	
-	\item checkPartialRedundancy: The method processes these arrays to identify partial redundancy by checking whether elements from arrays of elements match elements from another array. 
+	\item checkPartialRedundancy: The method processes these arrays to identify partial redundancies by checking whether elements from arrays of elements match elements from another array. 
 	
 	It receives the two arrays of elements as input, iterates through each element of the first input array and compares each of these elements with all elements in the second input array. A match counter records how often elements from the first input array find a match in the second input array.
 	
-	As output, method returns a Boolean value. True: indicates that there is at least one matching element pair between the two JSON arrays, which means partial redundancy. False: indicates that there are no matching elements, indicating no partial redundancy between these specific parts of the USs.
+	As output, method returns a boolean value. True: indicates that there is at least one matching element pair between the two JSON arrays, which means partial redundancy. False: indicates that there are no matching elements, indicating no partial redundancy between these specific parts of the USs.
 	
-	\begin{example} Assume we have the following JSON arrays for two different USs: \\\\
+	\begin{example} Let's assume we have the following JSON arrays for two different USs: \\\\
 		First JSON array: [["login", "button"], ["help", "link"]]\\
 		Second JSON array:	[["logout", "button"], ["help", "link"]]\\\\
 		The method would determine that the second element of the first array ("help", "link") matches the second element of the second array. As there is at least one match, checkPartialRedundancy would return true, indicating partial redundancy.
@@ -508,7 +508,7 @@ The class offers a detailed mechanism to evaluate redundancy through following m
 	As input it receives the JSON object from which the JSON array needs to be extracted and a key corresponding to the JSON array within the provided JSON object.
 	
 	The method first checks whether the provided key exists in the JSON object. If the key exists, it retrieves the JSON array associated with that key. If the key does not exist, it returns an empty JSON array.
-	\begin{example} Let's assume that a JSON object representing USs details should contain the key for "Benefit Part", which does not exist:\\
+	\begin{example} Let's assume that a JSON object representing US's details should contain the key for "Benefit Part", which does not exist:\\
 		\{\\
 		"Common Targets" : \{\\
 		"Main Part" : [["login","button"],["help","link"]]
@@ -523,7 +523,7 @@ The class offers a detailed mechanism to evaluate redundancy through following m
 \subsubsection*{Error Handling}
 There were erroneous data in datasets that force us to handle them correctly. Therefore, we implement/use the following exceptions to accurately distinguish and handle them.
 
-The following classes, which extend the \textit{Exception} class, are used in the \textit{org.henshin .backlog.code.rule} package and relate to error handling related to the JSON entries in the dataset of the backlogs and to the Ecore meta-model required to create the rules based on it:
+The following classes, which extend the \textit{Exception} class, are used in the \textit{org.henshin .backlog.code.rule} package and concern error handling related to the JSON entries in the dataset of the backlogs and the Ecore meta model required to create the rules based on them:
 \begin{itemize}
 	\item EmptyOrNotExistJsonFile: Is triggered if the JSON file could not be found in the file system.
 	
@@ -545,36 +545,36 @@ The following classes, which extend the \textit{Exception} class, are used in th
 	
 	\item TriggersInJsonFileNotFound: Is triggered if the entry \textit{Triggers} does not exist in the JSON file for a specific US. 
 	
-	\item EcoreFileNotFound: Is triggered if the required ECore meta-model file could not be found and should also be reported.
+	\item EcoreFileNotFound: Is triggered if the required Ecore meta-model file could not be found and should also be reported.
 \end{itemize}
 Within the \textit{org.henshin.backlog.code.report} package, special classes that extend the \textit{Exception} class are designed to solve problems related to the CDA report directory, which encapsulates all US-pairs together with the associated conflict reasons. These classes include:
 \begin{itemize}
 	\item CdaReportDirIsEmpty: This exception is called if the CDA report directory is found but has no content.
-	\item CdaReportDirIsNotADirectory: This exception is thrown in scenarios where the path provided for the CDA report directory is either not a directory (e.g. it is a file) or the specified path does not lead to a directory.
+	\item CdaReportDirIsNotADirectory: This exception is thrown in scenarios where the path provided for the CDA report directory is either not a directory (i.e. it is a file) or the specified path does not lead to a directory.
 	\item CdaReportDirNotFound: This exception is triggered if the CDA report directory cannot be found within the specified path.
 \end{itemize}
 \subsubsection*{Limitations}
-There are technical limitations that are causing us to change our implementation strategy.
+There are technical limitations that are forcing us to change our implementation strategy.
 The following limitations should be clarified at the beginning:
 \begin{itemize}
 	\item Use Eclipse version 2023-03, as Henshin version 4 cannot be installed with the latest version of Eclipse.
 	
 	\item Working with Java as the programming language, as the Henshin and CDA APIs are only available in the Java programming language.
 	
-	\item CDA API is not yet implemented to take into account conflicts and dependencies for attributes that are crucial for our approach. This forces us to use the CDA graphical user interface(GUI) instead of the CDA API.
+	\item CDA API is not yet implemented to take into account conflicts and dependencies for \textit{attributes} that are crucial for our approach. This forces us to use the CDA graphical user interface(GUI) instead of the CDA API.
 	
 	\item Lack of Henshin documentation regarding methods and classes, which makes it time consuming to understand the methods and make the right decision.
 \end{itemize}
 \subsection{Test}\label{redundancy_test}
 In this section, we aim to validate certain functionalities, check the system requirements and ensure reliability and robustness of implemented classes and methods. 
 
-As a test strategy, we perform unit tests with \textit{JUnit} version 4\footnote{https://junit.org/junit4/} as version 4 is more suitable and compatible with Eclipse version 2023-03.
+As a test strategy, we perform unit tests with \textit{JUnit} version 4\footnote{\href{https://junit.org/junit4/}{https://junit.org/junit4/}} as version 4 is more suitable and compatible with Eclipse version 2023-03.
 
-EclEmma\footnote{https://www.eclemma.org/} as a code coverage tool integrated into the Eclipse IDE is used, to ensure thorough testing and coverage. By using EclEmma, we were able to systematically measure the effectiveness of our test suites and determine the test coverage for each individual class.
+EclEmma\footnote{\href{https://www.eclemma.org/}{https://www.eclemma.org/}} as a code coverage tool integrated into the Eclipse IDE is used, to ensure thorough testing and coverage. By using EclEmma, we were able to systematically measure the effectiveness of our test suites and determine the test coverage for each individual class.
 \subsubsection*{Configuration of Test Environment}
-In the main project \textit{org.henshin.backlog}, we create a separate package called \textit{org.henshin. backlog.test}. This package contains two Java classes namely \textit{ReportExtractorTest.java} and \textit{RuleCreator\_Test.java}, each of which corresponds to the Java source codes accordingly.
+In the main project \textit{org.henshin.backlog}, we create a separate package called \textit{org.henshin. backlog.test}. This package contains three Java classes namely \textit{ReportExtractorTest.java}, \textit{RuleCreator\_Test.java}, and \textit{EvaluationTest.java}, each of which corresponds to the Java source codes accordingly.
 \subsubsection*{Scope of Testing}
-The scope of the test depends on the system requirements and the two most important implemented classes \textit{ReportExtractorTest.java}, \textit{RuleCreator\_Test.java},\textit{Evaluation.java} and their methods. The implemented error handling classes are also tested.
+The scope of the test depends on the system requirements and the three most important implemented classes \textit{ReportExtractorTest.java}, \textit{RuleCreator\_Test.java}, \textit{Evaluation.java} and their methods. The implemented error handling classes are also tested.
 \subsubsection*{Test Cases and their Code Coverage}
 We describe the specific test cases that are performed during the tests. Each test case contains a description of the test scenario, the data provided and the expected result. For refining and improving our test cases, we used a code coverage report created by EclEmma in order to increase coverage and ensure a more reliable, error-resistant application.
 
@@ -600,27 +600,28 @@ Table \ref{tb:test_cases_rule_creator} shows the test cases for the RuleCreator.
 	\endhead
 		testAssignCmodule&Assign a dummy ECore model file&Through an exception: \textit{EcoreFileNotFound}&Check whether the ECore model already exists and CModule is correctly assigned\\
 		
-		ActionNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Action} entry&Through an exception:  \textit{ActionInJsonFileNotFound}&Check whether there is an entry \enquote{Action} in the related US in JSON file\\
+		ActionNotExist\newline (testProcessJsonFile)&JSON file with a US without \enquote{Action} entry&Through an exception:  \textit{ActionInJsonFileNotFound}&Check whether there is an entry \enquote{Action} in the related US in JSON file\\
 		
 		
-		EntityNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Entity} entry&Through an exception: \textit{EntityInJsonFileNotFound}&Check whether there is an entry \enquote{Entity} in the related US in JSON file\\
+		EntityNotExist\newline (testProcessJsonFile)&JSON file with a US without \enquote{Entity} entry&Through an exception: \textit{EntityInJsonFileNotFound}&Check whether there is an entry \enquote{Entity} in the related US in JSON file\\
 		
-		PersonaNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Persona} entry&Through an exception: \textit{PersonaInJsonFileNotFound}&Check whether there is an entry \enquote{Persona} in the related US in JSON file\\
+		PersonaNotExist\newline (testProcessJsonFile)&JSON file with a US without \enquote{Persona} entry&Through an exception: \textit{PersonaInJsonFileNotFound}&Check whether there is an entry \enquote{Persona} in the related US in JSON file\\
 		
-		TargetsNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Targets} entry&Through an exception: \textit{TargetsInJsonFileNotFound}&Check whether there is an entry \enquote{Targets} in the related US in JSON file\\
+		TargetsNotExist\newline (testProcessJsonFile)&JSON file with a US without \enquote{Targets} entry&Through an exception: \textit{TargetsInJsonFileNotFound}&Check whether there is an entry \enquote{Targets} in the related US in JSON file\\
 		
-		ContainsNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Contains} entry&Through an exception: \textit{ContainsInJsonFileNotFound}&Check whether there is an entry \enquote{Contains} in the related US in JSON file\\
-		ContainsInTargets (testProcessContainsEdges)&JSON file with a US which the entity in \enquote{Contains} entry also belong to Targets&The entity in Contains should be annotated as \textless Delete\textgreater&Check whether entity in Targets have connection as Contains, if so entity in Contains should also annotated as \textless Delete\textgreater\\
+		ContainsNotExist\newline (testProcessJsonFile)&JSON file with a US without \enquote{Contains} entry&Through an exception: \textit{ContainsInJsonFileNotFound}&Check whether there is an entry \enquote{Contains} in the related US in JSON file\\
 		
-		TriggersNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Triggers} entry &Through an exception: \textit{TriggersInJsonFileNotFound}&Check whether there is an entry \enquote{Triggers} in the related US in JSON file\\
+		ContainsInTargets\newline (testProcessContainsEdges)&JSON file with a US which the entity in \enquote{Targets} entry also serves as containment&The entity in Contains should be annotated as \textless delete\textgreater&Check whether entity in Targets have connection as Contains, if so entity in Contains should also annotated as \textless delete\textgreater\\
 		
-		DuplicateTriggers (testProcessContainsEdges)&JSON file with a US with duplicate Triggers entries&Through an exception:\textit{EdgeWithSameSource AndTarget}&Verify whether there is duplicated entries in Triggers JSON-array\\
+		TriggersNotExist\newline (testProcessJsonFile)&JSON file with a US without \enquote{Triggers} entry &Through an exception: \textit{TriggersInJsonFileNotFound}&Check whether there is an entry \enquote{Triggers} in the related US in JSON file\\
 		
-		TextNotExist (testProcessJsonFile) &JSON file with a US without \enquote{Text} entry&Through an exception: \textit{TextInJsonFileNotFound}&Check whether there is an entry \enquote{Text} in the related US in JSON file\\
+		DuplicateTriggers\newline (testProcessContainsEdges)&JSON file with a US with duplicate Triggers entries&Through an exception: \textit{EdgeWithSameSource AndTarget}&Verify whether there is duplicated entries in Triggers JSON-array\\
 		
-		UsNrNotExist (testProcessJsonFile)&JSON file with a US without \enquote{Us\_Nr} entry&Through an exception: \textit{UsNrInJsonFileNotFound}&Check whether there is an entry \enquote{US\_Nr} in the related US in JSON file\\
+		TextNotExist\newline (testProcessJsonFile) &JSON file with a US without \enquote{Text} entry&Through an exception: \textit{TextInJsonFileNotFound}&Check whether there is an entry \enquote{Text} in the related US in JSON file\\
 		
-		UndefindedEntity \newline(testProcessContainsEdges)&Specify an entity that is not contained as \enquote{Entity} in the JSON file, but appears as \enquote{Contains}&Through an exception:  \textit{EntityInJsonFileNotFound}&Check whether the entity that appears in the \textit{Contains} entry has already been identified as an entity\\
+		UsNrNotExist\newline (testProcessJsonFile)&JSON file with a US without \enquote{Us\_Nr} entry&Through an exception: \textit{UsNrInJsonFileNotFound}&Check whether there is an entry \enquote{US\_Nr} in the related US in JSON file\\
+		
+		UndefindedEntity\newline (testProcessContainsEdges)&Specify an entity that is not contained as \enquote{Entity} in the JSON file, but appears as \enquote{Contains}&Through an exception:  \textit{EntityInJsonFileNotFound}&Check whether the entity that appears in the \textit{Contains} entry has already been identified as an entity\\
 		
 		PrimaryActionNotFound \newline(testProcessTargetsEdges)&Specify a primary action that is not contained as \enquote{Primary Action} in the JSON file, but appears as \enquote{Targets}&Through an exception: \textit{ActionInJsonFileNotFound}&Check whether the primary action that appears in the \textit{Targets} entry has already been identified as a primary action\\
 		
@@ -630,7 +631,7 @@ Table \ref{tb:test_cases_rule_creator} shows the test cases for the RuleCreator.
 		
 		SecondaryEntityNotFound \newline(testProcessTargetsEdges)&Specify a secondary entity that is not contained as \enquote{Secondary Entity} in the JSON file, but appears as \enquote{Targets}&Through an exception: \textit{EntityInJsonFileNotFound.class}&Check whether the secondary entity that appears in the \textit{Targets} entry has already been identified as a secondary entity\\
 		
-		UndefindedEntity (testProcessTargetsEdges) &Specify an entity that is not contained as \enquote{Entity} in the JSON file, but appears as \enquote{Targets}&Through an exception:  \textit{EntityInJsonFileNotFound}&Check whether the entity that appears in the \textit{Targets} entry has already been identified as an entity\\
+		UndefindedEntity\newline (testProcessTargetsEdges) &Specify an entity that is not contained as \enquote{Entity} in the JSON file, but appears as \enquote{Targets}&Through an exception:  \textit{EntityInJsonFileNotFound}&Check whether the entity that appears in the \textit{Targets} entry has already been identified as an entity\\
 		
 		ActionNotFound&Provision of a JSON file that contains actions in \textit{Targets} that are not entered in primary/secondary action&Through an exception:  \textit{EntityInJsonFileNotFound}&Verify whether the action that appear in the \textit{Targets} entry has already been identified as an action\\
 		
@@ -649,8 +650,6 @@ Table \ref{tb:test_cases_rule_creator} shows the test cases for the RuleCreator.
 	%\includegraphics[scale=0.35]{sequence_diagram}
 	\caption{Code coverage related to class RuleCreator}\label{fig:code_coverage_rule_creator}
 \end{figure} 
-
-
 Table \ref{tb:test_cases_report_extractor} shows the test cases for the ReportExtractor.java class and Figure \ref{fig:code_coverage_report_extractor} shows the code coverage.
 
 %\end{figure}
@@ -674,13 +673,13 @@ Table \ref{tb:test_cases_report_extractor} shows the test cases for the ReportEx
 			Test Case &Supplied Data&Expected Outcome&Description\\
 			\hline\hline
 			\endhead
-			testEmptyDirectroy&Assign a dummy directory&Through an exception: \textit{CdaReportDirIsEmpty.class}&Check if CDA Report directory is empty\\
+			testEmptyDirectroy&Assign a dummy directory&Through an exception: \textit{CdaReportDirIsEmpty}&Check if CDA Report directory is empty\\
 			
 			testEmptyJSONFile&Assign an empty JSON dataset file&Through an exception: \textit{EmptyOrNotExistJsonFile}&Check if JSON dataset file is empty\\
 			
-			testCdaDirNotDirectroy&Assign a file instead of CDA directory&Through an exception:\textit{CdaReportDirIsNotA Directory}&Check if assigned path is a directory\\
+			testCdaDirNotADirectroy&Assign a file instead of CDA directory&Through an exception: \textit{CdaReportDirIsNotA Directory}&Check if assigned path is a directory\\
 			
-			testCdaDirectroy&Assign a not readable directory&Through an exception:\textit{CdaReportDir NotFound}&Check whether CDA directory is accessible\\
+			testCdaDirectroy&Assign a not readable directory&Through an exception: \textit{CdaReportDir NotFound}&Check whether CDA directory is accessible\\
 			
 			testFinalReportDir&Assign an empty dataset directory&Return \textit{false} if the assigned directory is empty&Check if directory of datasets are empty\\
 			
@@ -688,11 +687,11 @@ Table \ref{tb:test_cases_report_extractor} shows the test cases for the ReportEx
 			
 			testWriteTable&Provide a CDA report for a US-pair&A table should be created in the report file&Check whether the table for US-pairs has already been created\\
 			
-			completeMajorElements \newline Edge\newline(testExtractReports)&Provision of a CDA report for US-pair with exactly one \enquote{Targets} edge&Inclusion of this US-pair in the text report with the nodes \enquote{Action}, \enquote{Entity} and \enquote{Targets} edge&Verifies \textit{extractReports} method when all major elements are present in the CDA report\\
+			completeMajorElements \newline Edge\newline(testExtractReports)&Provision of a CDA report for US-pair with exactly one redundant \enquote{Targets} clause&Inclusion of this US-pair in the redundancy report with the entries \enquote{Action}, \enquote{Entity} and \enquote{Targets} &Verifies \textit{extractReports} method when all major elements are present in the CDA report\\
 			
-			completeMajorElements\newline Upper Edge\newline(testExtractReports)&Provide a CDA report for a US-pair with at least one \enquote{Targets} edge and redundancy elements such as Triggers&Generated textual report contains information about Secondary Entities, Secondary Actions, Targets, and Triggers&Verifies \textit{extractReports} method when all major elements are present in the CDA report and the upper edge case is reached\\
+			completeMajorElements\newline Upper Edge\newline(testExtractReports)&Provide a CDA report for a US-pair with at least one \enquote{Targets} clause and redundant elements such as Triggers&Generated redundancy report contains information about Secondary Entities, Secondary Actions, Targets, and Triggers&Verifies \textit{extractReports} method when all major elements are present in the CDA report and the up	per edge case is reached\\
 			
-			notCompleteMajor\newline Elements\newline(testExtractReports)&Provide a CDA report for a US-pair without \enquote{Targets} edge, but with action and entity&The US-pair should not reported&Verifies the behavior of the \textit{extractReports} method when not all major elements are present in the input data\\
+			notCompleteMajor\newline Elements\newline(testExtractReports)&Provide a CDA report for a US-pair without \enquote{Targets} edge, but with action and entity&The US-pair should not be reported&Verifies the behaviour of the \textit{extractReports} method when not all major elements are present in the input data\\
 			
 			getBenefitPart\newline RedundanciesElements\newline(testExtractReports)&Provision of a CDA report for a US-pair that only contains redundancy clauses in the \enquote{Benefit} part&Check whether the count of redundancy clauses in the benefit part of the USs matches the value \enquote{Benefit Part Redundancy Clause} specified in the
 			JSON\_Report file&Verifies the behaviour of the \textit{extractReports} method when there are redundancy elements in the benefit part of USs\\
@@ -701,23 +700,23 @@ Table \ref{tb:test_cases_report_extractor} shows the test cases for the ReportEx
 			
 			getTotalRedundancy\newline Elements\newline(testExtractReports)&Provision of a CDA report for a US-pair that contains redundancy clauses in the \enquote{Main}and \enquote{Benefit} parts&Check whether the count of redundancy clauses in the main and benefit parts of the USs matches the value \enquote{Total Redundancy Clause} specified in the JSON\_Report file&Verifies the behaviour of the \textit{extractReports} method when there are redundancy elements in the main and benefit parts of USs\\
 			
-			highlightPersona\newline(testExtractReports)&Providing a CDA report for a US-pair with redundancy clause in \enquote{Triggers}edge (from Persona to Primary Action)&The persona should only be marked with hash symbol if there is a redundant clause in the main part&Checks the behaviour of the \textit{extractReports} method when highlighting redundant persona in USs\\
+			highlightPersona\newline(testExtractReports)&Providing a CDA report for a US-pair with redundancy clauses in \enquote{Triggers} (from Persona to Primary Action) and Targets&The persona should also be marked with hash symbol if there is a redundant targets clause in the main part&Checks the behaviour of the \textit{extractReports} method when highlighting redundant persona in USs\\
 				
-			BenefitInBothUss\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where both USs have the \enquote{benefit} part&Search both the main and the benefit parts of USs and mark redundancy clauses with a hash symbol if they occur&Verifies the behaviour of the \textit{highlightRedundancies} method when both USs have benefit part\\
+			BenefitInBothUSs\newline(testHlightRedundancies)&Provision of a CDA report for a US-pair where both USs have the \enquote{benefit} part&Search both the main and the benefit parts of USs and mark redundancy clauses with a hash symbol if they occur&Verifies the behaviour of the \textit{highlightRedundancies} method when both USs have benefit parts\\
 			
-			noBenefitInBothUss\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where both USs do not have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when both USs don't have benefit part\\
+			noBenefitInBothUSs\newline(testHlightRedundancies)&Provision of a CDA report for a US-pair where both USs do not have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when both USs don't have benefit parts\\
 			
-			noBenefitInUs1\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where only the second US have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when only the second US have benefit part\\
+			noBenefitInUS1\newline(testHlightRedundancies)&Provision of a CDA report for a US-pair where only the second US have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when only the second US have benefit part\\
 			
-			noBenefitInUs2\newline(testhigHlightRedundancies)&Provision of a CDA report for a US-pair where only the first US have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when only the first US have benefit part\\
+			noBenefitInUS2\newline(testHlightRedundancies)&Provision of a CDA report for a US-pair where only the first US have the \enquote{benefit} part&Search only the main part of USs and mark redundancy clauses with a hash symbol&Verifies the behaviour of the \textit{highlightRedundancies} method when only the first US have benefit part\\
 			
 			ContainInBenefitPart\newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses of \enquote{Contains} within \enquote{Benefit} part&The entities included in Contains should be marked with hash symbol&Checks the behaviour of the \textit{highlightRedundancies} method when highlighting redundant entities included in the Contains\\
 			
-			ContainInMainPart\newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses of \enquote{Contains} within \enquote{Main} part&The entities included in Contains should be marked with hash symbol&Checks the behaviour of the \textit{highlightRedundancies} method when highlighting redundant entities included in the Contains\\
+			ContainInMainPart\newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses of \enquote{Contains} within \enquote{Main} part&The entities included in Contains should be marked with hash symbol&Checks the behaviour of the \textit{highlightRedundancies} method when redundant entities detected in the Contains\\
 			
-			TargetsInMainPart \newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses with more than one \enquote{Targets} within the \enquote{Main} part&Founded redundancy clauses should also be marked with a hash symbol, if the main part contains more than one redundancy clause as Targets&Check the behaviour of the \textit{highlightRedundancies} method if there is more than one redundancy clause as Targets in main part\\
+			TargetsInMainPart \newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses with more than one \enquote{Targets} within the \enquote{Main} part&Founded redundancy clauses should also be marked with a hash symbol, if the main part contains more than one redundancy clause as Targets&Check the behaviour of the \textit{highlightRedundancies} method if there are more than one redundancy clause as Targets in main part\\
 			
-			TargetsInBenefitPart \newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses with more than one \enquote{Targets} within the \enquote{Benefit} part&Founded redundancy clauses should also be marked with a hash symbol, if the benefit part contains more than one redundancy clause as Targets&Check the behaviour of the \textit{highlightRedundancies} method if there is more than one redundancy clause as Targets in benefit part\\
+			TargetsInBenefitPart \newline(testHighlightRedundancies)&Provide a CDA report for a US-pair with redundancy clauses with more than one \enquote{Targets} within the \enquote{Benefit} part&Founded redundancy clauses should also be marked with a hash symbol, if the benefit part contains more than one redundancy clause as Targets&Check the behaviour of the \textit{highlightRedundancies} method if there are more than one redundancy clause as Targets in benefit part\\
 			
 			
 			\hline
@@ -755,17 +754,17 @@ Table \ref{tb:test_cases_evaluation} shows the test cases for the Evaluation.jav
 	\hline\hline
 	\endhead
 	
-	testEmptyOrNotExist JsonFile&Provision of a dummy JSON file&Through an exception:\textit{EmptyOrNotExist JsonFile}&Check whether the provided JSON file already exists and is not empty\\
+	testEmptyOrNotExist JsonFile&Provision of a dummy JSON file&Through an exception: \textit{EmptyOrNotExist JsonFile}&Check whether the provided JSON file already exists and is not empty\\
 	
-	testJsonFile&Provision of a JSON file which is not accessible&Through an exception:\textit{IOException}&Check whether the provided JSON file is accessible\\
+	testJsonFile&Provision of a JSON file which is not accessible&Through an exception: \textit{IOException}&Check whether the provided JSON file is accessible\\
 	
-	main/benefitFull\_Case1&Provide a JSON file with US-pair that have no common textit{Contains} entries but have common \textit{Targets} entries in main/benefit part&In JSON report the entry "Main/Benefit Part Fully Redundant" should be \textit{true}&Check whether US-pair without \textit{Contains} entries can also be fully redundant in main/benefit part\\
+	main/benefitFull\_Case1&Provide a JSON file with US-pair that have no common \textit{Contains} entries but have common \textit{Targets} entries in main/benefit parts&In JSON report the entry "Main/Benefit Part Fully Redundant" should be \textit{true}&Check whether US-pair without \textit{Contains} entries can also be fully redundant in main/benefit parts\\
 	
-	main/benefitFull\_Case2&Provide a JSON file with US-pair that have not common textit{Contains} entries but one US has entries as Contains in main/benefit&In JSON report the entry "Main/Benefit Part Fully Redundant" should be \textit{true}&Check whether US-pair without common \textit{Contains} entries can also be fully redundant in main/benefit part\\
+	main/benefitFull\_Case2&Provide a JSON file with US-pair that have not common \textit{Contains} entries but one US has entries as Contains in main/benefit&In JSON report the entry "Main/Benefit Part Fully Redundant" should be \textit{true}&Check whether US-pair without common \textit{Contains} entries can also be fully redundant in main/benefit parts\\
 	
-	main/benefitFull\_Case3&Provide a JSON file with US-pair that have common textit{Contains} entries but one US have additional entries as Contains in main/benefit part&In JSON report the entry "Main/Benefit Part Fully Redundant" should be \textit{true}&Check whether USs with additional \textit{Contains} entries from common contains can also be fully redundant in main/benefit part\\
+	main/benefitFull\_Case3&Provide a JSON file with US-pair that have common \textit{Contains} entries but one US have additional entries as Contains in main/benefit parts&In JSON report the entry "Main/Benefit Part Fully Redundant" should be \textit{true}&Check whether USs with additional \textit{Contains} entries from common contains can also be fully redundant in main/benefit parts\\
 		
-	main/benefitFull\_Case4&Provide a JSON file with US-pair that have exactly common textit{Contains} entries as well as common \textit{Targets} in main/benefit part&In JSON report the entry "Main/Benefit Part Fully Redundant" should be \textit{true}&Check whether USs with \textit{Contains} and \textit{Targets} entries can also be fully redundant in main/benefit part\\
+	main/benefitFull\_Case4&Provide a JSON file with US-pair that have exactly common \textit{Contains} entries as well as common \textit{Targets} in main/benefit parts&In JSON report the entry "Main/Benefit Part Fully Redundant" should be \textit{true}&Check whether USs with \textit{Contains} and \textit{Targets} entries can also be fully redundant in main/benefit parts\\
 	
 	mainBenefitFull&Provide a JSON file with US-pair that all clauses in the main and benefit parts are identical&The JSON report the entries "Main Part Fully Redundant" and "Benefit Part Fully Redundant" should be \textit{true}&Check that all clauses in the main and benefit part are identical, main and benefit part are evaluated as fully redundant\\
 	
@@ -773,11 +772,11 @@ Table \ref{tb:test_cases_evaluation} shows the test cases for the Evaluation.jav
 	
 	mainPartial\_Case2&Provide a JSON file with a US-pair whose entries in \textit{Contains} are partially identical&In the JSON report, the entry "Main Part Partially Redundant" should be \textit{true}&Check whether USs with partially redundant entries in \textit{Contains} are evaluated as partially redundant\\
 	
-	benefitParial&Provide a JSON file with US-pair where only some clauses in \textit{Targets} and \textit{Contains} entries are common&In the JSON report, the entry "Benefit Part Partially Redundant" should be \textit{true}&Check whether USs with partially common \textit{Targets} and \textit{Contains} entries are evaluated as partially redundant\\
+	benefitParial&Provide a JSON file with US-pair where only some clauses in \textit{Targets} and \textit{Contains} entries in benefit parts are common&In the JSON report, the entry "Benefit Part Partially Redundant" should be \textit{true}&Check whether USs with partially common \textit{Targets} and \textit{Contains} entries in benefit parts are evaluated as partially redundant\\
 	
-	mainFullBenefitPartial&Provide a JSON file with US-pair where all clauses in the main part and some in the benefit part are identical&In the JSON report, the entry "Main Part Fully Redundant" and "Benefit Part Partially Redundant" should be \textit{true}&Check whether the main part is evaluated as fully redundant if all clauses are identical and the benefit part is evaluated as partially redundant if some clauses are identical\\
+	mainFullBenefitPartial&Provide a JSON file with US-pair where all clauses in the main parts and some in the benefit parts are identical&In the JSON report, the entry "Main Part Fully Redundant" and "Benefit Part Partially Redundant" should be \textit{true}&Check whether the main parts are evaluated as fully redundant if all clauses are identical and the benefit parts are evaluated as partially redundant if some clauses are identical\\
 	
-	mainPartialBenefitFull&Provide a JSON file with US-pair where some clauses in the main part and all in the benefit part are identical&In the JSON report, the entry "Main Part Partially Redundant" and "Benefit Part Fully Redundant" should be \textit{true}&Check whether the main part is evaluated as partially redundant if some clauses are identical and the benefit part is evaluated as fully redundant if all clauses are identical\\
+	mainPartialBenefitFull&Provide a JSON file with US-pair where some clauses in the main parts and all in the benefit parts are identical&In the JSON report, the entry "Main Part Partially Redundant" and "Benefit Part Fully Redundant" should be \textit{true}&Check whether the main parts are evaluated as partially redundant if some clauses are identical and the benefit parts are evaluated as fully redundant if all clauses are identical\\
 	
 	\hline
 	\caption{Test cases for Evaluation  class}\label{tb:test_cases_evaluation}
