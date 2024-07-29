@@ -11,6 +11,5 @@
  "relations":[
   {"id": ...,"from_id": ...,"to_id": ...,"type":"triggers"},
   {"id": ...,"from_id": ...,"to_id": ...,"type":"targets"},
-  {"id": ...,"from_id": ...,"to_id": ...,"type":"contains"}
- ]
+  {"id": ...,"from_id": ...,"to_id": ...,"type":"contains"}]
 }

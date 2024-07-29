@@ -64,7 +64,7 @@ To address the redundancy detection requirements specified in Section \ref{redun
 
 Subsequently, these rules serve as inputs for the Henshin Conflict and Dependency Analysis (CDA) tool \cite{mens2007analysing}, which automates the identification of potentially redundant US pairs. The output from the CDA tool is then utilized to create a report that compiles information on these potentially redundant pairs. This report, in turn, becomes the input for the evaluation process, which outputs statistical data concerning redundancy among USs.
 
-Figure \ref{fig:operational_flow} illustrates how each step in this sequence is interconnected, with the output of one step feeding directly into the next. This diagram effectively demonstrates the toolchain and process workflow, highlighting how each tool transforms artefacts and contributes to the overall objective of redundancy detection.
+Figure \ref{fig:operational_flow} illustrates how each step in this workflow is interconnected, with the output of one step feeding directly into the next. This diagram effectively demonstrates the toolchain and process workflow, highlighting how each tool transforms artefacts and contributes to the overall objective of redundancy detection.
 \begin{figure}[h]
 	\centering 
 	\includegraphics[scale=0.4]{operational_flow}
@@ -94,7 +94,7 @@ The evaluation process involves a detailed examination of relations such as trig
 \subsubsection*{Software Architecture}\label{architectur}
 In this section, we present the basic structures of our workflow and the discipline of creating such structures. Each structure comprises software elements, relations among them, and properties of both.
 \begin{itemize}
-	\item Annotated USs with Doccano Tool\footnote{https://github.com/doccano/doccano}: Mosser et al. used publicly available requirements from Dalpiaz et al.\cite{Dalpiaz2018} consisting of 22 product backlogs and 1,679 USs. The dataset is a raw archive of 22 text files, each containing one US per line. As there were no public expert-based annotations, Mosser et al. annotated the dataset using the Doccano tool for \textit{Named Entity Recognition} (NER). Based on their metamodel of the domain, they have labelled the elements of USs as persona, action, entity, benefit part and relationships such as triggers, targets and contains \cite{mosser2022modelling}.
+	\item Annotated USs with Doccano Tool\footnote{https://github.com/doccano/doccano}: Mosser et al. used publicly available requirements from Dalpiaz et al.\cite{Dalpiaz2018} consisting of 22 product backlogs and 1,679 USs. The dataset is a raw archive of 22 text files, each containing one US per line. As there were no public expert-based annotations, Mosser et al. annotated the datasets using the Doccano tool for \textit{Named Entity Recognition} (NER). Based on their meta-model of the domain, they have labelled the elements of USs as persona, action, entity, benefit part and relationships such as triggers, targets and contains \cite{mosser2022modelling}.
 	
 	%Mooser et al. have linked each \emph{Persona} to each \emph{Primary Action} as \emph{Trigger} relationships, each \emph{Primary Actions} to each \emph{Primary Entity} as \emph{Target} relationships and each \emph{Primary/Secondary Entity} to each \emph{Primary/Secondary Entity} implying a \emph{Contains} relationship\cite{arulmohan2023extracting}.
 	
