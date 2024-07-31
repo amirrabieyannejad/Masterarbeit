@@ -1,5 +1,4 @@
-[
-	{   "US_Nr": "user_story_13", "Benefit": {...}, 
+[	{   "US_Nr": "user_story_13", "Benefit": {...}, 
 		"US_ID": "user_story_327", "Text": "..., "PID": "#G03#",
 		"Main": {"Entity": ["Hold"], "Action": ["Apply"],
             "Persona": ["Staff member"], "Contains": [],
@@ -8,11 +7,8 @@
             "Targets": [["Apply","Hold"]],
             "Action Annotations": {"Target Action Annotations": [
 			["apply", "hold", "create;preserve"]],
-                "Contain Action Annotations": []
-            }},
-        "Mix": {}
-	},
-		{"US_Nr": "user_story_14", "Benefit": {...},
+                "Contain Action Annotations": [] }}
+	},	{"US_Nr": "user_story_14", "Benefit": {...},
         "US_ID": "user_story_328", "Text": "...", "PID": "#G03#",
 		"Main": {"Entity": ["Hold"], "Action": ["Remove"],
             "Persona": ["Staff member"], "Contains": [],
@@ -21,8 +17,4 @@
             "Targets": [["Remove","Hold"]],
             "Action Annotations": {"Target Action Annotations": [
 			["remove","hold","delete"]],
-                "Contain Action Annotations": []
-			}},
-        "Mix": {}
-    }
-]
+                "Contain Action Annotations": [] }}

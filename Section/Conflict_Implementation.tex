@@ -1,150 +1,153 @@
 \subsection{Implementation}\label{conflict_implementation}
 In this section, we explain the objective and scope of the implementation, the functionality and the programming languages used.
 
-The entire implementation is available in the GitHub repository \footnote{https://github.com/amirrabieyannejad/conflict\_analysis\_between\_USs/tree/main}.
+The entire implementation is available in the GitHub repository \footnote{\href{https://github.com/amirrabieyannejad/conflict\_analysis\_between\_USs/tree/main}{https://github.com/amirrabieyannejad/conflict\_analysis\_between\_USs/tree/main}}.
 \subsubsection*{Methodology}
 This section explains and introduces tools that are required during the development process.
 
 Following approach and tools are necessary in order to develop our workflow:
 \begin{itemize}	
-	\item Java as programming language\footnote{https://www.java.com/de/}: Java is a widely used object-oriented programming language.
+	\item Java as programming language\footnote{\href{https://www.java.com/de/}{https://www.java.com/de/}}: Java is a widely used object-oriented programming language. We choose Java because we want to (partially) reuse the implemented classes in the redundancies analysis.
 	
-	\item GitHub as version control\footnote{https://github.com/}: GitHub is a developer platform that allows developers to create, store, manage and share their code. It uses Git software, providing the distributed version control of Git plus access control, bug tracking, software feature requests, task management, continuous integration, and wikis for every project.
+	\item GitHub as version control\footnote{\href{https://github.com/}{https://github.com/}}: GitHub is a developer platform that allows developers to create, store, manage and share their code. It uses Git software, providing the distributed version control of Git plus access control, bug tracking, software feature requests, task management, continuous integration, and wikis for every project.
+	
+	\item Python\footnote{\href{https://www.python.org/}{https://www.python.org/}} for scripting: In situations where a small task needed to be completed in a one-time step, we found Python much more practical.
+	
 \end{itemize} 
 \subsubsection*{Implementation Phases}\label{conflict_phases}
 This section contains a step-by-step guide to implementation, starting with the set-up and ending with the extracting report.
 
-Following steps implies the classes and methods related to org.backlogconflict.code.preparation:
+Following steps implies the classes and methods related to \textit{org.backlogconflict.code. preparation}:
 \subsubsection*{Extracting Parts of USs from the Input Dataset}\label{conflict_step_json_transformer}
-In this section, we explain the methods we used to convert the US data structured in JSON files into a custom US data structure that splits the elements such as Entity, Action, Contain, Target in terms of their occurrence in the main and benefit part. 
+In this section, we explain the methods we used to convert the original JSON format into a custom format that splits the elements such as entity, action, contains, targets in terms of their occurrence in the main and benefit parts. 
 \subsubsection*{Methods of the USPartExtractor Class}
-In this section, the methods of the USPartExtractor class is described as follows:
+The methods of the USPartExtractor class is described as follows:
 \begin{itemize}
 	
-	\item getStringFromOffset: This method was designed to extract a substring from a given main text of US based on the start and end offsets.
+	\item getStringFromOffset: This method was designed to extract a substring from a given text of US based on the start and end offsets.
 	
-	As input it receives the text of US, a start offset and an end offset as an integer and as output it extracts the part of the text of US that starts at "start offset" and ends just before "end offset".
+	As input it receives the text of US, a start offset and an end offset as an integer and as output it extracts the part of the text of US that starts at "start offset" and ends at "end offset".
 	
-	\item runUSPartExtractor: This method processes multiple datasets by reading JSON lines from input files, transforming each JSON object, and then writing the transformed JSON objects to output files.
+	\item runUSPartExtractor: This method processes multiple datasets by reading JSON lines from input files, transforming each JSON-object, and then writing the transformed JSON-objects to output files.
 	
 	As input it receives:
 	\begin{itemize}
-		\item An array of dataset names: each name in the array corresponds to a specific dataset that is processed
+		\item An array of dataset names: Each name in the array corresponds to a specific dataset that is processed.
 		
-		\item The base directory path in which the dataset files are located. This path is used to construct the full file paths for reading inputs and writing outputs.
+		\item The base directory path: Which the dataset files are located. This path is used to construct the absolute file paths for reading inputs and writing outputs.
 	\end{itemize}	
 	It iterates through each dataset name in the "dataSets" array and constructs the paths of the input and output file based on the dataset name of the "filePath".
 	
 	It also reads all lines from the input file and passes them to the \texttt{transformJson} method for the transformation process. Finally, it writes the result to the output file.
 	
-	\item transformJson: This method is the main component of the USPartExtractor class. It processes a JSON object that represents a US, extracts and categorises its entities and relationships according to their occurrence in the main or benefit part of the US text and assigns this information in a new JSON structure.
+	\item transformJson: This method is the main component of the USPartExtractor class. It processes a JSON-object that represents a US, extracts and categorises its entities and relations according to their occurrence in the main or benefit part of the US-text and assigns this information in a new JSON format.
 	
-	As input it receive the original JSON object containing information about a US, including text, entities, and relations.
+	As input it receive the original JSON-object containing information about a US, including text, entities, and relations.
 	
 	In this method following steps were carried out:
 	\begin{itemize}
-		\item It initialize a JSON object to hold the transformation data and extract the basic information like "Text" and "ID" of US as well as "PID"(project ID)
+		\item It initialise a JSON-object to hold the transformation data and extract the basic information like "Text" and "ID" of US as well as "PID" (project ID)
 		
-		\item It initialises two JSON objects, namely \texttt{Main} and \texttt{Benefit}, and specifies the elements and their relationships accordingly.
+		\item It initialises two JSON-objects, namely "Main" and "Benefit", and specifies the elements and their relations accordingly.
 		
-		\item It initialises JSON arrays for various elements such as "Persona", "Entity", "Action" and splits them based on the start and end offsets of the benefit part into "Main" or "Benefit" JSON object.
+		\item It initialises JSON-arrays for various elements such as "Persona", "Entity", "Action" and splits them based on the start and end offsets of the benefit part into "Main" or "Benefit" JSON-object.
 		
-		If the end offset of an element is smaller than the start offset of the benefit string, it is considered to be an element of the main part, otherwise it is considered to be an element of the benefit part.
+		If the end offset of an element is smaller than the start offset of the benefit substring, it is considered to be an element of the main part, otherwise it is considered to be an element of the benefit part.
 		
-		\item Iterates through each relation and determines the elements involved. If both elements belong to the main part, a relation is initialised in the "Main" JSON object according to their category (Triggers, Targets, or Contains). 
+		\item Iterates through each relation and determines the elements involved. If both elements belong to the main part, a relation is initialised in the "Main" JSON-object according to their category (Triggers, Targets, or Contains). 
 		
-		If both elements belong to the benefit part, a relation is initialised in the "Benefit" JSON object according to their category (Triggers, Targets, or Contains). 
+		If both elements belong to the benefit part, a relation is initialised in the "Benefit" JSON-object according to their category (Triggers, Targets, or Contains). 
 		
-		If elements belong to different parts of US, the relation is initialised in a \texttt{Mix} JSON object.
+		If elements belong to different parts of US, the relation is initialised in a Mix JSON-object.
 		
 	\end{itemize}
-	As output a JSON object containing the transformed data will be returned.
+	As output a JSON-object containing the transformed data will be returned.
 \end{itemize}
-\subsubsection*{Addition of Action Annotations into Dataset}\label{conflict_action_annotation}
-In this section, we explain the classes and their methods that we used to retrieve action annotations associated with the verb from the action annotation database using \textit{VerbFinder} class. Finally, we insert the retrieved action annotations into the JSON structure of the US using \textit{ActionsAnnotationsCreator} class.
+\subsubsection*{Addition of Action-Annotations into Datasets}\label{conflict_action_annotation}
+Now, we explain the classes and their methods that we used to retrieve action-annotation/s associated with the verb from the action-annotation reference database using \texttt{VerbFinder} class. Finally, we insert the retrieved action-annotations into the JSON format of the US using \texttt{ActionsAnnotationsCreator} class.
 \subsubsection*{Methods of the VerbFinder Class}
-In this section, the methods of the VerbFinder class is described as follows:
+The methods of the VerbFinder class is described as follows:
 \begin{itemize}	
-	\item loadCSV: This method reads a CSV file with verb and action annotation pairs, processes each line and fills a map with these pairs so that when the VerbFinder class is initialised, a map with verb and action annotation pairs is available to retrieve the action annotations as needed.
+	\item loadCSV: This method reads a CSV file consisting of pairs of verbs and action-annotations, processes each line and fills a map with these pairs so that when the VerbFinder class is initialised, a map with pairs of verbs and action-annotations is available to retrieve the action-annotations when needed.
 	
 	It receives a file path of the CSV file to be read as input. The method does not return a value directly.
 	
-	\item getActionAnnotations: This method retrieves the action annotations associated with a specific verb from a pre- populated map (verbMap).
+	\item getActionAnnotations: This method retrieves the action-annotations associated with a specific verb from a pre-populated map namely \textit{verbMap}.
 	
-	As input, it receives a verb as a string for which the action annotations are to be retrieved.
+	As input, it receives a verb as a String for which the action-annotations are to be retrieved.
 	
-	The method then accesses the verbMap and uses the verb provided as a key.
+	The method then accesses the verbMap and uses the verb provided as a \textit{key}.
 	
-	As output, it receives the corresponding action annotation from the map. If the verb is not available in the verbMap, the method returns \texttt{null}.
+	As output, it receives the corresponding action-annotation from the verbMap. If the verb is not available in the verbMap, the method returns \textit{null}.
 	
 \end{itemize}
 \subsubsection*{Methods of the ActionsAnnotationsCreator Class}
-In this section, the methods of the ActionsAnnotationsCreator class is described as follows:
+The methods of the ActionsAnnotationsCreator class is described as follows:
 \begin{itemize}	
-	\item addActionsAnnotations: This method reads JSON files for each dataset, initialize the VerbFinder with provided file path, adds action annotations to each JSON object correspond to specific US within these files, and saves the modified JSON objects back to the files.
+	\item addActionsAnnotations: This method reads JSON files for each dataset, initialise the VerbFinder with provided file path, adds action-annotations to each JSON-object correspond to specific US within these files, and saves the modified JSON-objects back to the files.
 	
 	As input it receives:
 	\begin{itemize}
-		\item An array of dataset names which each name corresponds not only to a subdirectory containing a JSON file to be processed, but also to the file name. 
+		\item An array of dataset names: Which each name corresponds not only to a subdirectory containing a JSON file to be processed, but also to the file name.
 		
-		\item The base directory path in which the dataset files are located. This path is used to construct the full file paths for reading inputs and writing outputs.
+		\item The base directory path: In which the dataset files are located. This path is used to construct the absolute file paths for reading inputs and writing outputs.
 		
-		\item The base directory path where the CSV file is located. This path is used to build the full file paths for reading the database with the action annotations to initialise the map(verbMap).
+		\item The base directory path: Where the CSV file is located. This path is used to build the absolute file paths for reading the reference database with the action-annotations to initialise the verbMap.
 	\end{itemize}
 	
-	The method does not return any value. Instead, it modifies the JSON files in place by adding action annotations to each JSON object related to specific US in the file.
+	The method does not return any value. Instead, it modifies the JSON files in place by adding action-annotations to each JSON-object related to specific US.
 	
-	\item addActionAnnotations: This method processes a JSON object that corresponds to a US in order to add action annotations to the "Targets" and "Contains" relationships within the "Main" part of the US in JSON object.
+	\item addActionAnnotations: This method processes a JSON-object that corresponds to a US in order to add action-annotations to the "Targets" and "Contains" relationships within the "Main" part of the US in JSON-object.
 	
-	As input, it receive a JSON object representing a US with nested structures for "Main" and "Benefit" part, each containing "Targets", "Contains" arrays.
+	As input, it receive a JSON-object representing a US with nested structures for "Main" and "Benefit" part, each containing "Targets", "Contains" arrays.
 	
-	The method modifies the JSON object by adding the action annotations to the "Targets" and "Contains" relations within the "Main" part.
+	The method modifies the JSON-object by adding the action-annotations to the "Targets" and "Contains" relations within the "Main" part.
 		
-	\item findActionsAnnotations: This method retrieves the action annotation associated with a given verb. This method act as a utility for mapping verbs to their corresponding action annotations using the instance VerbFinder class.
+	\item findActionsAnnotations: This method retrieves the action-annotation associated with a given verb. This method act as a utility for mapping verbs to their corresponding action-annotations using the instance VerbFinder class.
 	
-	As input, it takes the verb for which the action annotation is to be found. The output returned is a String containing the action annotations for the verb provided.	
+	As input, it takes the verb for which the action-annotation is to be found. The output returned is a String containing the action-annotations for the verb provided.	
 \end{itemize}
 
-Figure \ref{fig:conflict_prepration_package_class_diagram} is a class diagram that illustrates the attributes, operations and relationships related to the org.backlogconflict.code.preparation package.
+Figure \ref{fig:conflict_prepration_package_class_diagram} is a class diagram that illustrates the attributes, operations and relationships related to the \textit{org.backlogconflict.code.preparation} package.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.3]{conflict_prepration_package_class_diagram}
-	\caption{Class diagram of the org.backlogconflict.code.preparation class and its relationships}\label{fig:conflict_prepration_package_class_diagram}
+	\caption{Class diagram of the \textit{org.backlogconflict.code.preparation} class and its relationships}\label{fig:conflict_prepration_package_class_diagram}
 \end{figure}
-\subsubsection*{Storing Conflict Pair into ConflictPair Class}
-To store the elements of a conflict pair, we implement the class \textit{ConflictPair} to store the information needed to extract a textual report using \textit{ReportMaker} class.
+\subsubsection*{Storing a Conflict Pair into ConflictPair Class}
+To store the elements of a conflict pair, we implement the class \texttt{ConflictPair} to store the information needed to extract a textual report using \texttt{ReportMaker} class.
 
 The ConflictPair class contains the following methods that are important for the ReportMaker class:
 \begin{itemize}
-	\item get/setActionAnnotationUs1: The setter method stores the \textit{action annotation} for the first US in the conflict pair and the getter method retrieves it.
+	\item get/setActionAnnotationUs1: The setter method stores the action-annotation for the first US in the conflict pair and the getter method retrieves it.
 	
-	\item get/setActionAnnotationUs2: The setter method stores the \textit{action annotation} for the second US in the conflict pair and the getter method retrieves it.
+	\item get/setActionAnnotationUs2: The setter method stores the action-annotation for the second US in the conflict pair and the getter method retrieves it.
 	
-	\item get/setActionUs1: The setter method stores the \textit{action} for the first US in the conflict pair and the getter method retrieves it.
+	\item get/setActionUs1: The setter method stores the action for the first US in the conflict pair and the getter method retrieves it.
 	
-	\item get/setActionUs2: The setter method stores the \textit{action} for the second US in the conflict pair and the getter method retrieves it.
+	\item get/setActionUs2: The setter method stores the action for the second US in the conflict pair and the getter method retrieves it.
 		
-	\item get/setConflictReason: The setter method stores the \textit{conflict reason} of conflict pair and the getter method retrieves it.
+	\item get/setConflictReason: The setter method stores the conflict reason of conflict pair and the getter method retrieves it.
 	
-	\item get/setJsonConflict1: The setter method stores the \textit{JSON object} containing all JSON elements relating to first US, and the getter method retrieves it.
+	\item get/setJsonConflict1: The setter method stores the JSON-object containing all JSON elements relating to first US, and the getter method retrieves it.
 	
-	\item get/setJsonConflict2: The setter method stores the \textit{JSON object} containing all JSON elements relating to second US, and the getter method retrieves it.
+	\item get/setJsonConflict2: The setter method stores the JSON-object containing all JSON elements relating to second US, and the getter method retrieves it.
 	
-	\item get/setNounContainUs2: The setter method stores the textit{contain entity} of second US, and the getter method retrieves it.
+	\item get/setNounContainUs2: The setter method stores the contains entity of second US, and the getter method retrieves it.
 	
-	\item get/setNounMainUs1: The setter method stores the textit{entity} of first US, and the getter method retrieves it.
+	\item get/setNounMainUs1: The setter method stores the entity of first US, and the getter method retrieves it.
 	
-	\item get/setpId: The setter method stores the \textit{P\_ID}(Project ID), and the getter method retrieves it.
+	\item get/setpId: The setter method stores the P\_ID (Project ID), and the getter method retrieves it.
 	
-	\item get/setUsId1: The setter method stores the \textit{US\_ID} of first US in the conflict pair, and the getter method retrieves it.
+	\item get/setUsId1: The setter method stores the US\_ID of first US in the conflict pair, and the getter method retrieves it.
 	
-	\item get/setUsId2: The setter method stores the \textit{US\_ID} of second US in the conflict pair, and the getter method retrieves it.
+	\item get/setUsId2: The setter method stores the US\_ID of second US in the conflict pair, and the getter method retrieves it.
 	
-	\item get/setConflictPair1: The setter method stores the \textit{US\_Nr} of first US in the conflict pair, and the getter method retrieves it.
+	\item get/setConflictPair1: The setter method stores the US\_Nr of first US in the conflict pair, and the getter method retrieves it.
 	
-	\item get/setConflictPair2: The setter method stores the \textit{US\_Nr} of second US in the conflict pair, and the getter method retrieves it.
+	\item get/setConflictPair2: The setter method stores the US\_Nr of second US in the conflict pair, and the getter method retrieves it.
 	
-	\item equals(Override): The equals method is overridden to provide a custom definition of equality for ConflictPair objects. Two ConflictPair objects are considered equals if:
+	\item equals (Override): The equals method is overridden to provide a custom definition of equality for ConflictPair objects. Two ConflictPair objects are considered equals if:
 	\begin{enumerate}
 		\item They are the same instance.
 		
@@ -153,9 +156,9 @@ The ConflictPair class contains the following methods that are important for the
 		\item Their \textit{conflictPair1} and  \textit{conflictPair2} fields are equal.
 		
 	\end{enumerate}
-	This custom equality definition is used to compare \textit{ConflictPair} objects based on the value of \textit{conflictPair1} and \textit{conflictPair2}.
+	This custom equality definition is used to compare ConflictPair objects based on the value of conflictPair1 and conflictPair2.
 
-	\item hashCode(Override): This method is overridden to provide a custom hashcode calculation for ConflictPair objects. This hashcode calculation ensures that equal ConflictPair objects (as determined by the \textit{equals} method) have the same hashcode, which ensures that the behaviour of HashMap collections is correct.
+	\item hashCode (Override): This method is overridden to provide a custom hashcode calculation for ConflictPair objects. This hashcode calculation ensures that equal ConflictPair objects (as determined by the equals method) have the same hashcode, which ensures that the behaviour of HashMap collections is correct.
 	
 \end{itemize}
 
@@ -169,8 +172,8 @@ Figure \ref{fig:conflict_report_maker_class_diagram} is a class diagram that ill
 	\caption{Class diagram related to \textit{org.backlogconflict.code.report} package }\label{fig:conflict_report_maker_class_diagram}
 \end{figure} 
 
-\subsubsection*{Methods related to Extracting and Reporting Conflict Pairs}
-In order to report conflict pairs such with information such as highlighting USs texts with hash mark(\#), conflict pair, affected entity, contain entity related to second US, action of USs, and conflict reason, following methods in the ReprortMaker class are defined:
+\subsubsection*{Methods Related to Extracting and Reporting Conflict Pairs}
+In order to report conflicting US-pairs such with information such as highlighting USs texts with hash mark (\#), conflict pair, affected entity, contain entity related to second US, action of USs, and conflict reason, following methods in the ReprortMaker class are defined:
 
 \begin{itemize}
 	\item applyHashSymbols: This method changes a given substring by surrounding the specified matching elements with hash symbols (\#). It ensures that only the words that match the elements in the provided array are changed. 
@@ -185,151 +188,151 @@ In order to report conflict pairs such with information such as highlighting USs
 	
 	As output, it returns a FileWriter object that is set up to write the specified file, regardless of whether it was newly created or overwritten.
 	
-	\item createTable: This method constructs a two-dimensional table (a matrix) that represents conflicts between pairs of USs. The header rows of the table and the first column are filled with modified identifier of USs (e.g. us\_xx instead of user\_story\_xx) from a given list and the cells in the table are filled with \texttt{X} based on the conflicts found between pairs of these USs using \textit{getConflcitPair} method.
+	\item createTable: This method constructs a two-dimensional table (a matrix) that represents conflicts between pairs of USs. The header rows of the table and the first column are filled with modified identifier of USs (e.g. us\_xx instead of user\_story\_xx) from a given list and the cells in the table are filled with "x" based on the conflicts found between pairs of these USs using \texttt{getConflictPair} method.
 	
-	As input it receives a list of strings where each string represents a US and a set of ConflictPair objects representing conflicts between pairs of USs.
+	As input it receives a list of Strings where each String represents a US and a set of ConflictPair objects representing conflicts between pairs of USs.
 	
-	As output, the method returns a two-dimensional array that represents the conflict table. The header rows and the first column are identifiers of the conflicting USs and the cells contain \texttt{X} if there is a conflict between these two USs.
+	As output, the method returns a two-dimensional array that represents the conflicts table. The header rows and the first column are identifiers of the conflicting USs and the cells contain "x" if there is a conflict between these two USs.
 	
-	\item getConflcitPair: This method searches for conflicts between a pair of US-pairs and returns \texttt{X} if there is a conflict between two USs, otherwise it returns a white space.
+	\item getConflictPair: This method searches for conflicts between a pair of USs and returns "x" if there is a conflict between two USs, otherwise it returns a white space.
 	
-	\item runReportMaker: The runReportMaker method generates conflict reports for a number of datasets using the \textit{makeReport} method. It creates both a consolidated text report and a JSON report that summarises the conflicts found in the specified datasets.
+	\item runReportMaker: This method generates conflicts reports for a number of datasets using the \texttt{makeReport} method. It creates both a consolidated text report and a consolidated JSON report that summarises the conflicts found in the specified datasets.
 	
 	As input, it receives an array with the names of the datasets to be processed and the path of the base file in which the datasets are located.
 	
-	As output, it produces a text file containing the consolidated conflict report and a JSON file containing the conflict report in JSON format.
+	As output, it produces a text file containing the consolidated conflicts report and a JSON file containing the conflicts report in JSON format.
 	
-	\item makeReport: This method generates a conflict report for a single dataset. It reads the dataset from input JSON file, processes it to find conflicts using \textit{findConflict} method, and writes the results to both a text file and a JSON report.
+	\item makeReport: This method generates a conflicts report for a single dataset. It reads the dataset from input JSON file, processes it to find conflicts using \texttt{findConflict} method, and writes the results to both a text file and a JSON report.
 	
 	It receives the following inputs:
 	\begin{itemize}
 		\item fileName: The name of the dataset file to process.
 		
-		\item consolidatedFileWriter: A FileWriter object to write the consolidated conflict report for all datasets.
+		\item consolidatedFileWriter: A FileWriter object to write the consolidated conflicts report for all datasets.
 		
-		\item jsonFileWriter: A FileWriter object to write the JSON conflict report for single dataset.
+		\item jsonFileWriter: A FileWriter object to write the JSON conflicts report for single dataset.
 		
-		\item jsonReport: A JSON array object for collecting conflict reports from a dataset.
+		\item jsonReport: A JSON-array object for collecting conflicts reports from a dataset.
 		
 		\item filePath: The base file path where the dataset files are located.
 		
 	\end{itemize}
-	As output, the method updates the consolidated conflict report file and the JSON conflict report with the conflicts found in the specified dataset.
+	As output, the method updates the textual consolidated conflicts report file and the consolidated JSON conflicts report with the conflicts found in the specified datasets.
 	
-	A separate conflict report text file for the individual dataset is created or overwritten with the conflict details.
+	A separate conflicts report text file for the individual dataset is created or overwritten with the conflict details.
 	
-	\item findConflict: This method analyses a given JSON array to identify and report conflicts within the USs. It iterates through each JSON object which represents the US in the array, processes the "Main" part of each JSON object, and collects conflict information using \textit{processMainPart} method. The results are then written to specified file writers and a JSON report using \textit{printReport} method.
+	\item findConflict: This method analyses a given JSON-array to identify and report conflicts within the USs. It iterates through each JSON-object which represents the US in the array, processes the "Main" part of each JSON-object, and collects conflict information using \texttt{processMainPart} method. The results are then written to specified file writers and a JSON report using \texttt{printReport} method.
 	
 	As input, the same input related to the makeReport method is passed.
 	
-	As output, The method populates the provided FileWriter objects and JSONArray with conflict information derived from the input JSON array. It identifies conflicts by processing the "Main" part of each JSON object and aggregates the results for reporting.
+	As output, the method populates the provided FileWriter objects and JSON-array with conflict information derived from the input JSON-array. It identifies conflicts by processing the "Main" part of each JSON-object and aggregates the results for reporting.
 	
-	\item processMainPart: This method processes the "Main" part of a given JSON object, extracting various arrays and strings using \textit{getArray} as well as getString methods. It then checks for action annotations using \textit{processActionAnnotations} method and processes them to identify conflicts. The method adds the conflicts to a provided set of conflict pairs.
+	\item processMainPart: This method processes the "Main" part of a given JSON-object, extracting various arrays and Strings using \texttt{getArray} as well as \texttt{getString} methods. It then checks for action-annotations using \texttt{processActionAnnotations} method and processes them to identify conflicts. The method adds the conflicts to a provided set of conflicting US-pairs.
 	
 	It receives the following inputs:
 	\begin{itemize}
 		\item conflictPairs: A set to store the identified conflict pairs.
 		
-		\item jsonObject: The JSON object currently being processed representing specified US.
+		\item jsonObject: The JSON-object currently being processed representing specified US.
 		
-		\item jsonMain: The "Main" part of the JSON object(related to the specified US) currently being processed.
+		\item jsonMain: The "Main" part of the JSON-object (related to the specified US) currently being processed.
 		
-		\item usNrM: The US identifier of the current JSON object.
+		\item usNr: The US identifier of the current JSON-object.
 		
-		\item jsonMainArray: The main JSON array containing all the USs to be analysed.
+		\item jsonMainArray: The main JSON-array containing all the USs to be analysed.
 		
-		\item conflicts: A set US identifier to store unique conflict pair.
+		\item conflicts: A set of US identifiers to store unique conflicting pair.
 				
 	\end{itemize}	
 	The method does not return a value.
 	
-	\item processActionAnnotations: This method processes action annotations from JSON objects that refer to USs in order to process action annotations. Iterates through the element \textit{Target Action Annotations}, checks whether there are multiple action annotations and executes the associated actions to process these annotations. If an action annotation that refers to an action contains multiple actions, the \textit{executeProcessActions} method is called for each part of the annotation. Identified conflicts are added to a provided set of conflict pairs.
+	\item processActionAnnotations: This method processes action-annotations from JSON-objects that refer to USs. It iterates through the elements of "Target Action Annotations", checks whether there are multiple action-annotations and executes the associated actions to process these annotations. If an action-annotation that refers to an action contains multiple actions (e.g. create;preserve), the \texttt{executeProcess- Actions} method is called for each part of the annotations. Identified conflicts are added to a provided set of conflicting US-pairs.
 	
 	It receives the following inputs:
 	\begin{itemize}
-		\item usNrM: The US identifier of the current JSON object.
+		\item usNrM: The US identifier of the current JSON-object.
 		
-		\item jsonObject: The JSON object currently being processed which corresponds to specified US.
+		\item jsonObject: The JSON-object currently being processed which corresponds to specified US.
 		
-		\item actionArray: The array of actions in the US JSON object.
+		\item actionArray: The array of actions in the US JSON-object.
 		
-		\item entityArray: The array of entities in the US JSON object.
+		\item entityArray: The array of entities in the US JSON-object.
 		
-		\item triggersArray: The array of triggers in the US JSON object.
+		\item triggersArray: The array of triggers in the US JSON-object.
 		
-		\item targetsArray: The array of targets in the US JSON object.
+		\item targetsArray: The array of targets in the US JSON-object.
 		
-		\item containsArray: The array of contains in the US JSON object.
+		\item containsArray: The array of contains in the US JSON-object.
 		
-		\item text: The text associated with the US JSON object.
+		\item text: The text associated with the US JSON-object.
 		
-		\item persona: The array of personas in the US JSON object.
+		\item persona: The array of personas in the US JSON-object.
 		
-		\item conflicts: A set to store unique conflict strings.
+		\item conflicts: A set of US identifiers to stored unique conflicting US-pairs.
 	\end{itemize}
 	The method does not return a value.
 	
-	\item executeProcessActions: This method processes specific action annotations (like preserve, delete, create, and forbid) by checking for conflicts with other annotations in the JSON data. It uses the \textit{findConflictForActionAnnotation} method to identify and handle these conflicts, adding them to a set of conflict pairs.
+	\item executeProcessActions: This method processes specific action-annotations (like preserve, delete, create, or forbid) by checking for conflicts with other annotations in the JSON data. It uses the \texttt{findConflictForActionAnnotation} method to identify and handle these conflicts, adding them to a set of conflicting US-pairs.
 	
-	The method uses a switch statement to process the action annotation based on the defined criteria and handle it accordingly. For each case in the switch statement, the method calls \textit{findConflictForActionAnnotation} with different parameters to identify potential conflicts based on specific criteria.
+	The method uses a switch statement to process the action-annotation/s based on the defined criteria and handle it accordingly. For each case in the switch statement, the method calls findConflictForActionAnnotation with different parameters to identify potential conflicts based on specific criteria.
 	
 	It receives the following inputs:
 	\begin{itemize}
-		\item usNrM: The US identifier of the current JSON object.
+		\item usNr: The US identifier of the current JSON-object.
 		
-		\item jsonObject: The JSON object currently being processed which corresponds to specified US.
+		\item jsonObject: The JSON-object currently being processed which corresponds to specified US.
 		
-		\item actionArray: The array of actions in the US JSON object.
+		\item actionArray: The array of actions in the US JSON-object.
 		
-		\item entityArray: The array of entities in the US JSON object.
+		\item entityArray: The array of entities in the US JSON-object.
 		
-		\item triggersArray: The array of triggers in the US JSON object.
+		\item triggersArray: The array of triggers in the US JSON-object.
 		
-		\item targetsArray: The array of targets in the US JSON object.
+		\item targetsArray: The array of targets in the US JSON-object.
 		
-		\item containsArray: The array of contains in the US JSON object.
+		\item containsArray: The array of contains in the US JSON-object.
 		
-		\item text: The text associated with the US JSON object.
+		\item text: The text associated with the US JSON-object.
 		
-		\item persona: The array of personas in the US JSON object.
+		\item persona: The array of personas in the US JSON-object.
 		
-		\item conflicts: A set US identifier to store unique conflict pair.
+		\item conflicts: A set US identifiers to store unique conflicting US-pairs.
 		
-		\item verb: The verb extracted from the \textit{Target Action Annotations}.
+		\item verb: The verb extracted from the "Target Action Annotations".
 		
-		\item noun: The noun extracted from the \textit{Target Action Annotations}.
+		\item noun: The noun extracted from the "Target Action Annotations".
 		
-		\item actionAnnotation: The action annotation (e.g., "preserve", "delete").
+		\item actionAnnotation: The action-annotation (e.g., "preserve", "delete").
 		
-		\item nounMainUs1: The entity of first US.
+		\item nounMainUs1: The entity associated with the first US.
 	\end{itemize}
 	The method does not return a value.
 	
-	\item findConflictForActionAnnotation: This method is responsible for identifying conflicts between USs based on certain action annotations and entity relationships within a JSON dataset. Iterates through all JSON objects in a dataset to compare the current US with others. It iterates through "Target Action Annotations" to compare action annotations and entities. It also iterates through the "Contain Action Annotations" array to compare the contained entities. If a conflict is detected between two US, the \textit{setConflictPair} method is used to create a ConflictPair object with specific information and add the conflictPair object to a set called \textit{conflictPairs}.
+	\item findConflictForActionAnnotation: This method is responsible for identifying conflicts between USs based on certain action-annotations and entity within a JSON dataset. It iterates through all JSON-objects in a dataset to compare the current US with others. It iterates through "Target Action Annotations" to compare action-annotations and entities. It also iterates through the "Contain Action Annotations" array to compare the contained entities. If a conflict is detected between two US, the \texttt{setConflictPair} method is used to create a ConflictPair object with specific information and add the conflictPair object to a set called \textit{conflictPairs}.
 	
 	It receives the following inputs:
 	\begin{itemize}
 		
-		\item conflictPairs: A set to store identified conflict pairs.
+		\item conflictPairs: A set of identified conflicting US-pairs.
 		 
-		\item jsonMainArray: The main JSON array containing all the USs to be analysed.
+		\item jsonMainArray: The main JSON-array containing all the USs to be analysed.
 		
-		\item jsonObjectCurrent: The current US JSON object being processed.
+		\item jsonObjectCurrent: The current US JSON-object being processed.
 		
-		\item actionAnnotationUs1: The action annotation from the first US.
+		\item actionAnnotationUs1: The action-annotation associated with the first US.
 		
-		\item criticalActionAnnotation: The critical action annotation that triggers conflicts.
+		\item criticalActionAnnotation: The critical action-annotation that triggers conflicts.
 		
 		\item entityUs1: The entity associated with the first US.
 		
 		\item actionUs1: The action associated with the first US.
 		
-		\item conflicts: A set US identifier to store unique conflict pair.		
+		\item conflicts: A set of unique US identifiers related to conflicting US-pairs.		
 		
 	\end{itemize}
 	The method does not return a value.
 	
-	\item setConflictPair: This method effectively initializes and populates a \textit{ConflictPair} object with the provided parameters, encapsulating all necessary information about a conflict pair between two USs.
+	\item setConflictPair: This method effectively initializes and populates a \textit{ConflictPair} object with the provided parameters, encapsulating all necessary information about a conflicting US-pair.
 	
 	It receives the following inputs:
 	\begin{itemize}
@@ -337,11 +340,11 @@ In order to report conflict pairs such with information such as highlighting USs
 		
 		\item pId: Project ID associated with the USs.
 		
-		\item jsonUs1, jsonUs2: JSON objects representing the conflicting USs.
+		\item jsonUs1, jsonUs2: JSON-objects representing the conflicting USs.
 		
 		\item actionUs1, actionUs2: Actions associated with the conflicting USs.
 		
-		\item actionAnnotationUs1, actionAnnotationUs2: Action annotations related to the conflicting actions.
+		\item actionAnnotationUs1, actionAnnotationUs2: Action-annotations related to the conflicting actions.
 		
 		\item conflictReason: Reason of the conflict.
 		
@@ -349,37 +352,37 @@ In order to report conflict pairs such with information such as highlighting USs
 		
 		\item nounContainUs2: Noun contained within the second US, if applicable.
 		
-		\item usId1, usId2: User story IDs associated with first and second USs, respectively.
+		\item usId1, usId2: US\_IDs associated with first and second USs, respectively.
 	\end{itemize}
 	As output, it returns the populated ConflictPair object to the caller. 
 	
-	\item getArray: This method is designed to retrieve a JSON array from a JSON object based on a specified key.
+	\item getArray: This method is designed to retrieve a JSON-array from a JSON-object based on a specified key.
 	
 	It receives the following inputs:
 	\begin{itemize}
-		\item jsonObject: The JSON object to retrieve the JSON array.
+		\item jsonObject: The JSON-object to retrieve the JSON array.
 		
-		\item key: The key whose associated JSON array is to be retrieved from JSON object.
+		\item key: The key whose associated JSON-array is to be retrieved from JSON-object.
 		
-		\item exceptionSupplier: A functional interface that can supply an exception of a specific type if needed. This is used to handle cases where the expected key is not found in the JSON object.
+		\item exceptionSupplier: A functional interface that can supply an exception of a specific type if needed. This is used to handle cases where the expected key is not found in the JSON-object.
 		
 	\end{itemize}
-	If the key exists in the JSON object, the corresponding JSON array is retrieved as output, otherwise an exception is thrown.
+	If the key exists in the JSON-object, the corresponding JSON-array is retrieved as output, otherwise an exception is thrown.
 	
-	\item getString: This method is designed to retrieve a String from a JSON object based on a specified key.
+	\item getString: This method is designed to retrieve a string from a JSON-object based on a specified key.
 	
 	It receives the following inputs:
 	\begin{itemize}
-		\item jsonObject: The JSON object to retrieve the string.
+		\item jsonObject: The JSON-object to retrieve the string.
 		
-		\item key: The key whose associated string is to be retrieved from JSON object.
+		\item key: The key whose associated string is to be retrieved from JSON-object.
 		
-		\item exceptionSupplier: A functional interface that can supply an exception of a specific type if needed. This is used to handle cases where the expected key is not found in the JSON object.
+		\item exceptionSupplier: A functional interface that can supply an exception of a specific type if needed. This is used to handle cases where the expected key is not found in the JSON-object.
 		
 	\end{itemize}
-	If the key exists in the JSON object, the corresponding string is retrieved as output, otherwise an exception is thrown.
+	If the key exists in the JSON-object, the corresponding string is retrieved as output, otherwise an exception is thrown.
 	
-	\item printReport: This method is responsible for creating a textual, tabular and JSON report based on the conflict pairs found during processing. For each ConflictPair, it extracts detailed information such as IDs, text of the USs, actions, annotations, conflict reasons, highlighting of the affected elements in the texts of the USs in the main parts using the \textit{applyHashSymbols} method. 
+	\item printReport: This method is responsible for creating a textual, tabular and JSON report based on the conflicting US-pairs found during processing. For each ConflictPair, it extracts detailed information such as IDs, text of the USs, actions, action-annotations, conflict reasons, highlighting of the affected elements in the texts of the USs in the main parts using the \texttt{applyHashSymbols} method. 
 	
 	It receive following inputs: 
 	\begin{itemize}
@@ -393,7 +396,7 @@ In order to report conflict pairs such with information such as highlighting USs
 	\end{itemize}
 	
 \subsubsection*{Import Result for Evaluation}
-In this step, we collect all potential conflicts found in an Excel file called ‘Conflict\_Evaluation’ by creating a report in JSON format and using the following VBA script\footnote{https://github.com/amirrabieyannejad/conflict\_analysis\_between\_USs/blob/main/ 00\_annotated\_datasets/extractFromJSONFiles\_Version(new).xlsm} to import the required information into the Excel file:
+In this step, we collect all potential conflicts found in an Excel file called "Conflict\_Evaluation" by creating a report in JSON format and using the following VBA script\footnote{\href{https://github.com/amirrabieyannejad/conflict_analysis_between_USs/blob/main/00_annotated_datasets/extractFromJSONFiles_Version(new).xlsm}{https://github.com/amirrabieyannejad/conflict\_analysis\_between\_USs/extractFromJSONFiles\_Version}} to import the required information into the Excel file:
 Listing \ref{list:conflict_vba} illustrates the implemented VBA script that uses the JSON report to import the required information into an Excel file.
 \begin{MyListing}
 	\paragraph{}
@@ -405,50 +408,41 @@ Listing \ref{list:conflict_vba} illustrates the implemented VBA script that uses
 \subsubsection*{Error Handling}
 There were erroneous data in the datasets forcing us to handle them correctly. Therefore, we implement/use the following exceptions to accurately distinguish and handle them.
 
-The following classes, which extend the \textit{Exception} class, are used in \textit{org.backlogconflict. code.preparation} and \textit{org.backlogconflict. code.report} packages:
+The following classes, which extend the \textit{Exception} class, are used in \textit{org.backlogconflict. code.preparation} and \textit{org.backlogconflict.code.report} packages:
 \begin{itemize}
-	\item MainPartInJsonFileNotFound: Is triggered if the JSON object "Main" could not be found in the US JSON object.
+	\item MainPartInJsonFileNotFound: Is triggered if the JSON-object "Main" could not be found in the US JSON-object.
 	
-	\item ActionAnnotationInJsonFileNotFound: Is triggered if the entry \textit{Action Annotations}, which contains \textit{Targets/Contains Action Annotations}, is not present in the US JSON object and its absence should be reported.
+	\item ActionAnnotationInJsonFileNotFound: Is triggered if the entry "Action Annotations", which contains "Targets/Contains Action Annotations", is not present in the US JSON-object and its absence should be reported.
 	
-	\item ActionInJsonFileNotFound: Is triggered if the entry \textit{Action} is not present in the US JSON object and its absence should be reported.
+	\item ActionInJsonFileNotFound: Is triggered if the entry "Action" is not present in the US JSON-object and its absence should be reported.
 		
-	\item ContainsInJsonFileNotFound: Is triggered if the entry in \textit{Contains} is not present in the US JSON object and its absence should be reported.
+	\item ContainsInJsonFileNotFound: Is triggered if the entry in "Contains" is not present in the US JSON-object and its absence should be reported.
 	
-	\item EntityInJsonFileNotFound: Is triggered if the entry \textit{Entity} is not present in the US JSON object and its absence should be reported.
+	\item EntityInJsonFileNotFound: Is triggered if the entry "Entity" is not present in the US JSON-object and its absence should be reported.
 	
-	\item PersonaInJsonFileNotFound: Is triggered if the entry \textit{Persona} does not exist in the US JSON object for a specified US.
+	\item PersonaInJsonFileNotFound: Is triggered if the entry "Persona" does not exist in the US JSON-object for a specified US.
 	
-	\item TextInJsonFileNotFound: Is triggered if the entry \textit{Text} does not exist in the US JSON object for a specified US. 
+	\item TextInJsonFileNotFound: Is triggered if the entry "Text" does not exist in the US JSON-object for a specified US. 
 	
-	\item UsNrInJsonFileNotFound: Is triggered if the entry \textit{Us\_Nr} does not exist in the US JSON object for a specified US.
+	\item UsNrInJsonFileNotFound: Is triggered if the entry "Us\_Nr" does not exist in the US JSON-object for a specified US.
 	
-	\item TargetsInJsonFileNotFound: Is triggered if the entry \textit{Targets} does not exist in the US JSON object for a specified US.
+	\item TargetsInJsonFileNotFound: Is triggered if the entry "Targets" does not exist in the US JSON-object for a specified US.
 	
-	\item TriggersInJsonFileNotFound: Is triggered if the entry \textit{Triggers} does not exist in the US JSON object for a specific US.
+	\item TriggersInJsonFileNotFound: Is triggered if the entry "Triggers" does not exist in the US JSON-object for a specific US.
 	
 	\item EmptyOrNotExistJsonFile: Is triggered if the JSON file is empty or does not exist.
 	
-	\item EntityInRelationsNotFound: Is triggered if the entity as part of \textit{relation} JSON array is not present in the US JSON object and its absence should be reported.
+	\item EntityInRelationsNotFound: Is triggered if the "entity" as part of "relation" JSON-array is not present in the US JSON-object and its absence should be reported.
 	
 \end{itemize}
-%TODO: 
-%\subsubsection*{Limitations}
-% 1- This tool is only suitable for the specific JSON format
-
-% 2- As the conflict in the benefit part is not taken into account in our approach, we exclude the elements that originate from the benefit and the mix part.
-
-% 3- The verbs are not change to root, during annotating verbs the actual verb from datasets are direktly handed over into action annotation DB.
-
-% 3- 
 \subsection{Test}\label{conflict_test}
 Our objectives in this section include validating certain functions, checking the system requirements and ensuring the reliability and robustness of the implemented classes and methods.
 
-As part of our testing strategy, we perform unit tests with \textit{JUnit} version 4\footnote{https://junit.org/junit4/}, which we selected for its compatibility with Eclipse version 2023-03. 
+As part of our testing strategy, we perform unit tests with \textit{JUnit} version 4\footnote{\href{https://junit.org/junit4/}{https://junit.org/junit4/}}, which we selected for its compatibility with Eclipse version 2023-03. 
 
-EclEmma\footnote{https://www.eclemma.org/} We have integrated a code coverage tool into the Eclipse IDE to ensure thorough testing and coverage. With the help of EclEmma, we systematically measured the effectiveness of our test suites and determined the test coverage for each individual class.
+EclEmma\footnote{\href{https://www.eclemma.org/}{https://www.eclemma.org/}} as a code coverage tool integrated into the Eclipse IDE is used, to ensure thorough testing and coverage. With the help of EclEmma, we systematically measured the effectiveness of our test suites and determined the test coverage for each individual class.
 \subsubsection*{Configuration of Test Environment}
-In the main project \textit{org.backlog}, we create a separate package called \textit{org.backlogconflict.test}. This package contains the following Java classes, which correspond to the respective Java source code files:
+In the main project \textit{org.backlogconflict}, we create a separate package called \textit{org.backlogconflict .test}. This package contains the following Java classes, which correspond to the respective Java source code files:
 \begin{itemize}
 	
 	\item USPartExtractorTest
@@ -485,18 +479,18 @@ Table \ref{tb:test_cases_json_transformer} shows the test cases for the USPartEx
 	Test Case &Supplied Data&Expected Outcome&Description\\
 	\hline\hline
 	\endhead
-		BenefitNotExist&Assign USs without benefit part&The length of the entries(action, entity, contains, targets) for the benefit should be null&Check what happens if the US has no benefit part\\
+		BenefitNotExist&Assign USs without benefit part&The length of the entries (action, entity, contains, targets) for the benefit should be null&Check what happens if the US has no benefit part\\
 		
-		EntityInRelationNotFound \newline(Case1)&Preparing a JSON object whose entity entry is not defined as an entity in the relation entries assigned as the first reference&Through an exception: \textit{NullPointerException}&Checks whether the first referencing entity is already defined as an entity in the relation entries\\
+		EntityInRelationNotFound \newline(Case1)&Preparing a JSON-object whose entity is not defined as an entity in the relation assigned as the first reference&Through an exception: \textit{NullPointerException}&Checks whether the first referencing entity is already defined as an entity in the relation\\
 		
 		
-		EntityInRelationNotFound \newline(Case2)&Preparing a JSON object whose entity entry is not defined as an entity in the relation entries assigned as the second reference&Through an exception: \textit{NullPointerException}&Checks whether the second referencing entity is already defined as an entity in the relation entries\\
+		EntityInRelationNotFound \newline(Case2)&Preparing a JSON-object whose entity is not defined as an entity in the relation assigned as the second reference&Through an exception: \textit{NullPointerException}&Checks whether the second referencing entity is already defined as an entity in the relation\\
 		
 		EmptyOrNotExistJsonFile&Assign an empty JSON file&Through an exception: \textit{NoSuchFileException}&Checks whether the JSON file is empty\\
 		
-		testPid&JSON file with the project ID&Create JSON object "PID" which contain the project ID of US&Checks whether the project ID was created as expected\\
+		testPid&JSON file with the project ID&Create JSON-object "PID" which contain the project ID of US&Checks whether the project ID was created as expected\\
 		
-		UnexpectedType&JSON file with a US with unexpected type&Through an exception: \textit{JSONException}&Checks whether the expected types (action, entity, text, etc.) in the corresponding US pass on in the JSON file and not unexpected\\
+		UnexpectedType&JSON file with a US with unexpected type&Through an exception: \textit{JSONException}&Checks whether the expected types (action, entity, text, etc.) in the corresponding US pass on in the JSON file\\
 		
 		
 		\hline
@@ -536,9 +530,9 @@ Table \ref{tb:test_cases_verb_finder} shows the test cases for the VerbFinder.ja
 			Test Case &Supplied Data&Expected Outcome&Description\\
 			\hline\hline
 			\endhead
-			testLoadCSV\linebreak (Case1)&Assign a CSV file that contains two columns: one for verbs and one for action comments, so that both columns contain no empty cells&Action Annotation corresponds to verbs should be returned&Checks whether the action note has been returned accordingly in respect of the verb\\
+			testLoadCSV\linebreak (Case1)&Assign a CSV file that contains two columns: one for verbs and one for action-annotations, so that both columns contain no empty cells&Action-annotation corresponds to verbs should be returned&Checks whether the action-annotation has been returned accordingly in respect of the verb\\
 			
-			testLoadCSV\linebreak (Case2)&Assign a CSV file that contains two columns: one for verbs and one for action comments, so that one column contain empty cell&A verb without an assigned action annotation should be ignored&Checks whether the action annotation has been returned accordingly in respect of the verb\\
+			testLoadCSV\linebreak (Case2)&Assign a CSV file that contains two columns: one for verbs and one for action-annotations, so that one column contain empty cell&A verb without an assigned action-annotation should be ignored&Checks whether the action-annotation has been returned accordingly in respect of the verb\\
 			\hline
 				\caption{Test cases for VerbFinder class}\label{tb:test_cases_verb_finder}
 		\end{tabularx}		
@@ -575,7 +569,7 @@ Table \ref{tb:test_cases_actions_annotations_creator} shows the test cases for t
 		Test Case &Supplied Data&Expected Outcome&Description\\
 		\hline\hline
 		\endhead
-		ActionsAnnotationsCreator&Assign a JSON file without entries of action annotations (target or contains action annotation)&Create action annotation related to target action annotated&Checks whether the JSON array for the corresponding action has been created for the target\\
+		ActionsAnnotationsCreator&Assign a JSON file without entries of action-annotations ("Target/Contains Action-Annotation")&Create action-annotation related to "Targets Action-Annotation"&Checks whether the JSON-array for the corresponding action has been created for the targets\\
 		
 		
 		\hline
@@ -591,7 +585,7 @@ Table \ref{tb:test_cases_actions_annotations_creator} shows the test cases for t
 		\caption{Code coverage related to class ActionsAnnotationsCreator}\label{fig:code_coverage_actions_annotations_creator}
 	\end{figure} 
 	
-Table \ref{tb:test_cases_report_maker} shows the test cases for the Evaluation.java class and Figure \ref{fig:code_coverage_report_maker} shows the code coverage.
+Table \ref{tb:test_cases_report_maker} shows the test cases for the ReportMaker.java class and Figure \ref{fig:code_coverage_report_maker} shows the code coverage.
 
 %\newgeometry{margin=2.5cm}
 %\begin{landscape}
@@ -613,29 +607,29 @@ Table \ref{tb:test_cases_report_maker} shows the test cases for the Evaluation.j
 	\hline\hline
 	\endhead
 	
-	ActionAnnotation\newline InJsonFileNotFound&Provision of a JSON object without action annotation&Through an exception:\textit{ActionAnnotation InJsonFileNotFound}&Checks whether the JSON object provided contains an entry for action annotations\\
+	ActionAnnotation\newline InJsonFileNotFound&Provision of a JSON-object without action-annotation&Through an exception: \textit{ActionAnnotationInJsonFileNotFound}&Checks whether the JSON-object provided contain action-annotation\\
 	
-	TargetActionAnnotation\newline InJsonFileNotFound&Provision of a JSON object without target action annotation&Through an exception:\textit{ActionAnnotation InJsonFileNotFound}&Checks whether the JSON object provided has an entry for target action annotations\\
+	TargetActionAnnotation\newline InJsonFileNotFound&Provision of a JSON-object without "Targets Action Annotation"&Through an exception: \textit{ActionAnnotationInJsonFileNotFound}&Checks whether the JSON-object provided has "Targets Action Annotation"\\
 	
-	ContainActionAnnotation\newline InJsonFileNotFound&Provision of a JSON object without contain action annotation&Through an exception:\textit{ActionAnnotation InJsonFileNotFound}&Checks whether the JSON object provided has an entry for contain action annotations\\
+	ContainActionAnnotation\newline InJsonFileNotFound&Provision of a JSON-object without "Contains Action Annotation"&Through an exception: \textit{ActionAnnotationInJsonFileNotFound}&Checks whether the JSON-object provided has an entry for "Contains Action Annotation"\\
 	
-	EntityContainExist&Provision of a conflict pair with indirect conflict through contain relation&The US-pairs should be reported as a conflict pair&Checks whether the conflict is recognised if the entity from Us belongs to contain relation\\
+	EntityContainExist\newline (Upper Edge)&Provision of a conflicting US-pair with indirect conflict through contains relation&The US-pair should be reported as a conflict&Checks whether the conflict is recognised if the entity from US belongs to contains relation\\
 	
-	JsonArrayNotFound&Provision of a JSON file in which a JSON array is missing&Null should be return&Checks whether the specific JSON array was not found, if so, return null\\
+	JsonArrayNotFound&Provision of a JSON file in which a JSON-array is missing&Null should be return&Checks whether the specific JSON-array was not found, if so, return null\\
 	
-	JsonObjectNotFound&Provision of a JSON file in which a JSON object is missing&Null should be return&Checks whether the specific JSON object was not found, if so, return null\\
+	JsonObjectNotFound&Provision of a JSON file in which a JSON-object is missing&Null should be return&Checks whether the specific JSON-object was not found, if so, return null\\
 	
-	runReportMaker\_Main&Provision of two USs that contradict each other&The conflict pair should be reported in text form&Checks whether two USs that contradict each other have already been reported as conflict pair\\
+	runReportMaker\_Main \newline (Edge)&Provision of two USs that contradict each other&The conflict pair should be reported in text form&Checks whether two USs that contradict each other have already been reported as conflicting US-pair\\
 	
-	MainIsEmpty&Provision of a JSON object with empty main part entry&Through an exception:\textit{MainPartInJsonFile NotFound }&Checks whether the main part entry in provided JSON object is not empty\\
+	MainIsEmpty&Provision of a JSON-object with empty main part entry&Through an exception: \textit{MainPartInJsonFile NotFound}&Checks whether the main part entry in provided JSON-object is not empty\\
 	
-	MainNotExist&Provision of a JSON object without main part entry&Through an exception:\textit{MainPartInJsonFile NotFound }&Checks whether the JSON object provided has main part entry\\
+	MainNotExist&Provision of a JSON-object without main part entry&Through an exception: \textit{MainPartInJsonFile NotFound }&Checks whether the JSON-object provided has main part entry\\
 	
-	runReportMaker\_NoConflict&Provision of a set of USs that not contradict each other&The conflict pair should not be reported&Checks whether two USs that do not contradict each other should not be reported as a conflict pair\\
+	runReportMaker\_NoConflict \newline (Lower Edge)&Provision of a set of USs that not contradict each other&The conflict pair should not be reported&Checks whether two USs that do not contradict each other should not be reported as a conflicting US-pair\\
 	
-	UsNrInJsonFileNotFound&Provision of a JSON object that don't have US identifier&Through an exception:\textit{UsNrInJsonFileNotFound}&Checks whether the JSON object in the JSON file already has an identifier\\
+	UsNrInJsonFileNotFound&Provision of a JSON-object that don't have US identifier&Through an exception: \textit{UsNrInJsonFileNotFound}&Checks whether the JSON-object in the JSON file already has an identifier\\
 	
-	writeTable&Provision of a conflict pair that should be reported&Conflict pair should be listed in tabular form&Check whether the conflict pair is already listed in the table\\
+	writeTable&Provision of a conflicting US-pair that should be reported&Conflicting US-pair should be listed in tabular form&Checks whether the conflicting US-pair is already listed in the table\\
 	\hline
 	\caption{Test cases for ReportMaker  class}\label{tb:test_cases_report_maker}
 \end{tabularx}

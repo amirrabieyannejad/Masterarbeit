@@ -94,7 +94,7 @@ The evaluation process involves a detailed examination of relations such as trig
 \subsubsection*{Software Architecture}\label{architectur}
 In this section, we present the basic structures of our workflow and the discipline of creating such structures. Each structure comprises software elements, relations among them, and properties of both.
 \begin{itemize}
-	\item Annotated USs with Doccano Tool\footnote{https://github.com/doccano/doccano}: Mosser et al. used publicly available requirements from Dalpiaz et al.\cite{Dalpiaz2018} consisting of 22 product backlogs and 1,679 USs. The dataset is a raw archive of 22 text files, each containing one US per line. As there were no public expert-based annotations, Mosser et al. annotated the datasets using the Doccano tool for \textit{Named Entity Recognition} (NER). Based on their meta-model of the domain, they have labelled the elements of USs as persona, action, entity, benefit part and relationships such as triggers, targets and contains \cite{mosser2022modelling}.
+	\item Annotated USs with Doccano Tool\footnote{\href{https://github.com/doccano/doccano}{https://github.com/doccano/doccano}}: Mosser et al. used publicly available requirements from Dalpiaz et al.\cite{Dalpiaz2018} consisting of 22 product backlogs and 1,679 USs. The dataset is a raw archive of 22 text files, each containing one US per line. As there were no public expert-based annotations, Mosser et al. annotated the datasets using the Doccano tool for \textit{Named Entity Recognition} (NER). Based on their meta-model of the domain, they have labelled the elements of USs as persona, action, entity, benefit part and relationships such as triggers, targets and contains \cite{mosser2022modelling}.
 	
 	%Mooser et al. have linked each \emph{Persona} to each \emph{Primary Action} as \emph{Trigger} relationships, each \emph{Primary Actions} to each \emph{Primary Entity} as \emph{Target} relationships and each \emph{Primary/Secondary Entity} to each \emph{Primary/Secondary Entity} implying a \emph{Contains} relationship\cite{arulmohan2023extracting}.
 	
@@ -110,6 +110,8 @@ In this section, we present the basic structures of our workflow and the discipl
 	Because Henshin enables the specification of restrictions and conditions within graph transformation rules, we use it to enforce and verify US requirements to ensure that the restrictions are met.
 		
 	\item Henshin API: It provides the specification and execution of transformation modules, units and rules. This API is beneficial due to the dynamic creation and modification of transformation modules as part of an automated tool chain\footnote{\href{https://wiki.eclipse.org/Henshin/Compact\_API}{https://wiki.eclipse.org/Henshin/Compact\_API}}.
+	
+	\item VBA in Excel\footnote{\href{https://learn.microsoft.com/en-us/office/vba/library-reference/concepts/getting-started-with-vba-in-office}{https://learn.microsoft.com/en-us/office/vba/getting-started-with-vba-in-office}}: To automate the import of key information from JSON redundancy reports, we use VBA embedded in Excel. This is an important decision to simplify the evaluation process.
 	
 	\item RuleCreator Class: This class developed within the \textit{org.henshin.backlog.code.rule} package, serves as an integral component of our software architecture, leveraging the Henshin API to facilitates the programmable generation of graph transformation rules. It operates by reading JSON files, which specify USs and their associated actions, entities, and relationships, then systematically constructs corresponding Henshin module, rules, nodes, and their attributes.
 	
@@ -484,7 +486,7 @@ The delineation and checking of redundancy clauses within USs requires a methodi
 	\item Absence of benefit parts in both USs of the pair: If neither of the two USs of the redundancy-pair contains a benefit part, the focus shifts completely to the main parts. The investigation is designed to highlight redundancy clauses within these parts, whereby the benefit parts are not taken into account due to their non-existence.
 	
 \end{itemize}
-This structured and segmented approach ensures precise and efficient identification of redundancy clauses within the USs, optimising the clarity and effectiveness of textual report.
+This structured and segmented approach ensures precise identification of redundant clauses within the USs, optimising the clarity and effectiveness of textual report.
 \begin{example}
 	After the CDA directory for user\_story\_12 and user\_story\_39 has been created by the CDA tool using the UI, we pass the location of the directory to the ReportExtractor class to extract the important information and store it in the text report and the JSON report.
 	Listing \ref{list:textual_report_sample} illustrates the example of the textual report. In this case, the report only contains one US-pair.
@@ -492,7 +494,7 @@ This structured and segmented approach ensures precise and efficient identificat
 		\paragraph{}
 		\centering
 		%\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/TextualReportSample.txt}
-		\includegraphics[scale=0.7]{Listing/TextualReportSample.png}
+		\includegraphics[scale=0.69]{Listing/TextualReportSample.png}
 		\caption{Example of generated textual report for one US-pair}\label{list:textual_report_sample}
 	\end{MyListing}	
 	As we can see, the text report consists of a 2 x 2 table whose first column and first row are US identifiers, and the numbers inside the table are the total number (benefit part + main part) of redundancy elements between two USs; secondly, the redundant clauses related to the redundant US-pair are listed; thirdly, the text of US whose redundant phrases are marked with a hash symbol; finally, the part of the clauses in which redundant elements occur is displayed.	

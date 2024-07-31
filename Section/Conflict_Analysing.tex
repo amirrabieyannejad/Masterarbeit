@@ -98,7 +98,7 @@ Figure \ref{fig:conflict_operational_flow} illustrates how each step in this wor
 \end{figure}
 \paragraph{One-Time-Phase: Creating database for annotated verbs}To create a database of verbs and their associated action-annotations, we first need to collect all verb classes and their common semantic labels, called verb types, from the VN databases as follows:
 \begin{enumerate}
-	\item Each XML file corresponding to each VN top-level class from the Git repository\footnote{\href{https://github.com/cu-clear/verbnet}{https://github.com/cu-clear/verbnet}}.
+	\item Each XML file corresponding to each VN top-level class from the GitHub repository\footnote{\href{https://github.com/cu-clear/verbnet}{https://github.com/cu-clear/verbnet}}.
 	
 	\item Collecting verb types from VN documentation\footnote{\href{https://verbs.colorado.edu/verb-index/VerbNet_Guidelines.pdf}{https://verbs.colorado.edu/verb-index/VerbNet\_Guidelines.pdf}}: Since the verb types of verb classes is not included in the XML files. We then collect all verb types and their verb classes from the \textit{VerbNet guideline} PDF file in an CSV file.
 	
@@ -108,7 +108,7 @@ Figure \ref{fig:conflict_operational_flow} illustrates how each step in this wor
 \end{enumerate}
 Finally, based on verb types, each verb annotated into four action-annotations. 
 
-To validate the action-annotations, a personal judgement is made for each verb by three evaluators, so that each person reviews the action-annotations for each verb and comments their own action-annotations. We then collect all the personal judgements and combine the action-annotations for each verb. The action-annotation reference database is available in Git repository\footnote{\href{https://github.com/amirrabieyannejad/conflict_analysis_between_USs/blob/main/actions_annotations.csv}{https://github.com/conflict\_analysis\_between\_USs/main/actions\_annotations.csv}}.
+To validate the action-annotations, a personal judgement is made for each verb by three evaluators, so that each person reviews the action-annotations for each verb and comments their own action-annotations. We then collect all the personal judgements and combine the action-annotations for each verb. The action-annotation reference database is available in GitHub repository\footnote{\href{https://github.com/amirrabieyannejad/conflict_analysis_between_USs/blob/main/actions_annotations.csv}{https://github.com/conflict\_analysis\_between\_USs/main/actions\_annotations.csv}}.
 %\paragraph{Translating the JSON-Format of the Primary Input}\label{conflict_workflow_preparing_json_format}
 %Since the annotated USs in the original JSON files did not split entries such as "Entity", "Action", "Text", "Targets" and "Contains", it is not clear which element belongs to which part of the USs (main or benefit part), which leads to possible ambiguities.
 
@@ -138,6 +138,9 @@ In this section, we present the basic structures of our workflow and the discipl
 	As artefact we receive a graph-based model with JSON format, which represents the refined and annotated datasets for the recognition of entities, actions, personas and benefits of USs \cite{mosser2022modelling}.
 	
 	\item Eclipse as IDE\footnote{\href{https://eclipseide.org/}{https://eclipseide.org/}}: Eclipse is an integrated development environment (IDE) used in computer programming. It contains a base work workspace and an extensible plug-in system for customizing the environment.
+	
+	
+	\item VBA in Excel\footnote{\href{https://learn.microsoft.com/en-us/office/vba/library-reference/concepts/getting-started-with-vba-in-office}{https://learn.microsoft.com/en-us/office/vba/getting-started-with-vba-in-office}}: To automate the import of key information from JSON conflict reports, we use VBA embedded in Excel. This is an important decision to simplify the evaluation process.
 	
 	\item VerbNet (VN) as Verb Lexicon Resource\footnote{\href{https://verbs.colorado.edu/verbnet/}{https://verbs.colorado.edu/verbnet/}}: VN is the largest on-line network of English verbs that links their syntactic and semantic patterns. It is a hierarchical, domain-independent, broad-coverage verb lexicon with mappings to other lexical resource, such as WordNet\footnote{\href{https://wordnet.princeton.edu/}{https://wordnet.princeton.edu/}}, PropBank \footnote{\href{https://propbank.github.io/}{https://propbank.github.io/}}, and FrameNet \footnote{\href{http://framenet.icsi.berkeley.edu/}{http://framenet.icsi.berkeley.edu/}}. 
 	
@@ -218,8 +221,7 @@ Regarding conflict, some definitions are clarified:
 	$Notation$. Lowercase identifiers refer to single elements, and uppercase identifiers denote sets. 
 	\\A user story is a 1-tuple $us = \langle m\rangle $ where:
 	\begin{itemize}
-		\item A main $m$ is define a 6-tuple: \\\\$m = \langle P,A,E,Tr,Ta,Co\rangle $ \\\\where:
-		
+		\item A main $m$ is define a 6-tuple: \\\\$m = \langle P,A,E,Tr,Ta,Co\rangle $ where:
 	\begin{itemize}
 		\item $P = \{ p_1,p_2,...\} $ is a set of personas.
 		
@@ -266,7 +268,7 @@ Regarding conflict, some definitions are clarified:
 To provide a comprehensive overview of the design phases, this section explains each step of the process, from initial setup to final evaluation, using practical examples.
 
 Listing \ref{list:conflict_pseudocode} is the pseudocode that describes how to analyse the conflicts in a particular abstraction and explains the logic and sequence of steps.
-\newpage
+
 \begin{MyListing}
 	\scriptsize
 	\hrule
@@ -341,7 +343,7 @@ Since the original JSON format does not distinguish between the elements belongi
 For this reason, we use the class \texttt{USPartExtractor}, which creates a new JSON format in which all elements referring to a US JSON-object are extracted from the primary input and stored in the appropriate part of US.
 
 Listing \ref{list:json_USPartExtractor} illustrate the format of JSON file generated by USPartExtractor class.
-\newpage
+
 \begin{MyListing}
 	\centering
 	\lstinputlisting[basicstyle=\ttfamily\footnotesize]{Listing/json_USPartExtractor.json}
@@ -393,8 +395,29 @@ In this example, we apply the conflicts analysis to the project G03\_loudoun. As
 \end{MyListing}
 \end{example}
 \subsubsection*{Step 3: Evaluation}
-In this step, we collect all potential conflicts we have found in an Excel file called ‘Conflict\_Evaluation’ to compare the result provided by the tool with the ground truth. See the section \ref{conflict_evaluation} for a comprehensive explanation.
+In this step, we collect all the potential conflicts we found using a VBA script called "extractFromJSONFiles"\footnote{\href{https://github.com/amirrabieyannejad/conflict_analysis_between_USs/blob/main/00_annotated_datasets/extractFromJSONFiles_Version(new).xlsm}{https://github.com/amirrabieyannejad/conflict\_analysis\_between\_USs/extractFromJSONFiles\_Version}}. This scrip collects the information from the consolidated conflict report\footnote{\href{https://github. com/amirrabieyannejad/conflict_analysis_between_USs/blob/main/00_annotated_datasets/consolidated_conflict_report.json}{https://github.com/amirrabieyannejad/conflict\_analysis\_between\_USs/consolidated\_conflict\_report}}, which consisting of conflicts found from all datasets, into an Excel file named "Conflict\_Evaluation"\footnote{\href{https://github. com/amirrabieyannejad/conflict_analysis_between_USs/blob/main/00_annotated_datasets/Conflict_Evaluation.xlsx}{https://github.com/amirrabieyannejad/conflict\_analysisis\_between\_USs/Conflict\_Evaluation}} to evaluate the results provided by the tool and establish a ground truth.
 
-
-
+The information collected from the consolidated JSON report to create an Excel table is as follows:
+\begin{itemize}
+	\item PID: Project ID associated with the USs.
+	
+	\item Conflict Pair: Identifiers of the potential conflicting USs separated by "\_AND\_".
+	
+	\item Texts of the Main Parts of USs: Texts of the main parts of the USs, each separated by a blank line in a cell. Each conflicting element is surrounded by "\#".
+	
+	\item Conflict-Reason: Reason of the conflict.
+	
+	\item Entity of US1: Resource associated with the first US.
+	
+	\item Contain US2 Entity: Contained resource within the second USs, if applicable.
+	
+	\item Action US1: Action associated with the first conflicting US.
+	
+	\item Action-Annotation US1: Action-annotation associated with first conflicting US.
+	
+	\item Action US2: Action associated with the second conflicting US.
+	
+	\item Action-Annotation US2: Action-annotation associated with second conflicting US.
+	
+\end{itemize}
 \input{Section/Conflict_Implementation}
